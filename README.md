@@ -3,7 +3,6 @@
 - 🌱 I’m currently learning python
 - 📫 How to reach me ¿
 - 📮 mozi1924@arasaka.ltd
-- 🐧 2230215612
 - 🌐 https://mozi1924.com
 
 [![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=mozi1924&show_icons=true)]()
