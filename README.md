@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @mozi1924
-- 👀 I’m interested in computer
-- 🌱 I’m currently learning python
+- 👀 I’m interested in ML, Computer Vision 
+- 🌱 I’m currently Developing FaceCap For blender
 - 📫 How to reach me ¿
 - 📮 mozi1924@arasaka.ltd
 - 🌐 https://mozi1924.com
