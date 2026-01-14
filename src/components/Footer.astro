@@ -1,0 +1,49 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-[#0a0a0a] border-t border-white/5 py-12 mt-auto">
+    <div
+        class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6"
+    >
+        <div class="flex items-center gap-2">
+            <img
+                src="/favicon.svg"
+                alt="Mozi Logo"
+                class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
+            />
+            <span class="text-gray-400 font-medium">Mozi's website</span>
+        </div>
+
+        <div class="text-gray-500 text-sm">
+            &copy; {currentYear} Mozi1924. All rights reserved.
+        </div>
+
+        <div class="flex gap-6">
+            <a
+                href="https://github.com/mozi1924"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-gray-400 hover:text-white transition-colors"
+            >
+                GitHub
+            </a>
+            <a
+                href="https://www.youtube.com/@moziarasaka"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-gray-400 hover:text-white transition-colors"
+            >
+                YouTube
+            </a>
+            <a
+                href="https://space.bilibili.com/434156493"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-gray-400 hover:text-white transition-colors"
+            >
+                Bilibili
+            </a>
+        </div>
+    </div>
+</footer>

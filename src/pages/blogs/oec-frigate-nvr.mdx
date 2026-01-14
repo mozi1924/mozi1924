@@ -1,0 +1,310 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "OEC刷机作为 Frigate NVR!"
+date: "2025-05-06"
+desc: "# 前言  我前段时间在B站刷到OEC降价和刷机的视频，让我很兴奋，因为我很久之前就对这个设备感兴趣了   它有rk3566 soc   2/4+8的配置可选   内置2.5英寸硬盘位，一个usb3.0接口，typec刷机口，但是没有视频输出口   相比开发板要美观，便宜许多  所以我就火速下单，某..."
+image: "/assets/oec-frigate-nvr/oec.webp"
+---
+
+## 前言
+
+我前段时间在B站刷到OEC降价和刷机的视频，让我很兴奋，因为我很久之前就对这个设备感兴趣了  
+它有rk3566 soc  
+2/4+8的配置可选  
+内置2.5英寸硬盘位，一个usb3.0接口，typec刷机口，但是没有视频输出口  
+相比开发板要美观，便宜许多
+
+所以我就火速下单，某鱼90捡了一台oect
+
+![正在ttl debug的wxy oec](/assets/oec-frigate-nvr/photo_2025-04-29_23-54-07-771x1024.webp)
+
+得益于rk3566的npu和mpp以及低功耗，以及设备设计成内置硬盘位，这个设备简直就是为Frigate准备的!
+
+## 开始吧！
+
+### 刷机
+
+由于wxy对前者的态度，我在这里不敢详情讲解刷机相关的，如果您需要，可以在网上查找相关的刷机教程，不过我会在这里指路，我推荐您使用H大的armbian包，因为这个包可以完全发挥rk3566 soc
+
+[https://www.right.com.cn/forum/thread-8421861-1-1.html](https://www.right.com.cn/forum/thread-8421861-1-1.html)
+
+不建议将frigate和其它服务放在同一台机器上跑这样会影响性能，并且为了经可能的避免出错，建议您刷机清空原有配置后再安装（如果您非常了解您的系统环境当我没说）
+
+我只推荐您使用这个包，因为别的包都未经测试，我无法确保所需驱动是否包含以及是否稳定，如果您有能力自己编译/制作，欢迎来联系我，我非常需要，您可以在文章末尾找到我的联系方式
+
+## 安装
+
+### docker
+
+您需要安装docker才能使用Frigate，您可以根据 [docker官方文档](https://docs.docker.com/engine/install/debian/) 安装最新版本的docker
+
+随后您就可以开始安装Frigate了
+
+### 使用docker-compose安装Frigate
+
+我这边比较推荐创建 `/opt/frigate` 目录，然后写入 `docker-compose.yml` 文件
+
+```
+ffmpeg:
+  hwaccel_args: preset-rk-h264
+
+detectors: # required
+  rknn: # required
+    type: rknn # required
+    # number of NPU cores to use
+    # 0 means choose automatically
+    # increase for better performance if you have a multicore NPU e.g. set to 3 on rk3588
+    num_cores: 0
+
+model: # required
+  # name of model (will be automatically downloaded) or path to your own .rknn model file
+  # possible values are:
+  # - deci-fp16-yolonas_s
+  # - deci-fp16-yolonas_m
+  # - deci-fp16-yolonas_l
+  # - /config/model_cache/your_custom_model.rknn
+  path: deci-fp16-yolonas_s
+  # width and height of detection frames
+  width: 320
+  height: 320
+  # pixel format of detection frame
+  # default value is rgb but yolo models usually use bgr format
+  input_pixel_format: bgr # required
+  # shape of detection frame
+  input_tensor: nhwc
+  # needs to be adjusted to model, see below
+  labelmap_path: /labelmap.txt # required
+
+mqtt:
+  enabled: false
+
+go2rtc:
+  streams:
+    livingroom:
+      - rtsp://admin:abcd1234@192.168.31.202/streaming/channels/101
+    door:
+      - rtsp://admin:abcd1234@192.168.31.201/streaming/channels/101
+
+motion:
+  mask:
+    - 0.022,0.06,0.402,0.064,0.401,0.098,0.022,0.099
+    - 0.72,0.893,0.774,0.894,0.773,0.944,0.723,0.941
+  threshold: 30
+  contour_area: 30
+  improve_contrast: true
+
+cameras:
+  livingroom: # &lt;------ Name the camera
+    review:
+      alerts:
+        labels: []
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://admin:abcd1234@192.168.31.202/streaming/channels/101
+          roles:
+            - record
+        - path: rtsp://admin:abcd1234@192.168.31.202/streaming/channels/102
+          roles:
+            - detect
+    objects:
+      track:
+        - person
+        - dog
+        - cat
+
+  door: # &lt;------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://admin:abcd1234@192.168.31.201/streaming/channels/101
+          roles:
+            - record
+        - path: rtsp://admin:abcd1234@192.168.31.201/streaming/channels/102
+          roles:
+            - detect
+    objects:
+      track:
+        - person
+        - dog
+        - cat
+
+snapshots:
+  enabled: true
+
+record:
+  enabled: true
+  retain:
+    days: 3
+    mode: motion
+  alerts:
+    retain:
+      days: 30
+      mode: motion
+  detections:
+    retain:
+      days: 30
+      mode: motion
+
+version: 0.16-0
+detect:
+  enabled: true
+```
+
+这里指定了我们需要安装rockchip版本的frigate，共享内存  
+以及 npu gpu mpp usb等设备  
+时区，配置文件位置，录像保存位置  
+端口  
+rtsp密码（！一定要修改）  
+您可以结合自己的情况进行修改  
+在这里，我建议您修改 `/mnt/ssd1/frigate/storage` 为你挂载的硬盘位置（一定要安装一块硬盘，切记不可使用内置emmc，这会导致闪存磨损最后成砖）  
+您可以在网上搜索如何在linux上挂载一块硬盘，以及编辑 `/etc/fstab` 文件使得硬盘可以启动时自动挂载  
+  
+然后修改配置文件存放位置 我这里就使用 `/opt/frigate/config` 了，在接下来的教程中，配置文件也将会是存放在这个位置，如果您有所更改，请自行适应
+
+## 首次启动
+
+在当前目录下(`/opt/frigate`) 执行 `docker compose up -d`
+
+就会自动拉取镜像并安装，如果您因为网络问题无法下载，您可能需要配置镜像源
+
+首次启动会自动生成密码和管理员账户，请执行 `docker logs frigate` 查看
+
+  
+启动后，您会看到config文件夹
+
+```
+oec-turbo:frigate:# ls
+config  docker-compose.yml
+```
+
+然后你就可以访问 https://你的设备ip:8971  
+登陆后台
+
+## 配置
+
+然后您就可以使用自带的网页编辑器编辑配置文件  
+推荐使用网页编辑器，因为可以自动排错  
+点击小齿轮如下图所示
+
+![](/assets/oec-frigate-nvr/image.webp)
+
+接下来，您需要编辑配置文件才能完全发挥rk3566这颗soc  
+我在这里准备了我所编写的配置文件，一切都来自 [frigate官方文档](https://docs.frigate.video/)，请根据自己的情况修改
+
+```
+ffmpeg:
+  hwaccel_args: preset-rk-h264 #启用ffmpeg硬件编码
+
+detectors: # required NPU相关，一般无需修改
+  rknn: # required
+    type: rknn # required
+    # number of NPU cores to use
+    # 0 means choose automatically
+    # increase for better performance if you have a multicore NPU e.g. set to 3 on rk3588
+    num_cores: 0
+
+model: # required
+  # name of model (will be automatically downloaded) or path to your own .rknn model file
+  # possible values are:
+  # - deci-fp16-yolonas_s
+  # - deci-fp16-yolonas_m
+  # - deci-fp16-yolonas_l
+  # - /config/model_cache/your_custom_model.rknn
+  path: deci-fp16-yolonas_m #所使用的模型，一般s模型就够了
+  # width and height of detection frames 识别分辨率，不用动
+  #这里的分辨率不建议修改，保持默认即可，这样会增加npu压力/影响识别精度/增加延迟
+  width: 320
+  height: 320
+  # pixel format of detection frame
+  # default value is rgb but yolo models usually use bgr format
+  input_pixel_format: bgr # required
+  # shape of detection frame
+  input_tensor: nhwc
+  # needs to be adjusted to model, see below
+  labelmap_path: /labelmap.txt # required
+
+mqtt:
+  enabled: false
+
+go2rtc: #webrtc相关，没有实时播放会很卡，根据自己情况修改，下面改成摄像头rtsp地址
+  streams:
+    livingroom: #&lt;--这里改称和下面摄像头名字一样的
+      - rtsp://10.0.0.3/Streaming/Channels/201
+    door:
+      - rtsp://10.0.0.3/Streaming/Channels/101
+
+cameras: #摄像头相关
+  livingroom: # &lt;------ Name the camera
+    review:
+      alerts:
+        labels: [] #将客厅的摄像头定义为仅检测不警报
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://10.0.0.3/Streaming/Channels/201 # &lt;----- The stream you want to use for detection
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: true # &lt;---- disable detection until you have a working camera feed
+      width: 1280 #这里是摄像头分辨率，录像和实时会以该分辨率保存/查看
+      height: 960
+    objects: #需要检测哪些物体，请参考官方文档修改
+      track:
+        - person
+        - dog
+        - cat
+
+  door: # &lt;------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://10.0.0.3/Streaming/Channels/101 # &lt;----- The stream you want to >
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: true # &lt;---- disable detection until you have a working camera feed
+      width: 1280
+      height: 960
+    objects:
+      track:
+        - person
+        - dog
+        - cat
+
+snapshots: #启用截图
+  enabled: true
+
+record: #录像配置
+  enabled: True
+  retain:
+    days: 3 #无标记录像保存天数
+    mode: motion
+  alerts:
+    retain:
+      days: 30 #警报录像保存天数
+      mode: motion
+  detections:
+    retain:
+      days: 30 #检测到物体的录像保存天数
+      mode: motion
+
+version: 0.15-1
+```
+
+随后，点击保存并重启，如果没有报错并开始重启，说明您的配置文件无误
+
+![](https://mozi1924.com/wp-content/uploads/2025/05/image-2.avif)
+
+这里请参考官方文档进行修改，推荐 [中文版社区文档](https://docs.frigate-cn.video/)
+
+## 结束
+
+我的联系方式：mozi1924@arasaka.ltd  
+QQ：2230215612
+
+中文社区（qq群）：1043861059  
+b站 [https://space.bilibili.com/3546894915602564](https://space.bilibili.com/3546894915602564)  
+网站 [https://docs.frigate-cn.video/](https://docs.frigate-cn.video/)

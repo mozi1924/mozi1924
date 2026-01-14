@@ -1,0 +1,41 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "intel NUC X15 (LAPKC71F)安装Arch Linux一些注意事项"
+date: "2024-06-09"
+desc: "# 前言  在上上个月，我再也无法忍受我笔记本电脑的短续航，底性能，高发热，所以我决定安装linux，但是有那么多linux发行版，我该选择什么呢？   然我我毫不犹豫的安装了debian（当然是在备份重要数据后了....）  然后就是各种折腾过程，驱动安装，灯效控制什么的了，在踩了一大堆坑，最后..."
+image: "/assets/lapkc71f-archlinux/nuc_x15_side.webp"
+---
+
+# 前言
+
+在上上个月，我再也无法忍受我笔记本电脑的短续航，底性能，高发热，所以我决定安装linux，但是有那么多linux发行版，我该选择什么呢？  
+然我我毫不犹豫的安装了debian（当然是在备份重要数据后了....）
+
+然后就是各种折腾过程，驱动安装，灯效控制什么的了，在踩了一大堆坑，最后  
+我 把 系 统 玩 炸 了
+
+然后在群U的强烈推荐下，我安装了archlinux，然后一直用到了现在，我写这篇博客是为了同样公模想安装arch linux的小伙伴看着更方便，少踩坑(其实archlinux wiki里有[这个型号的wiki](https://wiki.archlinux.org/title/Intel_NUC_X15)，但是写的有点倒三不四的，我照着安装遇到了许多问题，有机会我会提交的)
+
+# 安装
+
+首先是最基本的安装，这里我建议照着网上的教程来，唯独需要注意的是显卡驱动，如果你想要使用[Nouveau](https://wiki.archlinuxcn.org/wiki/Nouveau)就选择全部，如果你要安装专有驱动则只安装intel，别的先别装
+
+## 额外驱动
+
+然后就是基本的驱动，和[qc71\_laptop](https://wiki.archlinux.org/title/Intel_QC71)兼容，有两个驱动可选，一个是带有gui控制面板的[tuxedo-drivers](https://wiki.archlinux.org/title/Intel_QC71)，另一个则是专门的[qc71-laptop-dkms-git](https://aur.archlinux.org/packages/qc71-laptop-dkms-git)，我建议安装[qc71-laptop-dkms-git](https://aur.archlinux.org/packages/qc71-laptop-dkms-git)，如果你有多余的精力愿意试试[tuxedo-drivers](https://wiki.archlinux.org/title/Intel_QC71)也可以，但是听我的，它不好用，控制面板也是个残废的状态，在[qc71-laptop-dkms-git](https://aur.archlinux.org/packages/qc71-laptop-dkms-git)下，它拥有[tuxedo-drivers](https://wiki.archlinux.org/title/Intel_QC71)所有的功能，还能控制电池充电，还能传递风扇转速到 lm-sensors ，虽然不能控制风扇转速，并且没有占用 **功能键** ，[tuxedo-drivers](https://wiki.archlinux.org/title/Intel_QC71)占用了功能键，用于快捷打开控制面板，但是控制面板又有bug，很多情况下打不开，并且控制面板显示的风扇转速不准确，也无法控制风扇转速，键盘灯控制也是不能用的，所以我不推荐使用，而在没有占用的情况下功能键就能切换调度，不过这个是bios里的，具体的影响就是风扇的最大转速，灯条驱动包含在[qc71\_laptop](https://wiki.archlinux.org/title/Intel_QC71)里，但是不知道为什么有时候不出来，没法控制，不过无伤大雅，完美主义者就待在win好好的吧
+
+## 键盘灯
+
+然后就是键盘灯，我推荐安装[ite8291r3-ctl](https://github.com/pobrn/ite8291r3-ctl)来控制，**注意** 不要使用aur包，无法检测到设备，我建议直接`git clone https://github.com/pobrn/ite8291r3-ctl.git` 然后root运行setup.py，记得安装 libusb ，如果你想屏幕取色请去文档看  
+然后我推荐也安装一个内核模块 [hid-ite8291r3](https://aur.archlinux.org/hid-ite8291r3-dkms-git.git) ，不安装这个模块[ite8291r3-ctl](https://github.com/pobrn/ite8291r3-ctl)也能正常使用，安装后拓展选项更多，具体请看[文档](https://github.com/pobrn/hid-ite8291r3)
+
+# 自用软件推荐与杂话
+
+既然你用了linux，那么你肯定就要忍受软件生态匮乏，但好在valve大力给wine项目投钱和这两年国产发行版的大力推动，qq和wx已经有了原生运行的版本（但是chromium）就算没有原生运行的也可以通过[Steam Play](https://steamcommunity.com/games/221410/announcements/detail/1696055855739350561) 和 [Wine](https://www.winehq.org/) 运行，它们能够获得非常棒的转译效果，流畅的运行游戏，甚至支持光线追踪，又由于linux系统的占用少于windows，游戏运行性能甚至超过了windows11  
+linux下的chrome非常烂，很难用，所以我建议使用firefox  
+gimp替代photoshop  
+inkspace替代illustrator  
+建模你可以使用blender  
+vlc的解码内核很强大，虽然功能不足potplayer  
+种子下载我使用[qbittorrent增强版](https://aur.archlinux.org/packages/qbittorrent-enhanced) ，虽然吸血雷有linux版并且很简洁但是我不推荐用  
+语音降噪可以使用[Easy Effects](https://flathub.org/apps/com.github.wwmm.easyeffects)，普通降噪+深度降噪两个滤镜叠加起来简直无敌了

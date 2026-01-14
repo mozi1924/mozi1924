@@ -1,0 +1,169 @@
+---
+import Layout from "./Layout.astro";
+import type { MarkdownLayoutProps } from "astro";
+
+type Props = MarkdownLayoutProps<{
+    title: string;
+    date: string;
+    image?: string;
+    desc?: string;
+}>;
+
+const { frontmatter, headings } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+    <div class="relative pt-24 pb-20 px-6 max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="text-center space-y-6 mb-16 max-w-3xl mx-auto">
+            <div
+                class="inline-block px-3 py-1 text-sm text-blue-400 bg-blue-500/10 rounded-full"
+            >
+                {frontmatter.date}
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+                {frontmatter.title}
+            </h1>
+            {
+                frontmatter.desc && (
+                    <p class="text-xl text-gray-400 leading-relaxed">
+                        {frontmatter.desc}
+                    </p>
+                )
+            }
+            {
+                frontmatter.image && (
+                    <div class="relative aspect-video rounded-2xl overflow-hidden shadow-2xl mt-8 border border-white/10">
+                        <img
+                            src={frontmatter.image}
+                            alt={frontmatter.title}
+                            class="w-full h-full object-cover"
+                        />
+                    </div>
+                )
+            }
+        </header>
+
+        <div class="grid lg:grid-cols-[1fr_250px] gap-12 items-start">
+            <!-- Article Content -->
+            <article
+                class="min-w-0 break-words prose prose-lg prose-invert text-gray-300 max-w-none
+        prose-headings:text-white prose-headings:font-bold prose-headings:scroll-mt-24
+        prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+        prose-strong:text-white prose-code:text-blue-300
+        prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-white/10
+        prose-img:rounded-xl prose-img:shadow-lg prose-img:mx-auto"
+            >
+                <slot />
+            </article>
+
+            <!-- Table of Contents -->
+            <aside class="hidden lg:block sticky top-24 space-y-4">
+                <div
+                    class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg"
+                >
+                    <h2
+                        class="text-white font-bold mb-4 flex items-center gap-2"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            ><line x1="8" y1="6" x2="21" y2="6"></line><line
+                                x1="8"
+                                y1="12"
+                                x2="21"
+                                y2="12"></line><line
+                                x1="8"
+                                y1="18"
+                                x2="21"
+                                y2="18"></line><line
+                                x1="3"
+                                y1="6"
+                                x2="3.01"
+                                y2="6"></line><line
+                                x1="3"
+                                y1="12"
+                                x2="3.01"
+                                y2="12"></line><line
+                                x1="3"
+                                y1="18"
+                                x2="3.01"
+                                y2="18"></line></svg
+                        >
+                        On this page
+                    </h2>
+                    <nav class="space-y-1">
+                        {
+                            headings.map((heading) => (
+                                <a
+                                    href={`#${heading.slug}`}
+                                    class={`toc-link block py-1 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500
+                   ${heading.depth > 3 ? "hidden" : ""}
+                   ${heading.depth === 3 ? "ml-4" : ""}
+                 `}
+                                >
+                                    {heading.text}
+                                </a>
+                            ))
+                        }
+                    </nav>
+                </div>
+            </aside>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    const setupObserver = () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                const id = entry.target.getAttribute("id");
+                if (entry.intersectionRatio > 0) {
+                    document.querySelectorAll(".toc-link").forEach((link) => {
+                        link.classList.remove(
+                            "text-[#3F89FC]",
+                            "border-[#3F89FC]",
+                            "font-bold",
+                        );
+                        link.classList.add(
+                            "text-gray-400",
+                            "border-transparent",
+                        );
+                    });
+
+                    const activeLink = document.querySelector(
+                        `.toc-link[href="#${id}"]`,
+                    );
+                    if (activeLink) {
+                        activeLink.classList.remove(
+                            "text-gray-400",
+                            "border-transparent",
+                        );
+                        activeLink.classList.add(
+                            "text-[#3F89FC]",
+                            "border-[#3F89FC]",
+                            "font-bold",
+                        );
+                    }
+                }
+            });
+        });
+
+        // Track all headings that have an id
+        document
+            .querySelectorAll("article h2, article h3")
+            .forEach((heading) => {
+                observer.observe(heading);
+            });
+    };
+
+    // Run on invalidation (view transitions)
+    document.addEventListener("astro:page-load", setupObserver);
+</script>

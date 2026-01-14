@@ -1,0 +1,54 @@
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import mdx from '@astrojs/mdx';
+
+// Helper to generate redirects from blog posts
+const generateBlogRedirects = () => {
+  const redirects = {};
+  const blogDir = './src/pages/blogs';
+
+  if (!fs.existsSync(blogDir)) return redirects;
+
+  const files = fs.readdirSync(blogDir).filter(file => file.endsWith('.md') || file.endsWith('.mdx'));
+
+  files.forEach(file => {
+    const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
+    // Extract date from frontmatter (e.g. date: "2024-6-8")
+    const dateMatch = content.match(/date:\s*["']?(\d{4}[-/]\d{1,2}[-/]\d{1,2})["']?/);
+
+    if (dateMatch) {
+      const dateStr = dateMatch[1];
+      const slug = file.replace(/\.mdx?$/, '');
+
+      // Ensure date parts are padded (e.g. 2024-6-8 -> 2024/06/08)
+      const [year, month, day] = dateStr.split(/[-/]/).map(num => num.padStart(2, '0'));
+
+      const oldPath = `/${year}/${month}/${day}/${slug}`;
+      const newPath = `/blogs/${slug}`;
+
+      // Add redirect
+      redirects[oldPath] = newPath;
+
+      console.log(`[Redirect] ${oldPath} -> ${newPath}`);
+    }
+  });
+
+  return redirects;
+};
+
+// https://astro.build/config
+export default defineConfig({
+  site: 'https://mozi1924.com',
+  vite: {
+    plugins: [tailwindcss()]
+  },
+
+  integrations: [react(), sitemap(), mdx()],
+
+  redirects: generateBlogRedirects()
+});

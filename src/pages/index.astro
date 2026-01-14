@@ -1,0 +1,36 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Showcase from "../components/Showcase.astro";
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout>
+	<Hero />
+	<section id="about" class="py-20 px-6 max-w-4xl mx-auto space-y-12">
+		<div class="text-center space-y-4">
+			<h2 class="text-3xl font-bold text-white">About Me</h2>
+			<div class="w-20 h-1 bg-white mx-auto rounded-full"></div>
+		</div>
+		<div
+			class="prose prose-invert prose-lg mx-auto text-gray-300 leading-relaxed break-words"
+		>
+			<p>
+				Hello! I am Mozi. I used to work on system maintenance, but now
+				I focus more on Blender 3D animation and Minecraft content
+				creation. My journey started with simple modifications and has
+				grown into developing complex rigs and plugins to help the
+				community.
+			</p>
+			<p>
+				On this website, you'll find my latest projects, including the
+				"Text2Arch" encryption tool and my custom Minecraft rig for
+				Blender.
+			</p>
+		</div>
+	</section>
+
+	<Showcase />
+</Layout>

@@ -1,0 +1,65 @@
+---
+import ShowcaseLightbox from "./react/ShowcaseLightbox.jsx";
+---
+
+<section class="py-24 bg-[#161616] px-6">
+    <div class="max-w-[1600px] mx-auto space-y-16">
+        <div class="text-center space-y-4">
+            <h2 class="text-3xl font-bold text-white">Showcase</h2>
+            <div class="w-20 h-1 bg-white mx-auto rounded-full"></div>
+        </div>
+
+        <!-- 
+            Showcase Data:
+            Modify the array below to add your own projects.
+            Place images in public/showcase/ and reference them like '/showcase/image.jpg'
+            -->
+        <ShowcaseLightbox
+            client:load
+            items={[
+                {
+                    title: "Become Human",
+                    date: "2025-5-21",
+                    description:
+                        "This is a short animation that imitates the opening sequence of the game *Detroit: Become Human*, used to showcase the flexibility of my rigging and the material effects of the skin texture.",
+                    button: {
+                        text: "Watch Video",
+                        url: "https://www.youtube.com/watch?v=XxAqKosI6ZE",
+                    },
+                    thumbnail:
+                        "/assets/showcase/dbh-hq.webp",
+                    fullSize:
+                        "/assets/showcase/dbh-max.webp",
+                },
+                {
+                    title: "Rig/1",
+                    date: "2025-8-18",
+                    description:
+                        "A custom rig for Minecraft that allows for easy animation and rigging.",
+                    button: {
+                        text: "Learn More",
+                        url: "https://rig-doc.mozi1924.com/",
+                    },
+                    thumbnail:
+                        "/assets/showcase/rig-one.webp",
+                    fullSize:
+                        "/assets/showcase/rig-one.webp",
+                },
+                {
+                    title: "NOW SHUT UP AND DRIVE 2.0",
+                    date: "2025-11-14",
+                    description:
+                        "A demonstration showcasing my powerful video keypoint tracking and synthesis capabilities, featuring captivating dance and music.",
+                    button: {
+                        text: "Watch Video",
+                        url: "https://www.bilibili.com/video/BV1mjCuByEHR",
+                    },
+                    thumbnail:
+                        "/assets/showcase/nodus-720p.webp",
+                    fullSize:
+                        "/assets/showcase/nodus.webp",
+                },
+            ]}
+        />
+    </div>
+</section>

@@ -1,0 +1,51 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const posts = (await Astro.glob("./*.{md,mdx}")).sort(
+    (a, b) =>
+        new Date(b.frontmatter.date).valueOf() -
+        new Date(a.frontmatter.date).valueOf(),
+);
+---
+
+<Layout title="Blogs - Mozi's Website">
+    <div class="pt-12 pb-20 px-6 max-w-7xl mx-auto">
+        <div class="text-center space-y-4 mb-16">
+            <h1 class="text-4xl font-bold text-white">My Blogs</h1>
+            <p class="text-gray-400">Thoughts, tutorials, and updates.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {
+                posts.map((post) => (
+                    <article class="bg-[#222] rounded-xl overflow-hidden group hover:transform hover:-translate-y-1 transition-all duration-300">
+                        <div class="aspect-video overflow-hidden">
+                            <img
+                                src={post.frontmatter.image}
+                                alt={post.frontmatter.title}
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-sm text-gray-500">
+                                {post.frontmatter.date}
+                            </div>
+                            <h2 class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                                {post.frontmatter.title}
+                            </h2>
+                            <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">
+                                {post.frontmatter.desc}
+                            </p>
+                            <a
+                                href={post.url}
+                                class="inline-block text-white border-b border-white pb-0.5 hover:text-blue-400 hover:border-blue-400 transition-colors"
+                            >
+                                Read more
+                            </a>
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+    </div>
+</Layout>

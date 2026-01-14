@@ -1,0 +1,136 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "为你的网站添加一个Tor路由"
+date: "2024-10-08"
+desc: "# 前言  最近，我有开始对onion网络感兴趣了，并不是因为上面的那些......厄...明网上找不到的内容，而是对它的运行方式感兴趣，因为最近telegram因为一些法律原因不得不违背最初承诺的加密对话，虽然这是在我的可接受范围内，但是这仍然给我一种不舒服的感觉，所以我和我的群友便商量起了自己搭..."
+image: "/assets/add-a-tor-router-to-your-webside/TorRoter-png.webp"
+---
+
+# 前言
+
+最近，我有开始对onion网络感兴趣了，并不是因为上面的那些......厄...明网上找不到的内容，而是对它的运行方式感兴趣，因为最近telegram因为一些法律原因不得不违背最初承诺的加密对话，虽然这是在我的可接受范围内，但是这仍然给我一种不舒服的感觉，所以我和我的群友便商量起了自己搭建一个加密对话平台，于是便想起了onion网络
+
+# 安装并配置Tor
+
+这边以archlinux和nginx为例，tor已经在默认的extra源里了，所以你只需要执行
+
+```
+sudo pacman -S tor
+```
+
+即可安装，随后执行 `sudo nano /etc/tor/torrc` 将最后一行的
+
+```
+%include /etc/torrc.d/*.conf
+```
+
+取消注释，随后执行 sudo mkdir /etc/torrc.d 创建一个文件夹，并且在其中写入你的配置文件，比如我的是这样的
+
+```
+HiddenServiceDir /var/lib/tor/mozi/
+HiddenServicePort 80 10.0.1.2:80
+```
+
+其中，10.0.1.2是提供web服务的主机，由于我使用的方案是一台主机提供正常的web服务，一台主机来进行反代，正常情况下填写127.0.0.1或者 **unix套接字** 地址即可，如果都是在同一台主机上运行，更加建议使用unix套接字，这样省略了tcp ip协议，延迟更小，更加安全，`HiddenServiceDir` 则是存放onion密钥的地方，这个密钥决定了你的onion主机名，你可以照抄我的配置，修改 `mozi` 为你喜欢的名字，默认情况下，如果该目录为空或者不存在 tor 则会创建并随机生成一个密钥，**如果你撞出了一个你喜欢的地址也可以使用撞出来的密钥替换里面的**
+
+然后，如果你使用了虚拟主机，则需要在你的配置文件中写入你的onion主机名，执行 `sudo cat /var/lib/tor/YOURSET/hostname` 即可查看
+
+这时我的nginx部分配置
+
+```
+server {
+listen 80;
+listen [::]:80;
+.....
+
+server_name mozi1924.com www.mozi1924.com moziwewxspyfbo3lp3rnhgfqeogvbk7oj6kgprd6tms3w2kzgy7b3iyd.onion;
+
+.....
+}
+```
+
+在你的 server\_name中加入你的onion hostname
+
+然后执行 `sudo systemctl enable --now tor.service` 启动tor服务
+
+有时候，你所在的地区可能会阻断你与tor网络之间的连接，我推荐你使用 [cloudflare warp](https://www.google.com/search?q=cloudflare+warp) 进行代理后再连接（记得设置启动优先级）具体方法请在网络上自行搜索，或者使用 obfs4proxy
+
+## 使用obfs4proxy
+
+执行
+
+```
+sudo pacman -S obfs4proxy
+```
+
+安装obfs4proxy
+
+确保在 `torrc` 文件中添加以下内容来启用 `obfs4`：
+
+```
+ClientTransportPlugin obfs4 exec /usr/bin/obfs4proxy
+```
+
+这行代码告诉 Tor 使用 `obfs4proxy` 来处理 `obfs4` 网桥。
+
+然后创建配置文件 `/etc/torrc.d/bridges.conf`
+
+```
+UseBridges 1
+Bridge obfs4 <IP>:<Port> <Fingerprint> cert=<Certificate> iat-mode=<Mode>
+```
+
+如果你无法访问 [bridges.torproject.org](https://bridges.torproject.org) 你可以通过 telegram bot [@GetBridgesBot](https://t.me/GetBridgesBot) 获得网桥，不过网桥不是特别稳定，不保证永久可用，并且速度大多数时候不如cloudflare warp
+
+配置完记得执行 `sudo systemctl restart tor.service` 重启tor服务
+
+## 检查连接
+
+你可以执行 systemctl status tor.service 来查看tor服务的运行状态，假如你长期卡在了某个启动进度，比如 `Bootstrapped 10% (conn_done): Connected to a relay` 并且报错
+
+```
+Oct 07 23:35:30 archbook Tor[40440]: Problem bootstrapping. Stuck at 10% (conn_done): Connected to a relay. (No route to host; NOROUTE; count 10; recommendation warn; host B636837E9432EE15729978B24F1958D644D5B0D6 at 45.86.86.231:9001)Oct 07 23:35:30 archbook Tor[40440]: 9 connections have failed:Oct 07 23:35:30 archbook Tor[40440]: 8 connections died in state handshaking (TLS)with SSL state error in HANDSHAKEOct 07 23:35:30 archbook Tor[40440]: 1 connections died in state connect()ing withSSL state (No SSL object)
+```
+
+那么你存在连接问题，请配置一个网桥/更换网桥
+
+如果输出的日志里没有报错并输出了 `Bootstrapped 100% (done): Done` 说明你成功连接了tor网络，去访问你的网站试试吧
+
+# 获得vanity地址
+
+使用 [https://github.com/cathugger/mkp224o](https://github.com/cathugger/mkp224o) 来撞出你的vanity地址，
+
+洋葱地址使用base32编码，不包括 `0,1,8,9` 数字。  
+所以不，不可能生成这些，mkp224o 试图 及早检测包含它们的无效过滤器。
+
+我使用一台18核36线程2.9ghz处理器的老工作站来进行运算，通过docker来运行程序
+
+```
+docker run --rm -it -v $PWD:/keys ghcr.io/cathugger/mkp224o:master -d /keys NAMEYOUWANT
+```
+
+此过程非常的缓慢，如果使用普通的个人计算机，建议将字符限制在7个以及7个以内，否则需要撞很久
+
+由于暴力密钥生成的概率性质，并且 它将运行的硬件多种多样，很难做出承诺 需要多长时间，尤其是当大多数用户 只需要几把密钥。  
+请参阅 [此问题](https://github.com/cathugger/mkp224o/issues/27) 以获取有关此问题的非常有价值的讨论。  
+如果您的机器足够强大，则不应使用 6 个字符的前缀 如果使用批处理模式，则需要超过几十分钟（请阅读 [OPTIMISATION.txt](https://github.com/cathugger/mkp224o/blob/master/OPTIMISATION.txt) ) 7 个字符可能需要几个小时 到几天。  
+不过没有承诺，这纯粹取决于运气。
+
+您可能需要调整所有权和权限：
+
+sudo chown -R tor: /var/lib/tor/nekosvc
+sudo chmod -R u+rwX,og-rwx /var/lib/tor/nekosvc
+
+# 已知问题
+
+wordpress(可能或者别的一些CMS)由于设计问题当使用与数据库内不同的域名访问的话会存在部分内容无法正确加载或者301跳转，请自行搜索解决办法
+
+# 结语
+
+本站以及我的另一个网站也有Tor路由，感兴趣的可以通过以下地址访问
+
+[moziwewxspyfbo3lp3rnhgfqeogvbk7oj6kgprd6tms3w2kzgy7b3iyd.onion](http://moziwewxspyfbo3lp3rnhgfqeogvbk7oj6kgprd6tms3w2kzgy7b3iyd.onion)
+
+以及
+
+[arasakayeflovwsg4r47ckec7omndoil4jblyxigjmcapb4d2pfs7tyd.onion](http://arasakayeflovwsg4r47ckec7omndoil4jblyxigjmcapb4d2pfs7tyd.onion)

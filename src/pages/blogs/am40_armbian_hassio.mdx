@@ -1,0 +1,211 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "Smart AM40 使用tf卡刷机和安装hassio"
+date: "2024-06-08"
+desc: "# 开始  最近，我对arm64小主机很感兴趣，在网上浏览了很多，但大多都不符合我的要求，但是，我在某鱼上面发现了一款工控小主机，型号是SMART Technologies AM40  这个型号的主机很小众，在b站上只能找到两个有关的刷机教学视频，但是，额，怎么说，录的很随意，没有过多的介绍，不过在..."
+image: "/assets/am40/SMART-UGK-AM40-EDU.webp"
+---
+
+## 开始
+
+最近，我对arm64小主机很感兴趣，在网上浏览了很多，但大多都不符合我的要求，但是，我在某鱼上面发现了一款工控小主机，型号是SMART Technologies AM40
+
+这个型号的主机很小众，在b站上只能找到两个有关的刷机教学视频，但是，额，怎么说，录的很随意，没有过多的介绍，不过在 lajilao.top 上面有大佬整理了详细的资料和出厂包 欢迎去 [https://lajilao.top/thread-63-1-1.html](https://lajilao.top/thread-63-1-1.html) 给大佬点个赞
+
+我购买的这台包含了本体和拓展坞，如果你也想购买一台，我建议购买附带拓展坞的，价格在180元内，超过了就不建议购买了，本体上包含以下接口：
+
+*   USB 3.0 x2 （上面的那个用于maskrom刷机）
+*   千兆网口 x1
+*   天线接口 x2 （使用内孔天线）
+*   用于外部启动的tf卡接口 x1
+*   hdmi1.4 x1（linux下需要刷内核才能使用,\[(1920 × 1080) on board，由DP转的\]）
+*   OPS接口 x1
+*   电源接口 x1 (3.0 \* 1.1 \[on board; hided\])
+
+OPS拓展有这些接口：
+
+*   USB 2.0 x4
+*   HDMI 2.0\[ops 4k@60Hz\]
+*   6个COM口（自行研究）
+*   PORT size： 5.5 \* 2.5 \[ops; main\]
+
+使用rk3399处理器，4+32的内存组合，双频wifi+bt4.2
+
+详细请前往 [https://am40.cache.cloudns.org/](https://am40.cache.cloudns.org/#smart-technologies-am40)
+
+## 刷机
+
+首先，让我们先从刷机开始
+
+这里我只介绍tf卡卡刷法，因为没有供电所以就不介绍maskrom刷机法了，在 [https://am40.cache.cloudns.org/](https://am40.cache.cloudns.org/#smart-technologies-am40) 上写的很详细
+
+首先前往 [https://github.com/ophub/amlogic-s9xxx-armbian/releases](https://github.com/ophub/amlogic-s9xxx-armbian/releases) 下载系统镜像，我比较推荐 HassIoSupervisor\_bookworm
+
+*   2024.9.11更新，您可以下载[Armbian\_HassIoSupervisor\_bookworm](https://github.com/ophub/amlogic-s9xxx-armbian/releases/tag/Armbian_HassIoSupervisor_bookworm_save_2024.09) 这将减少后期使用报错
+
+下载下来的文件名字大概是这样 Armbian\_x.x.x\_rockchip\_smart-am40\_bookworm\_x.x.x\_server\_xxxx.xx.xx.img.gz  
+xxx则代表版本号
+
+然后使用 [etcher](https://github.com/balena-io/etcher/releases) 烧写进 **高速tf卡** 不然可能没法启动，建议使用8g以上的
+
+大概步骤如下：
+
+首先选择镜像
+
+![Etcher图1](/assets/am40/截图-2024-06-07-20-29-37-768x506.webp)
+
+Etcher图1
+
+然后选择要烧录的tf卡，**注意不要选错不然数据丢失**
+
+![Etcher图2](/assets/am40/截图-2024-06-07-20-29-47-768x506.webp)
+
+Etcher图2
+
+然后点击 Select，回到主界面，点击Flash!，出现这个页面就表示开始写入了
+
+![Etcher图3](/assets/am40/截图-2024-06-07-20-30-07-768x506.webp)
+
+Etcher图3
+
+然后等待，直到出现以下页面，速度取决于你的读卡器和sd卡写入速度
+
+![Etcher图4](/assets/am40/截图-2024-06-07-20-29-11-768x506.webp)
+
+接下来，就可以取出你的tf卡了
+
+### 启动
+
+**首先先断电**
+
+然后将你的tf卡插入标注着service only的tf卡插槽里，芯片面朝下
+
+![SMART Technologies AM40](/assets/am40/IMG_20240607_203121-2.webp)
+
+**记得断电**
+
+然后重新上电，接上网线，就会从tf卡启动，启动速度由tf卡速度决定
+
+然后登录你的路由器后台，查看小主机的ip
+
+![图片](/assets/am40/图片.webp)
+
+使用 `ssh root@armbian` 连接主机，密码输入1234
+
+![图片-1](/assets/am40/图片-1-768x646.webp)
+
+根据自己的喜好设置root密码，shell，创建新用户，如果不想创建则Ctrl+C
+
+**接下来是安装到emmc，如果你不需要请跳转到3**
+
+### 写入emmc
+
+输入 `lsblk` 查看磁盘命名
+
+![图片-2](/assets/am40/图片-2-768x646.webp)
+
+然后上传Armbian\_x.x.x\_rockchip\_smart-am40\_bullseye\_x.x.x\_server\_xxxx.xx.xx.img.gz  
+上传至 ~/ 目录(/root或者/home/username)  
+在这里，我的emmc被命名为mmcblk0，那么在主目录执行
+
+```
+gzip -dc Armbian_x.x.x_rockchip_smart-am40_bullseye_x.x.x_server_xxxx.xx.xx.img.gz | dd of=/dev/mmcblk0
+```
+
+等待指令结束则完成，然后你就可以拔掉tf卡，然后重启
+
+每个人的设备略有不同，并非所有的都是mmcblk0，具体请使用lsblk查看
+
+## 安装hassio
+
+### 准备工作
+
+首先，更新下系统
+
+```
+apt update && apt upgrade -y
+```
+
+如果速度慢请尝试更换镜像源，请自行搜索
+
+然后安装docker
+
+```
+curl -fsSL get.docker.com | sh
+```
+
+过程请保持科学上网，直到出现下图则安装成功
+
+![图片-3](/assets/am40/图片-3-768x646.webp)
+
+### 安装os-gent
+
+前往 [https://github.com/home-assistant/os-agent/releases](https://github.com/home-assistant/os-agent/releases) 下载 os-agent\_x.x.x\_linux\_aarch64.deb
+
+使用你喜欢的方式下载比如wget ，然后 `apt install ./os-agent_x.x.x_linux_aarch64.deb -y` 进行安装
+
+![图片-4](/assets/am40/图片-4-768x646.webp)
+
+### 安装Home Assistant Supervised Debian Package
+
+下载 [https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb](https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb)
+
+然后 `apt install ./homeassistant-supervised.deb -y` 进行安装
+
+![图片-5](/assets/am40/图片-5-768x646.webp)
+
+选择qemuarm-64，回车
+
+![图片-7](/assets/am40/图片-7-768x646.webp)
+
+这样，就算是安装成功了，程序会自动下载docker镜像
+
+完成后继续执行以下指令
+
+cd /usr/share/hassio
+
+nano jobs.json
+
+输入
+
+```
+{"ignore_conditions": ["healthy"]}
+```
+
+按Ctrl + X后按Y回车保存并退出
+
+然后耐心等待，记得保持科学上网，否则会下载失败
+
+等待一会，打开[http://armbian:8123/](http://armbian:8123/)
+
+![Preparing Home Assistant Page](/assets/am40/图片-8-768x633.webp)
+
+然后耐心等待，记得保持科学上网
+
+直到出现如下界面就可以进行配置了
+
+![homeassistant welcome page](/assets/am40/图片-10-768x633.webp)
+
+![homeassistant Create user page](/assets/am40/图片-12-768x633.webp)
+
+![homeassistant home page](/assets/am40/图片-14-768x633.webp)
+
+## 安装HACS
+
+HACS（Home Assistant Community Store）即Home Assistant官方的插件商店，提供各种设备集成、前端装饰等的下载，是Home Assistant必备的插件。
+
+1）安装HACS可以通过 https://github.com/hacs/integration/releases/ 下载离线包，解压后将hacs文件夹通过FTP软件拷贝至/usr/share/Hassio/homeassistant/custom\_components（没有此路径的话新建一个）。
+
+2）或者在SSH中输入以下命令一键安装。
+
+```
+wget -O - https://get.hacs.xyz | bash - 
+```
+
+然后在后台界面选择“配置”-“系统”，右上角点击“重新启动”。
+
+重启后，在“配置”-“设备与服务”中添加集成。
+
+然后按照步骤使用github登录就可以了
+
+![图片-15](/assets/am40/图片-15-768x633.webp)

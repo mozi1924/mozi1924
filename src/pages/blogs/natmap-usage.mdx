@@ -1,0 +1,154 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "使用NATMap实现NAT穿透达到公网IPv4体验"
+date: "2024-10-31"
+desc: "# 前言  虽然IPv6开始变得流行，但是由于网络运营商以及公共免费网络长期无人维护，在许多时候你还是没法连接到IPv6网络，假如你用IPv6来架设网站，游戏服务器，用户是否能访问或游玩则又是需要操心的一大问题，所以有一个公网ipv4地址是我一直梦寐以求的，即使IPv6有多么好。  但是由于全球IP..."
+image: "/assets/natmap-usage/nat-png.webp"
+---
+
+## 前言
+
+虽然IPv6开始变得流行，但是由于网络运营商以及公共免费网络长期无人维护，在许多时候你还是没法连接到IPv6网络，假如你用IPv6来架设网站，游戏服务器，用户是否能访问或游玩则又是需要操心的一大问题，所以有一个公网ipv4地址是我一直梦寐以求的，即使IPv6有多么好。
+
+但是由于全球IPv4地址枯竭，没法做到每人每个设备一个公网IPv4地址，所以网络运营商采用了NAT的方式以保证用户在没法被分配到IPv4公网的情况下仍然能通过IPv4上网
+
+想象 NAT 就像一栋有多层的公寓楼，每层楼上都有 65536 扇“窗户”（端口）。公寓的每一层就像是 NAT1、NAT2、NAT3 等不同的 NAT 层次。住在楼里的住户就是内部的设备，而楼外的人则是外部网络上的人。
+
+当楼里的住户想和外面的世界互动时，就需要通过“窗户”来交换物品（即建立连接）。不过，不是每一层的窗户都可以轻松打开：
+
+1.  第一层（NAT1）上的窗户相对容易打开，但住户不能自己打开，得需要外面的人协助才能打开，这就像借助 TURN 服务器来实现 NAT 穿透。
+2.  而在更高的楼层（NAT2、NAT3 等），住户的窗户更难直接打开，所以住户需要依靠楼内的“快递员”来帮忙传递东西（即通过 NAT 映射或中继服务器）。
+3.  如果有些住户需要和别的公寓楼的住户建立联系，可以请求住在第一层的住户或者外部的“送货员”来帮忙传递（即端口转发）。
+
+![](/assets/natmap-usage/webrtc-comprehensive-1024x532.webp)
+
+而我就是住在第一层的那一部分用户（只是我之前一直不知道如何把“窗户”打开而已），所以本篇文章，将会教您如何使用[NATMap](https://github.com/heiher/natmap)打开“窗户”
+
+## 使用
+
+本教程仅适用于Linux，其他操作系统请自行查找别的教程
+
+首先，你需要确保你的网络NAT层级为NAT1 (Full Cone)，你可以使用 [NAT检测工具](https://github.com/oneclickvirt/gostun) 查看你所在的NAT层级，并自行在网络上搜索相关教程以降低NAT层级，其中最有效的是将你的上网方式设置为桥接
+
+随后，你可以在OpenWrt官方仓库搜索 luci-app-natmap安装或前往[NATMap Github releases](https://github.com/heiher/natmap/releases)页面下载适合你操作系统的版本，如果条件支持，我建议将这个程序运行在你的主网关设备上以提高打洞成功率
+
+### OpenWrt
+
+我这里使用的是一个运行OpenWrt系统的软路由PPPOE拨号上网，光猫设置为桥接模式
+
+![](/assets/natmap-usage/Screenshot-From-2024-10-31-21-08-28-png.webp)
+
+在 网络>防火墙>通信规则 添加一个名为Dynamic(或者别的你喜欢的)，协议选择tcp与udp，源区域选择WAN，目标端口填写49152-65535，操作选择接受，启用，保存并应用  
+或者你直接在 常规设置 里全部改为接受保存并应用
+
+![](/assets/natmap-usage/image-2-png.webp)
+
+如果你是使用openwrt较新的版本，如23,SNAPSHOT等，你可以直接在 系统>软件包 搜索luci-app-natmap安装，然后刷新页面，进入 服务>NATMap 删除或修改自带的示例配置，点击“添加”，选择你的端口协议(tcp/udp)，地址族限制保持默认即可，接口选择WAN，Keep-alive 间隔留空（默认25），STUN 服务器可以前往 [public STUN servers](https://github.com/heiher/natmap/issues/18) 查看，并选择一个合适的STUN服务器，HTTP 服务器建议填写一个稳定的支持双栈访问的网站，比如 qq.com，绑定端口则可以输入 49152-65535 之间任意端口或内网设备上运行的服务的端口（前提是已调整防火墙设置）  
+**不建议使用自带的转发模式**，我们可以先添加，稍后设置  
+设置通知脚本，你可以前往 [https://github.com/heiher/natmap/issues/12](https://github.com/heiher/natmap/issues/12) 查看社区分享的通知脚本或者自己写一个
+
+![](/assets/natmap-usage/Screenshot-From-2024-10-31-20-53-47-png.webp)
+
+点击保存后记得勾选启用并点击保存并应用，如果网络没有问题的话10秒内将获得公网IP和公共端口，如果没有显示可以刷新一下页面，如果你正在使用类似OpenClash的代理工具**记得将你使用的STUN服务器加到绕过核心规则**，否则会影响到NAT穿透，OpenClash的操作方式是 插件设置>流量控制>本地 IPv4 绕过地址 填入你的stun服务器地址（可以直接写域名，不一定需要填写ip）保存并应用
+
+### 其他Linux 发行版/旧版OpenWrt
+
+这就需要你从[NATMap Github releases](https://github.com/heiher/natmap/releases)页面下载适合你操作系统的版本了，你可以执行lscpu查看你的处理器构架，然后选择合适的下载
+
+![](/assets/natmap-usage/Screenshot_20241101-084334-536x1024.webp)
+
+下载下来后，将程序保存到一个合适的位置，将其重命名为 `natmap` 并执行 `chmod 755 natmap` 修改权限使其可以执行，你可以为其添加一个环境变量使其以后操作更加方便
+
+```
+# TCP
+natmap -i wan -s turn.cloudflare.com -h example.com -b 80
+# UDP
+natmap -i wan -u -s turn.cloudflare.com -b 443
+```
+
+这里的参数分别对应上面OpenWrt，-s 为STUN服务器，-h 为HTTP服务器，-b 为绑定端口，-i为接口，-k为KeepAlive，-e为通知脚本
+
+更多选项请参考 [https://github.com/heiher/natmap](https://github.com/heiher/natmap)
+
+如果运行成功，会在终端打印ip和端口
+
+假如你最终的指令是
+
+```
+natmap -d -u -i pppoe-wan -s turn.cloudflare.com -b 6000 -t 192.168.0.2 -p 6000 -e /usr/bin/ddns
+```
+
+你就可以把它写入/etc/rc.local实现开机启动
+
+### 端口转发
+
+这里我强烈建议使用OpenWrt自带的端口转发功能，它在 网络>防火墙>端口转发，点击添加，命名一个你喜欢的名字，在 外部端口 那里输入你刚刚在NATMap输入的绑定端口，内部IP地址选择需要转发到公网的内网设备或者路由器本身，内部端口填写需要转发出去的服务的端口，比如我需要将我内网主机 10.0.1.3 上的minecraft服务器转发，下面截图就是我的配置
+
+![](/assets/natmap-usage/Screenshot-From-2024-10-31-21-18-21-png.webp)
+
+为和需要这样设置呢？因为这样设置内网的服务就能获得访问者的IP地址，而不是转发设备的地址，这是我的Minecraft服务器日至
+
+```
+[16:08:43] [Server thread/INFO]: Meow_www[/104.28.235.60:17792] logged in with entity id 3046 at (267.5, 71.0, 263.5)
+
+[16:08:43] [Server thread/INFO]: Meow_www joined the game
+
+[16:09:59] [Server thread/INFO]: Meow_www lost connection: Disconnected
+
+[16:09:59] [Server thread/INFO]: Meow_www left the game
+
+[05:25:50] [Server thread/INFO]: mozi1924[/1.204.171.239:34220] logged in with entity id 3817 at (381.5045765202818, 157.0, 643.0446101140859)
+
+[05:25:50] [Server thread/INFO]: mozi1924 joined the game
+
+[05:25:53] [Server thread/INFO]: mozi1924 lost connection: Disconnected
+
+[05:25:53] [Server thread/INFO]: mozi1924 left the game
+```
+
+可以看到它获取到了玩家的IP地址，而不是转发主机的
+
+如果你使用的不是OpenWrt 并且不熟悉iptables或nftables的操作，你可以使用NATMap自带的端口转发，请查看[官方文档](https://github.com/heiher/natmap)
+
+而使用NATMap自带的转发功能则无法像是这样获得连接者的IP，如果你需要使用BanIP功能则会把所有玩家Ban了，对于访问者统计也十分不友好，期待后续版本更新改进
+
+## 脚本
+
+这是我的MC服务器SRV解析脚本，可供参考
+
+```
+#!/bin/sh
+ZONE=''
+RECORD=''
+EMAIL=''
+AUTH=''
+NAME='original.mc.mozi1924.com'
+TARGET='ipv4.mozi1924.com'
+ip=${1}
+port=${2}
+proto=${3}
+while true; do
+    curl -X PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+	        -H "X-Auth-Email: ${EMAIL}" \
+	        -H "Authorization: Bearer ${AUTH}" \
+		-H "Content-Type: application/json" \
+		--data "{
+			\"type\": \"SRV\",
+			\"name\": \"_minecraft._$proto.$NAME\",
+			\"ttl\": 60,
+			\"data\": {
+				\"priority\": 0,
+				\"weight\": 5,
+				\"port\": \"$port\",
+				\"target\": \"$TARGET\"
+				}
+			}" >/dev/null 2>/dev/null &
+    if [ $? -eq 0 ]; then
+        break
+    fi
+done
+```
+
+## 结束
+
+接下来，享受你的IPv4公网访问吧

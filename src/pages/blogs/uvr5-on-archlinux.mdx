@@ -1,0 +1,102 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "在ArchLinux上安装 Ultimate Vocal Remover 5"
+date: "2024-06-19"
+desc: "> Ultimate Vocal Remover 5 是互联网上最好的声音去除应用程序，它是完全免费和开源的！适用于Windows、Mac 和 Linux >  > [https://ultimatevocalremover.com/](https://ultimatevocalremover.co..."
+image: "/assets/uvr5-on-archlinux/UVR_RUN_ON_ARCH.webp"
+---
+
+> Ultimate Vocal Remover 5 是互联网上最好的声音去除应用程序，它是完全免费和开源的！适用于Windows、Mac 和 Linux
+> 
+> [https://ultimatevocalremover.com/](https://ultimatevocalremover.com/)
+
+## 前言
+
+我经常创作一些AI翻唱的音乐，而我需要清晰且高品质的伴奏和便于ai识别的人声，之前我使用windows，但是现在我使用 archlinux，万幸的是这款工具支持linux，  
+但是官网并没有提供 linux版本安装包下载，而官方仓库所提供的安装教程会破坏您的系统 python环境，所以我不建议按照官方教程安装，所以我编写这篇教程，来帮助您少走弯路
+
+## 开门见山
+
+首先，根据  
+[Anjok07/ultimatevocalremovergui/blob/master/README.md](https://github.com/Anjok07/ultimatevocalremovergui/blob/master/README.md)  
+我们可以模糊的晓得，这款工具推荐使用python3.9.8，并且作者没有提到使用 anaconda，我本人在此之前根据 [https://ivonblog.com/posts/ultimate-vocal-remover-gui/](https://ivonblog.com/posts/ultimate-vocal-remover-gui/) 使用anaconda 安装，虽然程序能正常运行但是存在gui界面的字体问题，所以我更推荐使用python-venv，那么接下来，开始
+
+### 开始
+
+首先，使用您喜欢的方式安装python39 aur包  
+[https://aur.archlinux.org/packages/python39](https://aur.archlinux.org/packages/python39)  
+我喜欢使用yay
+
+```
+yay -S python39
+```
+
+然后使用`pacman`安装pip tk ffmpeg
+
+```
+sudo pacman -S python-pip tk ffmpeg
+```
+
+## 创建环境与安装依赖
+
+### Clone仓库
+
+把它放在一个你喜欢的位置，比如我就放在了~/uvr5/
+
+```
+cd ~
+git clone https://github.com/Anjok07/ultimatevocalremovergui.git uvr5
+cd uvr5
+```
+
+### 创建虚拟环境并激活
+
+```
+python3.9 -m venv venv
+chmod 777 ./venv/bin/activate
+. ./venv/bin/activate
+```
+
+此时，你的终端应该会多出来一个`(venv)`，像是这样  
+`(venv) [mozi@laptop uvr5]$`
+
+### 配置镜像源（部分用户不需要）
+
+```
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+### 使用pip安装依赖
+
+```
+# 防止The 'sklearn' PyPI package is deprecated錯誤
+export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=true
+
+pip3 install -r requirements.txt
+
+pip install pygobject
+```
+
+这个过程应该很顺利
+
+### 启动脚本
+
+你可以编写一个启动脚本，方便启动程序
+
+```
+tee ./run.sh &lt;&lt;-'EOF'
+echo "Starting...."
+. ./venv/bin/activate
+python UVR.py
+EOF
+
+chmod 777 run.sh
+```
+
+然后，每次启动只需要执行run.sh就行了
+
+## 结束
+
+![uvr5 running on archlinux in gnome desktop environment](/assets/uvr5-on-archlinux/Screenshot-from-2024-06-19-21-38-18-1024x616.webp)
+
+最后，享受这款软件给你带来的便利，直到2024年6月19日，最新版本是5.6，但由于一点小bug软件会提示你更新，不用理会

@@ -1,0 +1,147 @@
+---
+layout: /src/layouts/BlogPost.astro
+title: "玩客云刷hassio教程"
+date: "2023-05-03"
+desc: "# 刷机  刷Armbain,建议https://github.com/hzyitc/armbian-onecloud/releases  刷好后登入玩客云ssh  执行cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 修正时间  执行nano..."
+image: "/assets/onething_box_flash_hassio_tutorial/onecloud.webp"
+---
+
+## 刷机
+
+刷Armbain,建议https://github.com/hzyitc/armbian-onecloud/releases
+
+刷好后登入玩客云ssh
+
+执行cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 修正时间
+
+执行nano /etc/apt/sources.list
+
+删除所有内容，替换为：
+
+```
+https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+```
+
+Ctrl + X后按Y回车保存
+
+## 安装依赖
+
+先执行apt update
+
+安装docker
+
+curl -fsSL get.docker.com | sh
+
+## 下载os-gent并安装
+
+[https://github.com/home-assistant/os-agent/releases](https://github.com/home-assistant/os-agent/releases)
+
+dpkg -i 下载的文件名字
+
+随后可能会提示
+
+![](/assets/onething_box_flash_hassio_tutorial/image.webp)
+
+不用慌，执行apt --fix-broken install 然后按y回车
+
+这个时候再执行一遍dpkg -i 下载的文件名字
+
+你就会发现安装上了
+
+![](/assets/onething_box_flash_hassio_tutorial/image-1.webp)
+
+## 安装Home Assistant Supervised Debian Package
+
+运行sudo apt-get install apparmor
+
+wget https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb
+
+dpkg -i homeassistant-supervised.deb
+
+这个时候会报错
+
+![](/assets/onething_box_flash_hassio_tutorial/image-2.webp)
+
+执行apt --fix-broken install后按Y
+
+选择raspberrypi3回车
+
+![](/assets/onething_box_flash_hassio_tutorial/image-3.webp)
+
+出现下图就表示安装成功了
+
+![](/assets/onething_box_flash_hassio_tutorial/image-4.webp)
+
+如果没有出现就再执行dpkg -i homeassistant-supervised.deb选择raspberrypi3回车
+
+完成后继续执行以下指令
+
+cd /usr/share/hassio
+
+nano jobs.json
+
+输入
+
+```
+{"ignore_conditions": ["healthy"]}
+```
+
+按Ctrl + X后按Y回车保存并退出
+
+## 安装HACS
+
+依次执行
+
+```
+mkdir /usr/share/hassio/homeassistant/custom_components
+
+mkdir /usr/share/hassio/homeassistant/custom_components/www
+
+mkdir /usr/share/hassio/homeassistant/custom_components/hacs
+
+cd /usr/share/hassio/homeassistant/custom_components/hacs
+
+wget https://github.com/hacs/integration/releases/latest/download/hacs.zip
+
+apt install unzip
+
+unzip hacs.zip
+
+rm hacs.zip
+```
+
+等一会访问http://玩客云ip:8123就可以看见
+
+![](/assets/onething_box_flash_hassio_tutorial/image-5.webp)
+
+## 结束
+
+这个时候不要断电断网，耐心等待，可用执行docker ps查看安装进度
+
+网速快的话半个小时以后就可以进入http://玩客云ip:8123进行配置了
+
+## 备注
+
+(如果在安装时出现提示缺少依赖就执行apt --fix-broken install 后重新执行安装指令)
+
+* * *
+
+2024/05/30备注：
+
+我新买了一个rk3399小主机，能刷armbian，不久后会写一篇新的，包含刷机教程
+
+已更新 [Smart AM40 使用tf卡刷机和安装hassio](https://mozi1924.com/2024/06/08/am40_armbian_hassio/)
