@@ -5,7 +5,9 @@
 <header
     class="fixed top-0 w-full z-50 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-all duration-300"
 >
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div
+        class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-50 bg-[#1110]"
+    >
         <a href="/" class="flex items-center gap-2 group">
             <div class="relative w-8 h-8 flex items-center justify-center">
                 <img
@@ -40,7 +42,11 @@
             >
         </nav>
 
-        <button id="mobile-menu-btn" class="md:hidden text-white p-2">
+        <button
+            id="mobile-menu-btn"
+            class="md:hidden text-white p-2 focus:outline-none"
+            aria-label="Toggle menu"
+        >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -51,6 +57,8 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                class="transition-transform duration-300"
+                id="menu-icon"
                 ><line x1="3" y1="12" x2="21" y2="12"></line><line
                     x1="3"
                     y1="6"
@@ -64,29 +72,31 @@
     <!-- Mobile Menu -->
     <div
         id="mobile-menu"
-        class="overflow-hidden h-0 bg-[#111] border-b border-white/10 transition-[height] duration-300 ease-in-out"
+        class="md:hidden overflow-hidden bg-[#111] border-b border-white/10 transition-[grid-template-rows] duration-500 ease-in-out grid grid-rows-[0fr]"
     >
-        <nav class="flex flex-col p-4 space-y-4">
-            <a
-                href="/"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Home</a
-            >
-            <a
-                href="/blogs"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Blogs</a
-            >
-            <a
-                href="/mozi-rig"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Mozi's Rig</a
-            >
-            <a
-                href="/text-to-archbase4-encryption-decryption"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Text2Arch Tool</a
-            >
+        <nav class="min-h-0">
+            <div class="flex flex-col p-4 space-y-4">
+                <a
+                    href="/"
+                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                    >Home</a
+                >
+                <a
+                    href="/blogs"
+                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                    >Blogs</a
+                >
+                <a
+                    href="/mozi-rig"
+                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                    >Mozi's Rig</a
+                >
+                <a
+                    href="/text-to-archbase4-encryption-decryption"
+                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                    >Text2Arch Tool</a
+                >
+            </div>
         </nav>
     </div>
 </header>
@@ -95,30 +105,46 @@
     const setupMobileMenu = () => {
         const btn = document.getElementById("mobile-menu-btn");
         const menu = document.getElementById("mobile-menu");
-
-        // Clone element to remove previous event listeners before adding new ones
-        // This is a common pattern to avoid duplicate listeners if elements persist
-        // However, in Astro View Transitions, persisting elements depends on 'transition:persist'
-        // If the header is re-rendered, new elements are created.
+        const mobileLinks = document.querySelectorAll(".mobile-link");
 
         if (btn && menu) {
-            btn.addEventListener("click", () => {
-                if (menu.classList.contains("h-0")) {
-                    menu.classList.remove("h-0");
-                    menu.classList.add("h-auto");
-                    menu.style.height = menu.scrollHeight + "px";
+            const toggleMenu = (forceClose = false) => {
+                const isRowsOne = menu.classList.contains("grid-rows-[1fr]");
+                const shouldClose = forceClose || isRowsOne;
+
+                if (shouldClose) {
+                    menu.classList.remove("grid-rows-[1fr]");
+                    menu.classList.add("grid-rows-[0fr]");
                 } else {
-                    menu.style.height = "0px";
-                    menu.classList.add("h-0");
-                    menu.classList.remove("h-auto");
+                    menu.classList.remove("grid-rows-[0fr]");
+                    menu.classList.add("grid-rows-[1fr]");
+                }
+            };
+
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                toggleMenu();
+            };
+
+            // Close menu when clicking links
+            mobileLinks.forEach((link) => {
+                link.addEventListener("click", () => toggleMenu(true));
+            });
+
+            // Close when clicking outside
+            document.addEventListener("click", (e) => {
+                if (
+                    !menu.contains(e.target as Node) &&
+                    !btn.contains(e.target as Node)
+                ) {
+                    toggleMenu(true);
                 }
             });
 
             // Reset state on resize
             const handleResize = () => {
                 if (window.innerWidth >= 768) {
-                    menu.style.height = "";
-                    menu.classList.add("h-0");
+                    toggleMenu(true);
                 }
             };
             window.addEventListener("resize", handleResize);

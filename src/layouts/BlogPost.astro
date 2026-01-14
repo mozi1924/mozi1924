@@ -57,7 +57,93 @@ const { frontmatter, headings } = Astro.props;
                 <slot />
             </article>
 
-            <!-- Table of Contents -->
+            <!-- Mobile TOC Button (Bottom Right) -->
+            <div class="lg:hidden fixed bottom-6 right-6 z-40">
+                <button
+                    id="mobile-toc-btn"
+                    class="bg-[#1a1a1a]/90 backdrop-blur-md border border-white/10 text-white p-3 rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-95"
+                    aria-label="Table of Contents"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><line x1="8" y1="6" x2="21" y2="6"></line><line
+                            x1="8"
+                            y1="12"
+                            x2="21"
+                            y2="12"></line><line x1="8" y1="18" x2="21" y2="18"
+                        ></line><line x1="3" y1="6" x2="3.01" y2="6"
+                        ></line><line x1="3" y1="12" x2="3.01" y2="12"
+                        ></line><line x1="3" y1="18" x2="3.01" y2="18"
+                        ></line></svg
+                    >
+                </button>
+            </div>
+
+            <!-- Mobile TOC Menu (Bottom Sheet) -->
+            <div
+                id="mobile-toc-overlay"
+                class="lg:hidden fixed inset-0 z-50 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300"
+            >
+                <!-- Close on click outside -->
+                <div class="absolute inset-0" id="mobile-toc-backdrop"></div>
+
+                <div
+                    id="mobile-toc-sheet"
+                    class="absolute bottom-0 left-0 w-full max-h-[70vh] bg-[#1a1a1a] rounded-t-2xl border-t border-white/10 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col"
+                >
+                    <div
+                        class="p-4 border-b border-white/10 flex items-center justify-between"
+                    >
+                        <h3 class="text-white font-bold text-lg">
+                            Table of Contents
+                        </h3>
+                        <button
+                            id="mobile-toc-close"
+                            class="text-gray-400 hover:text-white p-1"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                ><line x1="18" y1="6" x2="6" y2="18"
+                                ></line><line x1="6" y1="6" x2="18" y2="18"
+                                ></line></svg
+                            >
+                        </button>
+                    </div>
+                    <div class="overflow-y-auto p-4 space-y-1">
+                        {
+                            headings.map((heading) => (
+                                <a
+                                    href={`#${heading.slug}`}
+                                    class={`mobile-toc-link block py-3 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent active:bg-white/5 active:text-white
+                                    ${heading.depth > 3 ? "hidden" : ""}
+                                    ${heading.depth === 3 ? "ml-4" : ""}
+                                `}
+                                >
+                                    {heading.text}
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table of Contents (Desktop) -->
             <aside class="hidden lg:block sticky top-24 space-y-4">
                 <div
                     class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg"
@@ -105,9 +191,9 @@ const { frontmatter, headings } = Astro.props;
                                 <a
                                     href={`#${heading.slug}`}
                                     class={`toc-link block py-1 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500
-                   ${heading.depth > 3 ? "hidden" : ""}
-                   ${heading.depth === 3 ? "ml-4" : ""}
-                 `}
+                    ${heading.depth > 3 ? "hidden" : ""}
+                    ${heading.depth === 3 ? "ml-4" : ""}
+                  `}
                                 >
                                     {heading.text}
                                 </a>
@@ -126,6 +212,7 @@ const { frontmatter, headings } = Astro.props;
             entries.forEach((entry) => {
                 const id = entry.target.getAttribute("id");
                 if (entry.intersectionRatio > 0) {
+                    // Update Desktop TOC
                     document.querySelectorAll(".toc-link").forEach((link) => {
                         link.classList.remove(
                             "text-[#3F89FC]",
@@ -152,6 +239,33 @@ const { frontmatter, headings } = Astro.props;
                             "font-bold",
                         );
                     }
+
+                    // Mobile TOC Styling (optional, simplified for mobile)
+                    document
+                        .querySelectorAll(".mobile-toc-link")
+                        .forEach((link) => {
+                            link.classList.remove(
+                                "text-white",
+                                "border-blue-500",
+                            );
+                            link.classList.add(
+                                "text-gray-400",
+                                "border-transparent",
+                            );
+                        });
+                    const activeMobileLink = document.querySelector(
+                        `.mobile-toc-link[href="#${id}"]`,
+                    );
+                    if (activeMobileLink) {
+                        activeMobileLink.classList.remove(
+                            "text-gray-400",
+                            "border-transparent",
+                        );
+                        activeMobileLink.classList.add(
+                            "text-white",
+                            "border-blue-500",
+                        );
+                    }
                 }
             });
         });
@@ -164,6 +278,40 @@ const { frontmatter, headings } = Astro.props;
             });
     };
 
+    const setupMobileTOC = () => {
+        const btn = document.getElementById("mobile-toc-btn");
+        const overlay = document.getElementById("mobile-toc-overlay");
+        const sheet = document.getElementById("mobile-toc-sheet");
+        const backdrop = document.getElementById("mobile-toc-backdrop");
+        const closeBtn = document.getElementById("mobile-toc-close");
+        const links = document.querySelectorAll(".mobile-toc-link");
+
+        if (btn && overlay && sheet && backdrop && closeBtn) {
+            const openMenu = () => {
+                overlay.classList.remove("opacity-0", "pointer-events-none");
+                sheet.classList.remove("translate-y-full");
+            };
+
+            const closeMenu = () => {
+                sheet.classList.add("translate-y-full");
+                overlay.classList.add("opacity-0", "pointer-events-none");
+            };
+
+            btn.onclick = openMenu;
+            backdrop.onclick = closeMenu;
+            closeBtn.onclick = closeMenu;
+
+            links.forEach((link) => {
+                link.addEventListener("click", closeMenu);
+            });
+        }
+    };
+
     // Run on invalidation (view transitions)
-    document.addEventListener("astro:page-load", setupObserver);
+    const init = () => {
+        setupObserver();
+        setupMobileTOC();
+    };
+
+    document.addEventListener("astro:page-load", init);
 </script>
