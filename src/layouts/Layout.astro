@@ -26,6 +26,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="alternate icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonicalURL} />
 		<title>{title}</title>
@@ -37,6 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 		<!-- Open Graph -->
 		<meta property="og:type" content="website" />
+		<meta property="og:logo" content="/favicon.svg" />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
