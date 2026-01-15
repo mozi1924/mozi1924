@@ -1,5 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+
+const LightboxPortal = ({ children }) => {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    return mounted ? createPortal(children, document.body) : null;
+};
 
 export default function ShowcaseLightbox({ items }) {
     const [selectedIndex, setSelectedIndex] = useState(null);
@@ -58,76 +70,78 @@ export default function ShowcaseLightbox({ items }) {
 
             {/* Lightbox Overlay */}
             {selectedIndex !== null && (
-                <div
-                    className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
-                    onClick={closeLightbox}
-                >
-                    <div className="relative w-full max-w-7xl max-h-[90vh] flex flex-col lg:flex-row bg-[#111] rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={(e) => e.stopPropagation()}>
+                <LightboxPortal>
+                    <div
+                        className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+                        onClick={closeLightbox}
+                    >
+                        <div className="relative w-full max-w-7xl max-h-[90vh] flex flex-col lg:flex-row bg-[#111] rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={(e) => e.stopPropagation()}>
 
-                        {/* Image Container */}
-                        <div className="flex-1 relative bg-black flex items-center justify-center min-h-[50vh] lg:min-h-[80vh]">
-                            <img
-                                src={currentItem.fullSize}
-                                alt={currentItem.title}
-                                className="max-w-full max-h-[80vh] object-contain cursor-pointer"
-                                onClick={nextImage}
-                            />
+                            {/* Image Container */}
+                            <div className="flex-1 relative bg-black flex items-center justify-center min-h-[50vh] lg:min-h-[80vh]">
+                                <img
+                                    src={currentItem.fullSize}
+                                    alt={currentItem.title}
+                                    className="max-w-full max-h-[80vh] object-contain cursor-pointer"
+                                    onClick={nextImage}
+                                />
 
-                            {/* Navigation Buttons */}
+                                {/* Navigation Buttons */}
+                                <button
+                                    onClick={prevImage}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                                </button>
+                                <button
+                                    onClick={nextImage}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                </button>
+                            </div>
+
+                            {/* Sidebar Info (Optional) */}
+                            {currentItem.description && (
+                                <div className="lg:w-96 p-8 bg-[#161616] border-l border-white/5 overflow-y-auto max-h-[40vh] lg:max-h-full lg:h-auto">
+                                    <div className="space-y-6">
+                                        <div>
+                                            <div className="text-gray-500 text-sm mb-1">{currentItem.date}</div>
+                                            <h2 className="text-2xl font-bold text-white">{currentItem.title}</h2>
+                                        </div>
+                                        <div className="prose prose-invert prose-sm text-gray-400">
+                                            {/* Simple markdown rendering or just text */}
+                                            <p>{currentItem.description}</p>
+                                        </div>
+
+                                        {/* Optional Action Button */}
+                                        {currentItem.button && (
+                                            <div className="pt-4">
+                                                <a
+                                                    href={currentItem.button.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                                                >
+                                                    {currentItem.button.text}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Close Button */}
                             <button
-                                onClick={prevImage}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors"
+                                onClick={closeLightbox}
+                                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-red-500/80 text-white rounded-full transition-colors"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                            </button>
-                            <button
-                                onClick={nextImage}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="M6 6 18 18" /></svg>
                             </button>
                         </div>
-
-                        {/* Sidebar Info (Optional) */}
-                        {currentItem.description && (
-                            <div className="lg:w-96 p-8 bg-[#161616] border-l border-white/5 overflow-y-auto max-h-[40vh] lg:max-h-auto">
-                                <div className="space-y-6">
-                                    <div>
-                                        <div className="text-gray-500 text-sm mb-1">{currentItem.date}</div>
-                                        <h2 className="text-2xl font-bold text-white">{currentItem.title}</h2>
-                                    </div>
-                                    <div className="prose prose-invert prose-sm text-gray-400">
-                                        {/* Simple markdown rendering or just text */}
-                                        <p>{currentItem.description}</p>
-                                    </div>
-
-                                    {/* Optional Action Button */}
-                                    {currentItem.button && (
-                                        <div className="pt-4">
-                                            <a
-                                                href={currentItem.button.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors"
-                                            >
-                                                {currentItem.button.text}
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-                                            </a>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Close Button */}
-                        <button
-                            onClick={closeLightbox}
-                            className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-red-500/80 text-white rounded-full transition-colors"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="M6 6 18 18" /></svg>
-                        </button>
                     </div>
-                </div>
+                </LightboxPortal>
             )}
         </>
     );

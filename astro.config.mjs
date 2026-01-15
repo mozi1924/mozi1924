@@ -15,12 +15,24 @@ const generateBlogRedirects = () => {
   if (!fs.existsSync(blogDir)) return redirects;
 
   const files = fs.readdirSync(blogDir).filter(file => file.endsWith('.md') || file.endsWith('.mdx'));
+  const categoriesSet = new Set();
 
   files.forEach(file => {
     const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
     // Extract date from frontmatter (e.g. date: "2024-6-8")
     const dateMatch = content.match(/date:\s*["']?(\d{4}[-/]\d{1,2}[-/]\d{1,2})["']?/);
+    // Extract categories regex (simple line match)
+    const catMatch = content.match(/categories:\s*\[(.*?)\]/);
 
+    // Handle Categories
+    if (catMatch) {
+      const cats = catMatch[1].split(',').map(c => c.trim().replace(/['"]/g, ''));
+      cats.forEach(c => {
+        if (c) categoriesSet.add(c);
+      });
+    }
+
+    // Handle Date Redirects
     if (dateMatch) {
       const dateStr = dateMatch[1];
       const slug = file.replace(/\.mdx?$/, '');
@@ -33,9 +45,12 @@ const generateBlogRedirects = () => {
 
       // Add redirect
       redirects[oldPath] = newPath;
-
-      console.log(`[Redirect] ${oldPath} -> ${newPath}`);
     }
+  });
+
+  // Generate Category Redirects: /[category]/ -> /categories/[category]/
+  categoriesSet.forEach(cat => {
+    redirects[`/${cat}`] = `/categories/${cat}`;
   });
 
   return redirects;

@@ -1,0 +1,149 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import type { GetStaticPaths, MarkdownInstance } from "astro";
+
+interface Frontmatter {
+    title: string;
+    date: string;
+    image?: string;
+    desc?: string;
+    categories?: string[];
+}
+
+interface Props {
+    posts: MarkdownInstance<Frontmatter>[];
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    const allPosts = (await Astro.glob<Frontmatter>(
+        "../blogs/*.{md,mdx}",
+    )) as unknown as MarkdownInstance<Frontmatter>[];
+    const uniqueCategories = [
+        ...new Set(allPosts.map((post) => post.frontmatter.categories).flat()),
+    ].filter((c): c is string => Boolean(c));
+
+    if (allPosts.some((p) => !p.frontmatter.categories)) {
+        uniqueCategories.push("uncategorized");
+    }
+
+    const categories = [...new Set(uniqueCategories)];
+
+    return categories.map((category) => {
+        const filteredPosts = allPosts.filter((post) => {
+            const postCats = post.frontmatter.categories || ["uncategorized"];
+            return postCats.includes(category);
+        });
+
+        filteredPosts.sort(
+            (a, b) =>
+                new Date(b.frontmatter.date).valueOf() -
+                new Date(a.frontmatter.date).valueOf(),
+        );
+
+        return {
+            params: { category },
+            props: { posts: filteredPosts },
+        };
+    });
+};
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Layout title={`Category: ${category}`}>
+    <div class="pt-24 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+        <header class="text-center space-y-6 mb-16">
+            <div
+                class="inline-block px-3 py-1 text-sm text-blue-400 bg-blue-500/10 rounded-full mb-4"
+            >
+                Category
+            </div>
+            <h1
+                class="text-4xl md:text-5xl font-bold text-white leading-tight capitalize"
+            >
+                {category}
+            </h1>
+            <p class="text-xl text-gray-400">
+                Found {posts.length} article{posts.length !== 1 ? "s" : ""}
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {
+                posts.map((post) => (
+                    <a
+                        href={post.url}
+                        class="group flex flex-col bg-[#1a1a1a] rounded-2xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                    >
+                        <div class="aspect-video relative overflow-hidden bg-[#222]">
+                            {post.frontmatter.image ? (
+                                <img
+                                    src={post.frontmatter.image}
+                                    alt={post.frontmatter.title}
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div class="w-full h-full flex items-center justify-center text-gray-700">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="48"
+                                        height="48"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                    </svg>
+                                </div>
+                            )}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                        </div>
+
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex items-center gap-3 text-sm text-gray-500 mb-3 font-mono">
+                                <span>{post.frontmatter.date}</span>
+                            </div>
+
+                            <h2 class="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors line-clamp-2">
+                                {post.frontmatter.title}
+                            </h2>
+
+                            {post.frontmatter.desc && (
+                                <p class="text-gray-400 text-sm line-clamp-3 mb-6 flex-1">
+                                    {post.frontmatter.desc}
+                                </p>
+                            )}
+
+                            <div class="flex items-center text-sm font-bold text-blue-400 group-hover:translate-x-1 transition-transform">
+                                Read Article
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="ml-1"
+                                >
+                                    <>
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+</Layout>
