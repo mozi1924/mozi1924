@@ -208,11 +208,8 @@ const { frontmatter, headings } = Astro.props;
   {
     !frontmatter.disable_comments && (
       <div class="max-w-5xl mx-auto px-4 md:px-6 pb-20">
-        {/* Construct unique ID using configured domain + current path */}
-        <CommentSection
-          client:load
-          siteId={`${SITE.domain}${Astro.url.pathname}`}
-        />
+        {/* Construct unique ID using configured domain only, as requested */}
+        <CommentSection client:load siteId={SITE.domain} />
       </div>
     )
   }
