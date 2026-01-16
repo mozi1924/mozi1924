@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// Custom social card information
+const customTitle = "Custom Social Card Example";
+const customDescription =
+  "This page demonstrates how to specify custom social card information, including a custom header image and description.";
+const customImage = "/assets/custom-social-image.png"; // Example image path
+---
+
+<Layout title={customTitle} description={customDescription} image={customImage}>
+  <div class="max-w-4xl mx-auto px-6 py-20">
+    <h1 class="text-4xl font-bold text-white mb-6">{customTitle}</h1>
+
+    <div class="bg-[#1a1a1a] p-6 rounded-xl border border-white/10 mb-8">
+      <h2 class="text-2xl font-bold text-white mb-4">
+        Social Card Preview Info
+      </h2>
+      <ul class="space-y-3 text-gray-300">
+        <li><strong>Title:</strong> {customTitle}</li>
+        <li><strong>Description:</strong> {customDescription}</li>
+        <li><strong>Image URL:</strong> {customImage}</li>
+      </ul>
+    </div>
+
+    <p class="text-gray-300 text-lg leading-relaxed">
+      This page uses the properties available in <code>Layout.astro</code> to override
+      the default social card metadata. When shared on social media, it will display
+      the custom image and description defined above, while keeping the site's default
+      favicon as the logo.
+    </p>
+
+    <div
+      class="mt-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-200"
+    >
+      Note: Ensure that the image at <code>{customImage}</code> actually exists in
+      your public folder for the social card to render correctly on external platforms.
+    </div>
+  </div>
+</Layout>

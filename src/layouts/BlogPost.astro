@@ -202,22 +202,21 @@ const { frontmatter, headings } = Astro.props;
       </aside>
     </div>
   </div>
+  {
+    /* Comment Section (Outside the grid to span full width or constrained as needed) */
+  }
+  {
+    !frontmatter.disable_comments && (
+      <div class="max-w-5xl mx-auto px-4 md:px-6 pb-20">
+        {/* Construct unique ID using configured domain + current path */}
+        <CommentSection
+          client:visible
+          siteId={`${SITE.domain}${Astro.url.pathname}`}
+        />
+      </div>
+    )
+  }
 </Layout>
-
-{
-  /* Comment Section (Outside the grid to span full width or constrained as needed) */
-}
-{
-  !frontmatter.disable_comments && (
-    <div class="max-w-3xl mx-auto px-6 pb-20">
-      {/* Construct unique ID using configured domain + current path */}
-      <CommentSection
-        client:visible
-        siteId={`${SITE.domain}${Astro.url.pathname}`}
-      />
-    </div>
-  )
-}
 
 <script>
   const setupObserver = () => {
