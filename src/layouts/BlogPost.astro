@@ -210,7 +210,7 @@ const { frontmatter, headings } = Astro.props;
       <div class="max-w-5xl mx-auto px-4 md:px-6 pb-20">
         {/* Construct unique ID using configured domain + current path */}
         <CommentSection
-          client:visible
+          client:load
           siteId={`${SITE.domain}${Astro.url.pathname}`}
         />
       </div>
