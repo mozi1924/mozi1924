@@ -316,7 +316,9 @@ const CommentItem: React.FC<{
   isPreview,
 }) => {
   const [replying, setReplying] = useState(false);
-  const avatarSrc = `${workerUrl}/api/avatar/${comment.avatar_id}`;
+  const avatarSrc = comment.avatar_id
+    ? `${workerUrl}/api/avatar/${comment.avatar_id}`
+    : "/assets/default.webp";
 
   return (
     <div id={`comment-${comment.id}`} className="group">
@@ -325,7 +327,7 @@ const CommentItem: React.FC<{
           <img
             src={avatarSrc}
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "/default.webp";
+              (e.target as HTMLImageElement).src = "/assets/default.webp";
             }}
             alt={comment.author_name}
             className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
