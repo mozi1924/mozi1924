@@ -177,7 +177,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const fetchComments = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${workerUrl}/api/comments?site_id=${siteId}`);
+      const context_url = encodeURIComponent(window.location.origin + window.location.pathname);
+      const res = await fetch(`${workerUrl}/api/comments?site_id=${siteId}&context_url=${context_url}`);
       if (res.ok) {
         const data = (await res.json()) as {
           comments: Comment[];
@@ -531,7 +532,8 @@ const CommentForm: React.FC<CommentFormProps> = ({
     setError(null);
 
     try {
-      const context_url = window.location.href;
+      // Use "clean" URL (origin + pathname) as per requirement
+      const context_url = window.location.origin + window.location.pathname;
 
       const res = await fetch(`${workerUrl}/api/comments`, {
         method: "POST",
