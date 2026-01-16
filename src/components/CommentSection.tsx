@@ -14,21 +14,18 @@ interface Comment {
   children?: Comment[];
 }
 
+import { COMMENT_CONFIG } from '../config';
+
 interface CommentSectionProps {
   siteId: string;
   workerUrl?: string; // Optional, defaults to hardcoded
   turnstileSiteKey?: string; // Optional, defaults to hardcoded/env
 }
 
-const DEFAULT_WORKER_URL = "https://serverless-comment-backend.arasaka.ltd";
-// Use provided key or fallback to a dummy key for dev/demo if not in env
-const DEFAULT_TURNSTILE_KEY =
-  import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACMtIrpVNiBgyN4Y";
-
 const CommentSection: React.FC<CommentSectionProps> = ({
   siteId,
-  workerUrl = DEFAULT_WORKER_URL,
-  turnstileSiteKey = DEFAULT_TURNSTILE_KEY,
+  workerUrl = COMMENT_CONFIG.workerUrl,
+  turnstileSiteKey = COMMENT_CONFIG.turnstileSiteKey,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);

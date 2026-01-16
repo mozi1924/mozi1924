@@ -2,6 +2,7 @@
 import Layout from "./Layout.astro";
 import type { MarkdownLayoutProps } from "astro";
 import CommentSection from "../components/CommentSection";
+import { SITE } from "../config";
 
 type Props = MarkdownLayoutProps<{
   title: string;
@@ -209,7 +210,11 @@ const { frontmatter, headings } = Astro.props;
 {
   !frontmatter.disable_comments && (
     <div class="max-w-3xl mx-auto px-6 pb-20">
-      <CommentSection client:visible siteId={Astro.url.pathname} />
+      {/* Construct unique ID using configured domain + current path */}
+      <CommentSection
+        client:visible
+        siteId={`${SITE.domain}${Astro.url.pathname}`}
+      />
     </div>
   )
 }
