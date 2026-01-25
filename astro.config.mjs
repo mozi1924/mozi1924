@@ -60,7 +60,14 @@ const generateBlogRedirects = () => {
 export default defineConfig({
   site: 'https://mozi1924.com',
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          assetFileNames: '_astro/style.[hash][extname]',
+        },
+      },
+    },
   },
 
   integrations: [react(), sitemap(), mdx()],

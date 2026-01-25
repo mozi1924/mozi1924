@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { X, Reply, AlertCircle } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { formatDistanceToNow } from "date-fns";
 
@@ -31,7 +32,8 @@ const RepliesModal: React.FC<{
   workerUrl: string;
   siteId: string;
   turnstileSiteKey: string;
-}> = ({ parentComment, onClose, workerUrl, siteId, turnstileSiteKey }) => {
+  highlightCommentId?: number;
+}> = ({ parentComment, onClose, workerUrl, siteId, turnstileSiteKey, highlightCommentId }) => {
   const [replies, setReplies] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [lastId, setLastId] = useState<number | undefined>(undefined);
@@ -41,9 +43,16 @@ const RepliesModal: React.FC<{
     setLoading(true);
     try {
       const currentLastId = reset ? undefined : lastId;
-      const url = `${workerUrl}/api/comments/${parentComment.id}/replies?limit=10${
+      let url = `${workerUrl}/api/comments/${parentComment.id}/replies?limit=10${
         currentLastId ? `&last_id=${currentLastId}` : ""
       }`;
+      
+      // If it's the first load and we have a highlight ID, pass it to the backend
+      // expecting the backend to return the page containing this comment
+      if (reset && highlightCommentId) {
+          url += `&highlight_id=${highlightCommentId}`;
+      }
+      
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -66,6 +75,19 @@ const RepliesModal: React.FC<{
     loadReplies(true);
   }, [parentComment.id]);
 
+  // Scroll to highlighted comment after replies load
+  useEffect(() => {
+      if (highlightCommentId && !loading && replies.length > 0) {
+          const el = document.getElementById(`comment-${highlightCommentId}`);
+          if (el) {
+              setTimeout(() => {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  el.classList.add('highlight-comment');
+              }, 500);
+          }
+      }
+  }, [loading, replies, highlightCommentId]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <div
@@ -80,19 +102,7 @@ const RepliesModal: React.FC<{
             onClick={onClose}
             className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -172,6 +182,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const [loading, setLoading] = useState(false);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [activeParent, setActiveParent] = useState<Comment | null>(null);
+  const [highlightedCommentId, setHighlightedCommentId] = useState<number | undefined>(undefined);
 
   // Fetch Comments
   const fetchComments = async () => {
@@ -199,21 +210,51 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     fetchComments();
   }, [siteId]);
 
-  // Handle Deep Linking / Anchor Scrolling
+  // Handle Deep Linking (Local & Server)
   useEffect(() => {
-    if (initialLoadDone && comments.length > 0 && window.location.hash) {
-      const hash = window.location.hash;
-      if (hash.startsWith("#comment-")) {
-        const el = document.getElementById(hash.substring(1));
+    const handleDeepLink = async () => {
+        if (!window.location.hash || !window.location.hash.startsWith("#comment-")) return;
+        
+        const commentIdStr = window.location.hash.substring(9); // remove #comment-
+        const commentId = parseInt(commentIdStr, 10);
+        if (isNaN(commentId)) return;
+
+        // 1. Try to find locally first (fast path)
+        const el = document.getElementById(`comment-${commentId}`);
         if (el) {
-          setTimeout(() => {
-            el.scrollIntoView({ behavior: "smooth", block: "center" });
-            el.classList.add("highlight-comment");
-          }, 500); // Increased timeout slightly for reliable scrolling
+             setTimeout(() => {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.classList.add("highlight-comment");
+            }, 500);
+            return;
         }
-      }
-    }
-  }, [initialLoadDone, comments]);
+
+        // 2. If not found, and we have done initial load, try server lookup
+        if (initialLoadDone) {
+            try {
+                // Fetch context
+                const res = await fetch(`${workerUrl}/api/comments/${commentId}?site_id=${siteId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.root_comment) {
+                         // It's a reply or a root comment we don't have.
+                         // Open modal for the root.
+                         setHighlightedCommentId(commentId);
+                         setActiveParent(data.root_comment);
+                    } else if (data.comment) {
+                        // Fallback if structure is different
+                         setHighlightedCommentId(commentId);
+                         setActiveParent(data.comment); // Assume it's a root
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch deep link context", e);
+            }
+        }
+    };
+
+    handleDeepLink();
+  }, [initialLoadDone, comments, workerUrl, siteId]);
 
   return (
     <div className="border-t border-white/10 mt-16 pt-12">
@@ -267,6 +308,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           workerUrl={workerUrl}
           siteId={siteId}
           turnstileSiteKey={turnstileSiteKey}
+          highlightCommentId={highlightedCommentId}
         />
       )}
 
@@ -364,18 +406,7 @@ const CommentItem: React.FC<{
                   onClick={() => setReplying(!replying)}
                   className="text-xs font-semibold text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-1.5"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <Reply className="h-3.5 w-3.5" />
                   {replying ? "Cancel" : "Reply"}
                 </button>
               )}
@@ -672,7 +703,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
             
             {error && (
                 <div className="text-red-400 text-xs mt-2 flex items-center gap-1">
-                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                     <AlertCircle className="w-3 h-3" />
                     {error}
                 </div>
             )}

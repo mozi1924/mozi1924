@@ -1,155 +1,150 @@
 ---
-
+import { Menu } from "lucide-react";
 ---
 
 <header
-    class="fixed top-0 w-full z-50 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-all duration-300"
+  class="fixed top-0 w-full z-50 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-all duration-300"
 >
-    <div
-        class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-50 bg-[#1110]"
+  <div
+    class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-50 bg-[#1110]"
+  >
+    <a href="/" class="flex items-center gap-2 group">
+      <div class="relative w-8 h-8 flex items-center justify-center">
+        <img
+          src="/favicon.svg"
+          alt="Mozi Logo"
+          class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
+        />
+      </div>
+      <span class="font-bold text-lg tracking-tight">Mozi's website</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8">
+      <a
+        href="/"
+        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >Home</a
+      >
+      <a
+        href="/about"
+        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >About</a
+      >
+      <a
+        href="/blogs"
+        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >Blogs</a
+      >
+      <a
+        href="/mozi-rig"
+        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >Mozi's Rig</a
+      >
+      <a
+        href="/text-to-archbase4-encryption-decryption"
+        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >Text2Arch Tool</a
+      >
+    </nav>
+
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden text-white p-2 focus:outline-none"
+      aria-label="Toggle menu"
     >
-        <a href="/" class="flex items-center gap-2 group">
-            <div class="relative w-8 h-8 flex items-center justify-center">
-                <img
-                    src="/favicon.svg"
-                    alt="Mozi Logo"
-                    class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
-                />
-            </div>
-            <span class="font-bold text-lg tracking-tight">Mozi's website</span>
-        </a>
+      <Menu
+        className="w-6 h-6 transition-transform duration-300"
+        id="menu-icon"
+      />
+    </button>
+  </div>
 
-        <nav class="hidden md:flex items-center gap-8">
-            <a
-                href="/"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Home</a
-            >
-            <a
-                href="/blogs"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Blogs</a
-            >
-            <a
-                href="/mozi-rig"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Mozi's Rig</a
-            >
-            <a
-                href="/text-to-archbase4-encryption-decryption"
-                class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                >Text2Arch Tool</a
-            >
-        </nav>
-
-        <button
-            id="mobile-menu-btn"
-            class="md:hidden text-white p-2 focus:outline-none"
-            aria-label="Toggle menu"
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="md:hidden overflow-hidden bg-[#111] border-b border-white/10 transition-[grid-template-rows] duration-500 ease-in-out grid grid-rows-[0fr]"
+  >
+    <nav class="min-h-0">
+      <div class="flex flex-col p-4 space-y-4">
+        <a
+          href="/"
+          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >Home</a
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="transition-transform duration-300"
-                id="menu-icon"
-                ><line x1="3" y1="12" x2="21" y2="12"></line><line
-                    x1="3"
-                    y1="6"
-                    x2="21"
-                    y2="6"></line><line x1="3" y1="18" x2="21" y2="18"
-                ></line></svg
-            >
-        </button>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div
-        id="mobile-menu"
-        class="md:hidden overflow-hidden bg-[#111] border-b border-white/10 transition-[grid-template-rows] duration-500 ease-in-out grid grid-rows-[0fr]"
-    >
-        <nav class="min-h-0">
-            <div class="flex flex-col p-4 space-y-4">
-                <a
-                    href="/"
-                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                    >Home</a
-                >
-                <a
-                    href="/blogs"
-                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                    >Blogs</a
-                >
-                <a
-                    href="/mozi-rig"
-                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                    >Mozi's Rig</a
-                >
-                <a
-                    href="/text-to-archbase4-encryption-decryption"
-                    class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                    >Text2Arch Tool</a
-                >
-            </div>
-        </nav>
-    </div>
+        <a
+          href="/about"
+          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >About</a
+        >
+        <a
+          href="/blogs"
+          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >Blogs</a
+        >
+        <a
+          href="/mozi-rig"
+          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >Mozi's Rig</a
+        >
+        <a
+          href="/text-to-archbase4-encryption-decryption"
+          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >Text2Arch Tool</a
+        >
+      </div>
+    </nav>
+  </div>
 </header>
 
 <script>
-    const setupMobileMenu = () => {
-        const btn = document.getElementById("mobile-menu-btn");
-        const menu = document.getElementById("mobile-menu");
-        const mobileLinks = document.querySelectorAll(".mobile-link");
+  const setupMobileMenu = () => {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const mobileLinks = document.querySelectorAll(".mobile-link");
 
-        if (btn && menu) {
-            const toggleMenu = (forceClose = false) => {
-                const isRowsOne = menu.classList.contains("grid-rows-[1fr]");
-                const shouldClose = forceClose || isRowsOne;
+    if (btn && menu) {
+      const toggleMenu = (forceClose = false) => {
+        const isRowsOne = menu.classList.contains("grid-rows-[1fr]");
+        const shouldClose = forceClose || isRowsOne;
 
-                if (shouldClose) {
-                    menu.classList.remove("grid-rows-[1fr]");
-                    menu.classList.add("grid-rows-[0fr]");
-                } else {
-                    menu.classList.remove("grid-rows-[0fr]");
-                    menu.classList.add("grid-rows-[1fr]");
-                }
-            };
-
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                toggleMenu();
-            };
-
-            // Close menu when clicking links
-            mobileLinks.forEach((link) => {
-                link.addEventListener("click", () => toggleMenu(true));
-            });
-
-            // Close when clicking outside
-            document.addEventListener("click", (e) => {
-                if (
-                    !menu.contains(e.target as Node) &&
-                    !btn.contains(e.target as Node)
-                ) {
-                    toggleMenu(true);
-                }
-            });
-
-            // Reset state on resize
-            const handleResize = () => {
-                if (window.innerWidth >= 768) {
-                    toggleMenu(true);
-                }
-            };
-            window.addEventListener("resize", handleResize);
+        if (shouldClose) {
+          menu.classList.remove("grid-rows-[1fr]");
+          menu.classList.add("grid-rows-[0fr]");
+        } else {
+          menu.classList.remove("grid-rows-[0fr]");
+          menu.classList.add("grid-rows-[1fr]");
         }
-    };
+      };
 
-    document.addEventListener("astro:page-load", setupMobileMenu);
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      };
+
+      // Close menu when clicking links
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => toggleMenu(true));
+      });
+
+      // Close when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !menu.contains(e.target as Node) &&
+          !btn.contains(e.target as Node)
+        ) {
+          toggleMenu(true);
+        }
+      });
+
+      // Reset state on resize
+      const handleResize = () => {
+        if (window.innerWidth >= 768) {
+          toggleMenu(true);
+        }
+      };
+      window.addEventListener("resize", handleResize);
+    }
+  };
+
+  document.addEventListener("astro:page-load", setupMobileMenu);
 </script>
