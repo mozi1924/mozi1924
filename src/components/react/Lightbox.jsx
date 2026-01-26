@@ -14,7 +14,7 @@ const LightboxPortal = ({ children }) => {
     return mounted ? createPortal(children, document.body) : null;
 };
 
-export default function ShowcaseLightbox({ items }) {
+export default function Lightbox({ items }) {
     const [selectedIndex, setSelectedIndex] = useState(null);
 
     const openLightbox = (index) => setSelectedIndex(index);
@@ -76,14 +76,14 @@ export default function ShowcaseLightbox({ items }) {
                         className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
                         onClick={closeLightbox}
                     >
-                        <div className="relative w-full max-w-7xl max-h-[90vh] flex flex-col lg:flex-row bg-[#111] rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={(e) => e.stopPropagation()}>
+                        <div className="relative w-full max-w-7xl h-[85vh] lg:h-[80vh] flex flex-col lg:flex-row bg-[#111] rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={(e) => e.stopPropagation()}>
 
                             {/* Image Container */}
-                            <div className="flex-1 relative bg-black flex items-center justify-center min-h-[50vh] lg:min-h-[80vh]">
+                            <div className="flex-1 relative bg-black flex items-center justify-center min-h-0">
                                 <img
                                     src={currentItem.fullSize}
                                     alt={currentItem.title}
-                                    className="max-w-full max-h-[80vh] object-contain cursor-pointer"
+                                    className="max-w-full max-h-full object-contain cursor-pointer"
                                     onClick={nextImage}
                                 />
 
@@ -92,19 +92,19 @@ export default function ShowcaseLightbox({ items }) {
                                     onClick={prevImage}
                                     className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors"
                                 >
-                                    <ChevronLeft className="w-6 h-6"/>
+                                    <ChevronLeft className="w-6 h-6" />
                                 </button>
                                 <button
                                     onClick={nextImage}
                                     className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-white/20 text-white rounded-full transition-colors"
                                 >
-                                    <ChevronRight className="w-6 h-6"/>
+                                    <ChevronRight className="w-6 h-6" />
                                 </button>
                             </div>
 
                             {/* Sidebar Info (Optional) */}
                             {currentItem.description && (
-                                <div className="lg:w-96 p-8 bg-[#161616] border-l border-white/5 overflow-y-auto max-h-[40vh] lg:max-h-full lg:h-auto">
+                                <div className="flex-shrink-0 lg:w-96 p-8 bg-[#161616] border-l border-white/5 overflow-y-auto h-[40%] lg:h-full">
                                     <div className="space-y-6">
                                         <div>
                                             <div className="text-gray-500 text-sm mb-1">{currentItem.date}</div>

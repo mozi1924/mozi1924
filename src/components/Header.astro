@@ -1,5 +1,5 @@
 ---
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 ---
 
 <header
@@ -49,46 +49,54 @@ import { Menu } from "lucide-react";
 
     <button
       id="mobile-menu-btn"
-      class="md:hidden text-white p-2 focus:outline-none"
+      class="md:hidden text-white p-2 focus:outline-none relative w-10 h-10 flex items-center justify-center"
       aria-label="Toggle menu"
     >
-      <Menu
-        className="w-6 h-6 transition-transform duration-300"
-        id="menu-icon"
-      />
+      <div class="relative w-6 h-6">
+        <Menu
+          className="w-6 h-6 absolute inset-0 transition-all duration-300 opacity-100 rotate-0 scale-100"
+          id="menu-icon-open"
+        />
+        <X
+          className="w-6 h-6 absolute inset-0 transition-all duration-300 opacity-0 -rotate-90 scale-50"
+          id="menu-icon-close"
+        />
+      </div>
     </button>
   </div>
 
   <!-- Mobile Menu -->
   <div
     id="mobile-menu"
-    class="md:hidden overflow-hidden bg-[#111] border-b border-white/10 transition-[grid-template-rows] duration-500 ease-in-out grid grid-rows-[0fr]"
+    class="md:hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-[#111] transition-all duration-500 ease-in-out transform translate-y-[-100%] opacity-0 pointer-events-none z-40 border-b border-white/10"
   >
-    <nav class="min-h-0">
-      <div class="flex flex-col p-4 space-y-4">
+    <nav
+      class="h-full flex flex-col items-center justify-center overflow-y-auto"
+    >
+      <div class="flex flex-col items-center space-y-8 p-8 w-full max-w-md">
         <a
           href="/"
-          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
           >Home</a
         >
         <a
           href="/about"
-          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
           >About</a
         >
         <a
           href="/blogs"
-          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
           >Blogs</a
         >
         <a
           href="/mozi-rig"
-          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
           >Mozi's Rig</a
         >
         <a
           href="/text-to-archbase4-encryption-decryption"
-          class="mobile-link text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
           >Text2Arch Tool</a
         >
       </div>
@@ -100,19 +108,69 @@ import { Menu } from "lucide-react";
   const setupMobileMenu = () => {
     const btn = document.getElementById("mobile-menu-btn");
     const menu = document.getElementById("mobile-menu");
+    const iconOpen = document.getElementById("menu-icon-open");
+    const iconClose = document.getElementById("menu-icon-close");
     const mobileLinks = document.querySelectorAll(".mobile-link");
 
-    if (btn && menu) {
+    if (btn && menu && iconOpen && iconClose) {
+      let isOpen = false;
+
       const toggleMenu = (forceClose = false) => {
-        const isRowsOne = menu.classList.contains("grid-rows-[1fr]");
-        const shouldClose = forceClose || isRowsOne;
+        const shouldClose = forceClose || isOpen;
+        const header = document.querySelector("header");
 
         if (shouldClose) {
-          menu.classList.remove("grid-rows-[1fr]");
-          menu.classList.add("grid-rows-[0fr]");
+          // Close
+          menu.classList.add(
+            "translate-y-[-100%]",
+            "opacity-0",
+            "pointer-events-none",
+          );
+          menu.classList.remove(
+            "translate-y-0",
+            "opacity-100",
+            "pointer-events-auto",
+          );
+
+          // Icon state
+          iconOpen.classList.remove("opacity-0", "rotate-90", "scale-50");
+          iconOpen.classList.add("opacity-100", "rotate-0", "scale-100");
+
+          iconClose.classList.remove("opacity-100", "rotate-0", "scale-100");
+          iconClose.classList.add("opacity-0", "-rotate-90", "scale-50");
+
+          // Header background state
+          header?.classList.remove("bg-[#111]", "backdrop-blur-none");
+          header?.classList.add("bg-[#111]/80", "backdrop-blur-md");
+
+          document.body.style.overflow = "";
+          isOpen = false;
         } else {
-          menu.classList.remove("grid-rows-[0fr]");
-          menu.classList.add("grid-rows-[1fr]");
+          // Open
+          menu.classList.remove(
+            "translate-y-[-100%]",
+            "opacity-0",
+            "pointer-events-none",
+          );
+          menu.classList.add(
+            "translate-y-0",
+            "opacity-100",
+            "pointer-events-auto",
+          );
+
+          // Icon state
+          iconOpen.classList.remove("opacity-100", "rotate-0", "scale-100");
+          iconOpen.classList.add("opacity-0", "rotate-90", "scale-50");
+
+          iconClose.classList.remove("opacity-0", "-rotate-90", "scale-50");
+          iconClose.classList.add("opacity-100", "rotate-0", "scale-100");
+
+          // Header background state
+          header?.classList.remove("bg-[#111]/80", "backdrop-blur-md");
+          header?.classList.add("bg-[#111]", "backdrop-blur-none");
+
+          document.body.style.overflow = "hidden";
+          isOpen = true;
         }
       };
 
@@ -126,19 +184,9 @@ import { Menu } from "lucide-react";
         link.addEventListener("click", () => toggleMenu(true));
       });
 
-      // Close when clicking outside
-      document.addEventListener("click", (e) => {
-        if (
-          !menu.contains(e.target as Node) &&
-          !btn.contains(e.target as Node)
-        ) {
-          toggleMenu(true);
-        }
-      });
-
       // Reset state on resize
       const handleResize = () => {
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= 768 && isOpen) {
           toggleMenu(true);
         }
       };
@@ -147,4 +195,10 @@ import { Menu } from "lucide-react";
   };
 
   document.addEventListener("astro:page-load", setupMobileMenu);
+  // Also run on initial load if astro:page-load doesn't fire immediately (fallback)
+  if (document.readyState === "complete") {
+    setupMobileMenu();
+  } else {
+    document.addEventListener("DOMContentLoaded", setupMobileMenu);
+  }
 </script>
