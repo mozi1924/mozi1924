@@ -1,4 +1,5 @@
 ---
+import { FOOTER_LINKS } from "../menu";
 const currentYear = new Date().getFullYear();
 ---
 
@@ -20,38 +21,18 @@ const currentYear = new Date().getFullYear();
         </div>
 
         <div class="flex gap-6">
-            <a
-                href="https://github.com/mozi1924"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-gray-400 hover:text-white transition-colors"
-            >
-                GitHub
-            </a>
-            <a
-                href="https://store.mozi1924.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-gray-400 hover:text-white transition-colors"
-            >
-                Mozi Store
-            </a>
-            <a
-                href="https://www.youtube.com/@moziarasaka"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-gray-400 hover:text-white transition-colors"
-            >
-                YouTube
-            </a>
-            <a
-                href="https://space.bilibili.com/434156493"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-gray-400 hover:text-white transition-colors"
-            >
-                Bilibili
-            </a>
+            {
+                FOOTER_LINKS.map((link) => (
+                    <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-gray-400 hover:text-white transition-colors"
+                    >
+                        {link.name}
+                    </a>
+                ))
+            }
         </div>
     </div>
 </footer>

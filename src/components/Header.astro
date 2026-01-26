@@ -1,5 +1,6 @@
 ---
 import { Menu, X } from "lucide-react";
+import { NAV_LINKS } from "../menu";
 ---
 
 <header
@@ -20,31 +21,16 @@ import { Menu, X } from "lucide-react";
     </a>
 
     <nav class="hidden md:flex items-center gap-8">
-      <a
-        href="/"
-        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >Home</a
-      >
-      <a
-        href="/about"
-        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >About</a
-      >
-      <a
-        href="/blogs"
-        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >Blogs</a
-      >
-      <a
-        href="/mozi-rig"
-        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >Mozi's Rig</a
-      >
-      <a
-        href="/text-to-archbase4-encryption-decryption"
-        class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >Text2Arch Tool</a
-      >
+      {
+        NAV_LINKS.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >
+            {link.name}
+          </a>
+        ))
+      }
     </nav>
 
     <button
@@ -74,31 +60,16 @@ import { Menu, X } from "lucide-react";
       class="h-full flex flex-col items-center justify-center overflow-y-auto"
     >
       <div class="flex flex-col items-center space-y-8 p-8 w-full max-w-md">
-        <a
-          href="/"
-          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
-          >Home</a
-        >
-        <a
-          href="/about"
-          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
-          >About</a
-        >
-        <a
-          href="/blogs"
-          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
-          >Blogs</a
-        >
-        <a
-          href="/mozi-rig"
-          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
-          >Mozi's Rig</a
-        >
-        <a
-          href="/text-to-archbase4-encryption-decryption"
-          class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
-          >Text2Arch Tool</a
-        >
+        {
+          NAV_LINKS.map((link) => (
+            <a
+              href={link.href}
+              class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              {link.name}
+            </a>
+          ))
+        }
       </div>
     </nav>
   </div>
