@@ -23,6 +23,8 @@ const { frontmatter, headings } = Astro.props;
   title={frontmatter.title}
   description={frontmatter.desc}
   image={frontmatter.image}
+  pageType="article"
+  pubDate={frontmatter.date}
 >
   <div class="relative pt-24 pb-20 px-6 max-w-7xl mx-auto">
     <!-- Header -->

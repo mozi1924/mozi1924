@@ -4,20 +4,104 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Analytics from "../components/Analytics.astro";
 import { ClientRouter } from "astro:transitions";
+import { SITE } from "../config";
 
 interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
+	pageType?: "website" | "article";
+	pubDate?: string | Date;
 }
 
 const {
 	title = "Mozi's website",
 	description = "Mozi's personal website featuring Blender 3D animations, Minecraft rigs, and plugins.",
 	image = "/favicon.svg",
+	pageType = "website",
+	pubDate,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const resolvedImage = new URL(image, Astro.site).href;
+
+// JSON-LD Logic
+const { pathname } = Astro.url;
+const segments = pathname.split("/").filter((s) => s);
+
+const breadcrumbs = [
+	{
+		name: "Home",
+		item: SITE.url,
+	},
+	...segments.map((segment, index) => {
+		const path = segments.slice(0, index + 1).join("/");
+		return {
+			name: decodeURIComponent(segment)
+				.replace(/-/g, " ")
+				.replace(/\b\w/g, (c) => c.toUpperCase()),
+			item: new URL(path, SITE.url).href,
+		};
+	}),
+];
+
+const schema: any = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": `${SITE.url}/#website`,
+			url: SITE.url,
+			name: SITE.domain,
+			description: "Mozi's personal website",
+			publisher: {
+				"@type": "Person",
+				name: "Mozi1924",
+				url: `${SITE.url}/about`,
+			},
+		},
+		{
+			"@type": "BreadcrumbList",
+			"@id": `${canonicalURL.href}/#breadcrumb`,
+			itemListElement: breadcrumbs.map((crumb, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				name: crumb.name,
+				item: crumb.item,
+			})),
+		},
+	],
+};
+
+if (pageType === "article") {
+	schema["@graph"].push({
+		"@type": "BlogPosting",
+		"@id": `${canonicalURL.href}/#article`,
+		url: canonicalURL.href,
+		headline: title,
+		description: description,
+		image: resolvedImage,
+		datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
+		author: {
+			"@type": "Person",
+			name: "Mozi1924",
+			url: `${SITE.url}/about`,
+		},
+		isPartOf: { "@id": `${SITE.url}/#website` },
+		mainEntityOfPage: { "@id": canonicalURL.href },
+		breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
+	});
+} else {
+	schema["@graph"].push({
+		"@type": "WebPage",
+		"@id": `${canonicalURL.href}/#webpage`,
+		url: canonicalURL.href,
+		name: title,
+		description: description,
+		isPartOf: { "@id": `${SITE.url}/#website` },
+		breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
+	});
+}
 ---
 
 <!doctype html>
@@ -53,6 +137,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 		<Analytics />
 		<ClientRouter />
+		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
 	</head>
 	<body
 		class="scroll-smooth bg-[#111] text-white font-sans antialiased min-h-screen flex flex-col"
