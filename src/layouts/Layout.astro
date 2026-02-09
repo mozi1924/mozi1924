@@ -12,6 +12,8 @@ interface Props {
 	image?: string;
 	pageType?: "website" | "article";
 	pubDate?: string | Date;
+	authorName?: string;
+	authorUrl?: string;
 }
 
 const {
@@ -20,6 +22,8 @@ const {
 	image = "/favicon.svg",
 	pageType = "website",
 	pubDate,
+	authorName = "Mozi1924",
+	authorUrl = `${SITE.url}/about`,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -56,8 +60,8 @@ const schema: any = {
 			description: "Mozi's personal website",
 			publisher: {
 				"@type": "Person",
-				name: "Mozi1924",
-				url: `${SITE.url}/about`,
+				name: authorName,
+				url: authorUrl,
 			},
 		},
 		{
@@ -84,8 +88,8 @@ if (pageType === "article") {
 		datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
 		author: {
 			"@type": "Person",
-			name: "Mozi1924",
-			url: `${SITE.url}/about`,
+			name: authorName,
+			url: authorUrl,
 		},
 		isPartOf: { "@id": `${SITE.url}/#website` },
 		mainEntityOfPage: { "@id": canonicalURL.href },

@@ -12,6 +12,9 @@ type Props = MarkdownLayoutProps<{
   desc?: string;
   disable_comments?: boolean;
   enableBusinessCard?: boolean;
+  authorName?: string;
+  authorUrl?: string;
+  pageType?: "website" | "article";
 }>;
 
 import { List, X } from "lucide-react";
@@ -23,8 +26,10 @@ const { frontmatter, headings } = Astro.props;
   title={frontmatter.title}
   description={frontmatter.desc}
   image={frontmatter.image}
-  pageType="article"
+  pageType={frontmatter.pageType || "article"}
   pubDate={frontmatter.date}
+  authorName={frontmatter.authorName}
+  authorUrl={frontmatter.authorUrl}
 >
   <div class="relative pt-24 pb-20 px-6 max-w-7xl mx-auto">
     <!-- Header -->

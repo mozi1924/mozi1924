@@ -7,11 +7,11 @@ desc: "最近，我有开始对onion网络感兴趣了，并不是因为上面�
 image: "/assets/add-a-tor-router-to-your-webside/TorRoter-png.webp"
 ---
 
-# 前言
+## 前言
 
 最近，我有开始对onion网络感兴趣了，并不是因为上面的那些......厄...明网上找不到的内容，而是对它的运行方式感兴趣，因为最近telegram因为一些法律原因不得不违背最初承诺的加密对话，虽然这是在我的可接受范围内，但是这仍然给我一种不舒服的感觉，所以我和我的群友便商量起了自己搭建一个加密对话平台，于是便想起了onion网络
 
-# 安装并配置Tor
+## 安装并配置Tor
 
 这边以archlinux和nginx为例，tor已经在默认的extra源里了，所以你只需要执行
 
@@ -56,7 +56,7 @@ server_name mozi1924.com www.mozi1924.com moziwewxspyfbo3lp3rnhgfqeogvbk7oj6kgpr
 
 有时候，你所在的地区可能会阻断你与tor网络之间的连接，我推荐你使用 [cloudflare warp](https://www.google.com/search?q=cloudflare+warp) 进行代理后再连接（记得设置启动优先级）具体方法请在网络上自行搜索，或者使用 obfs4proxy
 
-## 使用obfs4proxy
+### 使用obfs4proxy
 
 执行
 
@@ -85,7 +85,7 @@ Bridge obfs4 <IP>:<Port> <Fingerprint> cert=<Certificate> iat-mode=<Mode>
 
 配置完记得执行 `sudo systemctl restart tor.service` 重启tor服务
 
-## 检查连接
+### 检查连接
 
 你可以执行 systemctl status tor.service 来查看tor服务的运行状态，假如你长期卡在了某个启动进度，比如 `Bootstrapped 10% (conn_done): Connected to a relay` 并且报错
 
@@ -97,7 +97,7 @@ Oct 07 23:35:30 archbook Tor[40440]: Problem bootstrapping. Stuck at 10% (conn_d
 
 如果输出的日志里没有报错并输出了 `Bootstrapped 100% (done): Done` 说明你成功连接了tor网络，去访问你的网站试试吧
 
-# 获得vanity地址
+## 获得vanity地址
 
 使用 [https://github.com/cathugger/mkp224o](https://github.com/cathugger/mkp224o) 来撞出你的vanity地址，
 
@@ -122,16 +122,6 @@ docker run --rm -it -v $PWD:/keys ghcr.io/cathugger/mkp224o:master -d /keys NAME
 sudo chown -R tor: /var/lib/tor/nekosvc
 sudo chmod -R u+rwX,og-rwx /var/lib/tor/nekosvc
 
-# 已知问题
+## 已知问题
 
 wordpress(可能或者别的一些CMS)由于设计问题当使用与数据库内不同的域名访问的话会存在部分内容无法正确加载或者301跳转，请自行搜索解决办法
-
-# 结语
-
-本站以及我的另一个网站也有Tor路由，感兴趣的可以通过以下地址访问
-
-[moziwewxspyfbo3lp3rnhgfqeogvbk7oj6kgprd6tms3w2kzgy7b3iyd.onion](http://moziwewxspyfbo3lp3rnhgfqeogvbk7oj6kgprd6tms3w2kzgy7b3iyd.onion)
-
-以及
-
-[arasakayeflovwsg4r47ckec7omndoil4jblyxigjmcapb4d2pfs7tyd.onion](http://arasakayeflovwsg4r47ckec7omndoil4jblyxigjmcapb4d2pfs7tyd.onion)
