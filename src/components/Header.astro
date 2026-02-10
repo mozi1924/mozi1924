@@ -128,124 +128,11 @@ const currentPath = normalizePath(pathname);
 </header>
 
 <script>
-  // Page Load Progress Bar Logic
-  const setupPageLoadProgress = () => {
-    const progressBar = document.getElementById("page-load-progress-bar");
-    if (!progressBar) return;
+  import { initProgressBar } from "../scripts/progress-bar";
+  import { initReadingProgress } from "../scripts/reading-progress";
 
-    // Reset progress bar state
-    const resetProgress = () => {
-      progressBar.style.transition = "none";
-      progressBar.style.width = "0%";
-      progressBar.style.opacity = "0";
-      // Force reflow to ensure transition removal takes effect
-      void progressBar.offsetWidth;
-    };
-
-    // Complete progress animation
-    const completeProgress = () => {
-      progressBar.style.transition =
-        "width 0.2s ease-out, opacity 0.2s ease-out";
-      progressBar.style.width = "100%";
-      setTimeout(() => {
-        progressBar.style.opacity = "0";
-        setTimeout(() => {
-          // Reset to 0 but keep invisible
-          progressBar.style.transition = "none";
-          progressBar.style.width = "0%";
-        }, 200);
-      }, 300);
-    };
-
-    // Start progress animation
-    const startProgress = () => {
-      resetProgress();
-
-      // Add the completion listener for THIS specific navigation cycle
-      // It will run once on page-load and remove itself
-      document.addEventListener("astro:page-load", completeProgress, {
-        once: true,
-      });
-
-      progressBar.style.transition =
-        "width 0.2s ease-out, opacity 0.2s ease-out";
-      progressBar.style.opacity = "1";
-      progressBar.style.width = "20%"; // Initial jump
-
-      // Simulate progress
-      const simulate = () => {
-        // Stop simulation if we completed or reset
-        if (
-          progressBar.style.opacity === "0" ||
-          progressBar.style.width === "100%"
-        )
-          return;
-
-        const currentWidth = parseFloat(progressBar.style.width) || 0;
-        if (currentWidth < 90) {
-          const increment = Math.random() * 10 + 5;
-          progressBar.style.width = `${Math.min(currentWidth + increment, 90)}%`;
-          requestAnimationFrame(() => setTimeout(simulate, 200));
-        }
-      };
-      setTimeout(simulate, 200);
-    };
-
-    // Boost progress
-    const boostProgress = () => {
-      if (progressBar && progressBar.style.opacity !== "0") {
-        const currentWidth = parseFloat(progressBar.style.width) || 0;
-        progressBar.style.width = `${Math.min(currentWidth + 20, 95)}%`;
-      }
-    };
-
-    // Click Handler
-    const handleLinkClick = (e: Event) => {
-      const target = (e.target as Element)?.closest("a");
-      if (!target) return;
-
-      const href = target.getAttribute("href");
-      if (!href) return;
-
-      const mouseEvent = e as MouseEvent;
-      // Check if it's an internal link and not a new tab/window
-      if (
-        href.startsWith("/") &&
-        !href.startsWith("#") &&
-        target.target !== "_blank" &&
-        !mouseEvent.ctrlKey &&
-        !mouseEvent.metaKey &&
-        !mouseEvent.shiftKey &&
-        !mouseEvent.altKey
-      ) {
-        startProgress();
-      }
-    };
-
-    // Add Listeners
-    // We only add start triggers and interaction listeners here
-    // The completion listener is added dynamically in startProgress
-    document.addEventListener("astro:before-preparation", startProgress);
-    document.addEventListener("astro:after-preparation", boostProgress);
-    document.addEventListener("click", handleLinkClick);
-
-    // Cleanup on before-swap
-    // We remove the interaction triggers to prevent duplicates on the next page
-    // BUT we intentionally leave the dynamically added completeProgress listener
-    // so it can handle the end of the current navigation
-    document.addEventListener(
-      "astro:before-swap",
-      () => {
-        document.removeEventListener("astro:before-preparation", startProgress);
-        document.removeEventListener("astro:after-preparation", boostProgress);
-        document.removeEventListener("click", handleLinkClick);
-      },
-      { once: true },
-    );
-  };
-
-  // Run setup
-  setupPageLoadProgress();
+  // Initialize global progress bar (runs once due to singleton check)
+  initProgressBar();
 
   const setupMobileMenu = () => {
     const btn = document.getElementById("mobile-menu-btn");
@@ -336,78 +223,19 @@ const currentPath = normalizePath(pathname);
     }
   };
 
-  const setupReadingProgress = () => {
-    const progressBar = document.getElementById("reading-progress-bar");
-    if (!progressBar) return;
+  document.addEventListener("astro:page-load", () => {
+    setupMobileMenu();
+    initReadingProgress();
+  });
 
-    const updateProgress = () => {
-      const articleContainer = document.getElementById(
-        "article-main-container",
-      );
-
-      let scrolled = 0;
-
-      if (articleContainer) {
-        // Calculate based on specific container
-        const containerRect = articleContainer.getBoundingClientRect();
-        const containerHeight = containerRect.height;
-        const containerTop = containerRect.top + window.scrollY;
-        const windowHeight = window.innerHeight;
-
-        // Start counting when the top of the container is at the top of the viewport (or slightly adjusted for header)
-        // End counting when the bottom of the container hits the bottom of the viewport
-
-        const start = containerTop;
-        const end = containerTop + containerHeight - windowHeight;
-
-        if (window.scrollY < start) {
-          scrolled = 0;
-        } else if (window.scrollY > end) {
-          scrolled = 100;
-        } else {
-          scrolled = ((window.scrollY - start) / (end - start)) * 100;
-        }
-      } else {
-        // Fallback to full page if no specific container found (though enableReadingProgress should imply it exists or we want page wide)
-        // For consistency with user request "only calculate valid in article page", we might want to default to 0 if not found,
-        // but let's keep page fallback for robustness or other pages if enabled.
-        const scrollTop =
-          document.documentElement.scrollTop || document.body.scrollTop;
-        const scrollHeight =
-          document.documentElement.scrollHeight || document.body.scrollHeight;
-        const clientHeight =
-          document.documentElement.clientHeight || document.body.clientHeight;
-        scrolled = (scrollTop / (scrollHeight - clientHeight)) * 100;
-      }
-
-      progressBar.style.width = `${scrolled}%`;
-    };
-
-    window.addEventListener("scroll", updateProgress);
-    window.addEventListener("resize", updateProgress); // Recalculate on resize
-    updateProgress(); // Initial call
-
-    document.addEventListener(
-      "astro:before-swap",
-      () => {
-        window.removeEventListener("scroll", updateProgress);
-        window.removeEventListener("resize", updateProgress);
-      },
-      { once: true },
-    );
-  };
-
-  document.addEventListener("astro:page-load", setupMobileMenu);
-  document.addEventListener("astro:page-load", setupReadingProgress);
-
-  // Also run on initial load if astro:page-load doesn't fire immediately (fallback)
+  // Fallback for initial load
   if (document.readyState === "complete") {
     setupMobileMenu();
-    setupReadingProgress();
+    initReadingProgress();
   } else {
     document.addEventListener("DOMContentLoaded", () => {
       setupMobileMenu();
-      setupReadingProgress();
+      initReadingProgress();
     });
   }
 </script>
