@@ -122,6 +122,7 @@ const currentPath = normalizePath(pathname);
   <div
     id="page-load-progress-bar"
     class="fixed top-0 left-0 h-1 bg-white z-[100] transition-all duration-200 ease-out opacity-0 w-0 pointer-events-none shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+    transition:persist
   >
   </div>
 </header>
@@ -134,12 +135,38 @@ const currentPath = normalizePath(pathname);
 
     // Reset progress bar state
     const resetProgress = () => {
+      progressBar.style.transition = "none";
       progressBar.style.width = "0%";
       progressBar.style.opacity = "0";
+      // Force reflow to ensure transition removal takes effect
+      void progressBar.offsetWidth;
+    };
+
+    // Complete progress animation
+    const completeProgress = () => {
+      progressBar.style.transition =
+        "width 0.2s ease-out, opacity 0.2s ease-out";
+      progressBar.style.width = "100%";
+      setTimeout(() => {
+        progressBar.style.opacity = "0";
+        setTimeout(() => {
+          // Reset to 0 but keep invisible
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+        }, 200);
+      }, 300);
     };
 
     // Start progress animation
     const startProgress = () => {
+      resetProgress();
+
+      // Add the completion listener for THIS specific navigation cycle
+      // It will run once on page-load and remove itself
+      document.addEventListener("astro:page-load", completeProgress, {
+        once: true,
+      });
+
       progressBar.style.transition =
         "width 0.2s ease-out, opacity 0.2s ease-out";
       progressBar.style.opacity = "1";
@@ -147,7 +174,13 @@ const currentPath = normalizePath(pathname);
 
       // Simulate progress
       const simulate = () => {
-        if (progressBar.style.width === "100%") return;
+        // Stop simulation if we completed or reset
+        if (
+          progressBar.style.opacity === "0" ||
+          progressBar.style.width === "100%"
+        )
+          return;
+
         const currentWidth = parseFloat(progressBar.style.width) || 0;
         if (currentWidth < 90) {
           const increment = Math.random() * 10 + 5;
@@ -158,48 +191,57 @@ const currentPath = normalizePath(pathname);
       setTimeout(simulate, 200);
     };
 
-    // Complete progress animation
-    const completeProgress = () => {
-      progressBar.style.width = "100%";
-      setTimeout(() => {
-        progressBar.style.opacity = "0";
-        setTimeout(() => {
-          progressBar.style.width = "0%";
-        }, 200); // Wait for fade out
-      }, 300); // Wait for width transition
-    };
-
-    document.addEventListener("astro:before-preparation", startProgress);
-    document.addEventListener("astro:after-preparation", () => {
-      // Boost progress
-      if (progressBar) {
+    // Boost progress
+    const boostProgress = () => {
+      if (progressBar && progressBar.style.opacity !== "0") {
         const currentWidth = parseFloat(progressBar.style.width) || 0;
         progressBar.style.width = `${Math.min(currentWidth + 20, 95)}%`;
       }
-    });
-    document.addEventListener("astro:page-load", completeProgress);
+    };
 
-    // Immediate feedback on click
-    document.addEventListener("click", (e) => {
+    // Click Handler
+    const handleLinkClick = (e: Event) => {
       const target = (e.target as Element)?.closest("a");
       if (!target) return;
 
       const href = target.getAttribute("href");
       if (!href) return;
 
+      const mouseEvent = e as MouseEvent;
       // Check if it's an internal link and not a new tab/window
       if (
         href.startsWith("/") &&
         !href.startsWith("#") &&
         target.target !== "_blank" &&
-        !e.ctrlKey &&
-        !e.metaKey &&
-        !e.shiftKey &&
-        !e.altKey
+        !mouseEvent.ctrlKey &&
+        !mouseEvent.metaKey &&
+        !mouseEvent.shiftKey &&
+        !mouseEvent.altKey
       ) {
         startProgress();
       }
-    });
+    };
+
+    // Add Listeners
+    // We only add start triggers and interaction listeners here
+    // The completion listener is added dynamically in startProgress
+    document.addEventListener("astro:before-preparation", startProgress);
+    document.addEventListener("astro:after-preparation", boostProgress);
+    document.addEventListener("click", handleLinkClick);
+
+    // Cleanup on before-swap
+    // We remove the interaction triggers to prevent duplicates on the next page
+    // BUT we intentionally leave the dynamically added completeProgress listener
+    // so it can handle the end of the current navigation
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        document.removeEventListener("astro:before-preparation", startProgress);
+        document.removeEventListener("astro:after-preparation", boostProgress);
+        document.removeEventListener("click", handleLinkClick);
+      },
+      { once: true },
+    );
   };
 
   // Run setup
