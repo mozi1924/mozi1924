@@ -22,8 +22,8 @@ interface Props {
 }
 
 const {
-	title = "Mozi's website",
-	description = "Mozi's personal website featuring Blender 3D animations, Minecraft rigs, and plugins.",
+	title,
+	description = SITE.description,
 	image = "/favicon.svg",
 	pageType = "website",
 	pubDate,
@@ -34,6 +34,9 @@ const {
 	authorMotto,
 	socialLinks,
 } = Astro.props;
+
+const formattedTitle =
+	title && title !== SITE.title ? `${title} - ${SITE.title}` : SITE.title;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -48,7 +51,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonicalURL} />
 		<meta name="robots" content="max-image-preview:large" />
-		<title>{title}</title>
+		<title>{formattedTitle}</title>
 		<meta name="description" content={description} />
 		<meta
 			name="keywords"
@@ -59,21 +62,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:type" content="website" />
 		<meta property="og:logo" content="/favicon.svg" />
 		<meta property="og:url" content={canonicalURL} />
-		<meta property="og:title" content={title} />
+		<meta property="og:title" content={formattedTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={new URL(image, Astro.url)} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
 		<meta property="twitter:url" content={canonicalURL} />
-		<meta property="twitter:title" content={title} />
+		<meta property="twitter:title" content={formattedTitle} />
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={new URL(image, Astro.url)} />
 
 		<Analytics />
 		<ClientRouter />
 		<StructuredData
-			{title}
+			title={formattedTitle}
 			{description}
 			{image}
 			{pageType}

@@ -1,6 +1,8 @@
 export const SITE = {
     domain: "mozi1924.com",
     url: "https://mozi1924.com",
+    title: "Mozi's website",
+    description: "Mozi's personal website featuring Blender 3D animations, Minecraft rigs, and plugins.",
 };
 
 export const COMMENT_CONFIG = {
