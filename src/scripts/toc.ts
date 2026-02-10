@@ -1,35 +1,71 @@
 /**
+ * Updates the active class for TOC links.
+ * @param {string} id - The ID of the section to highlight.
+ */
+function updateActiveLink(id: string) {
+    // Update Desktop TOC
+    document.querySelectorAll(".toc-link").forEach((link) => {
+        link.classList.remove("text-[#3F89FC]", "border-[#3F89FC]", "font-bold");
+        link.classList.add("text-gray-400", "border-transparent");
+    });
+
+    const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+    if (activeLink) {
+        activeLink.classList.remove("text-gray-400", "border-transparent");
+        activeLink.classList.add("text-[#3F89FC]", "border-[#3F89FC]", "font-bold");
+    }
+
+    // Mobile TOC Styling
+    document.querySelectorAll(".mobile-toc-link").forEach((link) => {
+        link.classList.remove("text-white", "border-blue-500");
+        link.classList.add("text-gray-400", "border-transparent");
+    });
+    const activeMobileLink = document.querySelector(
+        `.mobile-toc-link[href="#${id}"]`
+    );
+    if (activeMobileLink) {
+        activeMobileLink.classList.remove("text-gray-400", "border-transparent");
+        activeMobileLink.classList.add("text-white", "border-blue-500");
+    }
+}
+
+/**
+ * Determine and highlight the active section on initial load.
+ * Finds the last heading that is above the reading threshold.
+ */
+function updateInitialActive() {
+    const headings = document.querySelectorAll("article h2, article h3");
+    let activeId = "";
+    // Offset to consider a header "active" (e.g. passed the sticky header)
+    // Sticky header is 96px (top-24), giving a bit more buffer (120px)
+    const offset = 120;
+
+    for (const heading of headings) {
+        const rect = heading.getBoundingClientRect();
+        // If the heading is above our threshold, it's a candidate for "active"
+        // We want the *last* candidate that is above the threshold.
+        if (rect.top < offset) {
+            activeId = heading.id;
+        } else {
+            // Once we hit a heading below the threshold, the previous one stays as the active one.
+            break;
+        }
+    }
+
+    if (activeId) {
+        updateActiveLink(activeId);
+    }
+}
+
+/**
  * Set up IntersectionObserver to highlight TOC links as the user scrolls.
  */
 const setupObserver = () => {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             const id = entry.target.getAttribute("id");
-            if (entry.intersectionRatio > 0) {
-                // Update Desktop TOC
-                document.querySelectorAll(".toc-link").forEach((link) => {
-                    link.classList.remove("text-[#3F89FC]", "border-[#3F89FC]", "font-bold");
-                    link.classList.add("text-gray-400", "border-transparent");
-                });
-
-                const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
-                if (activeLink) {
-                    activeLink.classList.remove("text-gray-400", "border-transparent");
-                    activeLink.classList.add("text-[#3F89FC]", "border-[#3F89FC]", "font-bold");
-                }
-
-                // Mobile TOC Styling
-                document.querySelectorAll(".mobile-toc-link").forEach((link) => {
-                    link.classList.remove("text-white", "border-blue-500");
-                    link.classList.add("text-gray-400", "border-transparent");
-                });
-                const activeMobileLink = document.querySelector(
-                    `.mobile-toc-link[href="#${id}"]`
-                );
-                if (activeMobileLink) {
-                    activeMobileLink.classList.remove("text-gray-400", "border-transparent");
-                    activeMobileLink.classList.add("text-white", "border-blue-500");
-                }
+            if (entry.intersectionRatio > 0 && id) {
+                updateActiveLink(id);
             }
         });
     });
@@ -76,6 +112,10 @@ const setupMobileTOC = () => {
  * Initializes TOC logic.
  */
 export function initTOC() {
+    updateInitialActive();
     setupObserver();
     setupMobileTOC();
+
+    // Re-check on scroll end or after a small timeout to handle layout shifts (images, etc)
+    setTimeout(updateInitialActive, 100);
 }
