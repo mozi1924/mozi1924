@@ -86,6 +86,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 			{socialLinks}
 			{canonicalURL}
 		/>
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="Mozi's Blog RSS Feed"
+			href="/rss.xml"
+		/>
 	</head>
 	<body
 		class="scroll-smooth bg-[#111] text-white font-sans antialiased min-h-screen flex flex-col"

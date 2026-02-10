@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Home } from "lucide-react";
+import Search from "../components/Search";
 
 const customTitle = "404 - Page Not Found";
 const customDescription = "The page you are looking for does not exist.";
@@ -52,6 +53,11 @@ const customImage = "/assets/404.webp";
           <Home className="w-5 h-5" />
           Back Home
         </a>
+      </div>
+
+      <div class="mt-8">
+        <p class="text-gray-500 mb-4">Or search for what you need:</p>
+        <Search client:load />
       </div>
     </div>
   </div>
