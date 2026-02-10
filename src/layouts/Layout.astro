@@ -10,11 +10,14 @@ interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
-	pageType?: "website" | "article";
+	pageType?: "website" | "article" | "profile";
 	pubDate?: string | Date;
 	modDate?: string | Date;
 	authorName?: string;
 	authorUrl?: string;
+	authorAvatar?: string;
+	authorMotto?: string;
+	socialLinks?: { network: string; url: string; icon?: string }[];
 }
 
 const {
@@ -26,10 +29,16 @@ const {
 	modDate,
 	authorName = "Mozi1924",
 	authorUrl = `${SITE.url}/about`,
+	authorAvatar,
+	authorMotto,
+	socialLinks,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const resolvedImage = new URL(image, Astro.site).href;
+const resolvedAuthorAvatar = authorAvatar
+	? new URL(authorAvatar, Astro.site).href
+	: undefined;
 
 // JSON-LD Logic
 const { pathname } = Astro.url;
@@ -106,6 +115,32 @@ if (pageType === "article") {
 		},
 		isPartOf: { "@id": `${SITE.url}/#website` },
 		mainEntityOfPage: { "@id": canonicalURL.href },
+		breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
+	});
+} else if (pageType === "profile") {
+	schema["@graph"].push({
+		"@type": "ProfilePage",
+		"@id": `${canonicalURL.href}/#profile`,
+		url: canonicalURL.href,
+		name: title,
+		description: description,
+		dateCreated: pubDate ? new Date(pubDate).toISOString() : undefined,
+		dateModified:
+			modDate || pubDate
+				? new Date(modDate || pubDate!).toISOString()
+				: undefined,
+		mainEntity: {
+			"@type": "Person",
+			name: authorName,
+			url: authorUrl,
+			image:
+				resolvedAuthorAvatar ||
+				resolvedImage ||
+				new URL("/favicon.svg", Astro.site).href,
+			description: authorMotto || description,
+			sameAs: socialLinks?.map((link) => link.url),
+		},
+		isPartOf: { "@id": `${SITE.url}/#website` },
 		breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
 	});
 } else {

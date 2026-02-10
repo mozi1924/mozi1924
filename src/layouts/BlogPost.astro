@@ -14,7 +14,10 @@ type Props = MarkdownLayoutProps<{
   enableBusinessCard?: boolean;
   authorName?: string;
   authorUrl?: string;
-  pageType?: "website" | "article";
+  authorAvatar?: string;
+  authorMotto?: string;
+  socialLinks?: { network: string; url: string; icon?: string }[];
+  pageType?: "website" | "article" | "profile";
   modDate?: string;
 }>;
 
@@ -32,6 +35,9 @@ const { frontmatter, headings } = Astro.props;
   modDate={frontmatter.modDate}
   authorName={frontmatter.authorName}
   authorUrl={frontmatter.authorUrl}
+  authorAvatar={frontmatter.authorAvatar}
+  authorMotto={frontmatter.authorMotto}
+  socialLinks={frontmatter.socialLinks}
 >
   <div class="relative pt-24 pb-20 px-6 max-w-7xl mx-auto">
     <!-- Header -->
@@ -65,7 +71,12 @@ const { frontmatter, headings } = Astro.props;
       {
         frontmatter.enableBusinessCard && (
           <div class="lg:hidden mt-8 text-left">
-            <BusinessCard />
+            <BusinessCard
+              name={frontmatter.authorName}
+              avatar={frontmatter.authorAvatar}
+              motto={frontmatter.authorMotto}
+              socials={frontmatter.socialLinks}
+            />
           </div>
         )
       }
@@ -78,7 +89,12 @@ const { frontmatter, headings } = Astro.props;
       {
         frontmatter.enableBusinessCard && (
           <aside class="hidden lg:block sticky top-24">
-            <BusinessCard />
+            <BusinessCard
+              name={frontmatter.authorName}
+              avatar={frontmatter.authorAvatar}
+              motto={frontmatter.authorMotto}
+              socials={frontmatter.socialLinks}
+            />
           </aside>
         )
       }
