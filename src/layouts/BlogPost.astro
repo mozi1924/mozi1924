@@ -15,6 +15,7 @@ type Props = MarkdownLayoutProps<{
   authorName?: string;
   authorUrl?: string;
   pageType?: "website" | "article";
+  modDate?: string;
 }>;
 
 import { List, X } from "lucide-react";
@@ -28,6 +29,7 @@ const { frontmatter, headings } = Astro.props;
   image={frontmatter.image}
   pageType={frontmatter.pageType || "article"}
   pubDate={frontmatter.date}
+  modDate={frontmatter.modDate}
   authorName={frontmatter.authorName}
   authorUrl={frontmatter.authorUrl}
 >

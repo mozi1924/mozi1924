@@ -4,4 +4,5 @@ title: Friend's Article
 authorName: "Friend Name"
 authorUrl: "https://friend-website.com"
 pageType: article # Default is article
+modDate: "YYYY-MM-DD"
 ---

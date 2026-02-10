@@ -12,6 +12,7 @@ interface Props {
 	image?: string;
 	pageType?: "website" | "article";
 	pubDate?: string | Date;
+	modDate?: string | Date;
 	authorName?: string;
 	authorUrl?: string;
 }
@@ -22,6 +23,7 @@ const {
 	image = "/favicon.svg",
 	pageType = "website",
 	pubDate,
+	modDate,
 	authorName = "Mozi1924",
 	authorUrl = `${SITE.url}/about`,
 } = Astro.props;
@@ -62,6 +64,10 @@ const schema: any = {
 				"@type": "Person",
 				name: authorName,
 				url: authorUrl,
+				logo: {
+					"@type": "ImageObject",
+					url: new URL("/favicon.svg", SITE.url).href,
+				},
 			},
 		},
 		{
@@ -84,8 +90,15 @@ if (pageType === "article") {
 		url: canonicalURL.href,
 		headline: title,
 		description: description,
-		image: resolvedImage,
+		image: {
+			"@type": "ImageObject",
+			url: resolvedImage,
+		},
 		datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
+		dateModified:
+			modDate || pubDate
+				? new Date(modDate || pubDate!).toISOString()
+				: undefined,
 		author: {
 			"@type": "Person",
 			name: authorName,
@@ -117,6 +130,7 @@ if (pageType === "article") {
 		<link rel="alternate icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonicalURL} />
+		<meta name="robots" content="max-image-preview:large" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<meta
