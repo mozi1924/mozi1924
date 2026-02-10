@@ -1,6 +1,19 @@
 ---
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS } from "../menu";
+
+interface Props {
+  enableReadingProgress?: boolean;
+}
+
+const { enableReadingProgress = false } = Astro.props;
+
+const { pathname } = Astro.url;
+const normalizePath = (path: string) => {
+  const p = path.replace(/\/$/, "") || "/";
+  return p;
+};
+const currentPath = normalizePath(pathname);
 ---
 
 <header
@@ -22,14 +35,22 @@ import { NAV_LINKS } from "../menu";
 
     <nav class="hidden md:flex items-center gap-8">
       {
-        NAV_LINKS.map((link) => (
-          <a
-            href={link.href}
-            class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-          >
-            {link.name}
-          </a>
-        ))
+        NAV_LINKS.map((link) => {
+          const isActive =
+            link.href === "/"
+              ? currentPath === "/"
+              : currentPath.startsWith(link.href);
+          return (
+            <a
+              href={link.href}
+              class={`text-sm font-medium transition-colors ${
+                isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
+              }`}
+            >
+              {link.name}
+            </a>
+          );
+        })
       }
     </nav>
 
@@ -61,18 +82,41 @@ import { NAV_LINKS } from "../menu";
     >
       <div class="flex flex-col items-center space-y-8 p-8 w-full max-w-md">
         {
-          NAV_LINKS.map((link) => (
-            <a
-              href={link.href}
-              class="mobile-link text-2xl font-medium text-gray-300 hover:text-white transition-colors"
-            >
-              {link.name}
-            </a>
-          ))
+          NAV_LINKS.map((link) => {
+            const isActive =
+              link.href === "/"
+                ? currentPath === "/"
+                : currentPath.startsWith(link.href);
+            return (
+              <a
+                href={link.href}
+                class={`mobile-link text-2xl font-medium transition-colors ${
+                  isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </a>
+            );
+          })
         }
       </div>
     </nav>
   </div>
+
+  <!-- Reading Progress Bar -->
+  {
+    enableReadingProgress && (
+      <div
+        id="reading-progress-container"
+        class="absolute bottom-0 left-0 w-full h-1 bg-transparent z-50 pointer-events-none"
+      >
+        <div
+          id="reading-progress-bar"
+          class="h-full bg-[#3F89FC] shadow-[0_0_15px_#3F89FC] w-0 transition-all duration-100 ease-out"
+        />
+      </div>
+    )
+  }
 </header>
 
 <script>
@@ -165,11 +209,78 @@ import { NAV_LINKS } from "../menu";
     }
   };
 
+  const setupReadingProgress = () => {
+    const progressBar = document.getElementById("reading-progress-bar");
+    if (!progressBar) return;
+
+    const updateProgress = () => {
+      const articleContainer = document.getElementById(
+        "article-main-container",
+      );
+
+      let scrolled = 0;
+
+      if (articleContainer) {
+        // Calculate based on specific container
+        const containerRect = articleContainer.getBoundingClientRect();
+        const containerHeight = containerRect.height;
+        const containerTop = containerRect.top + window.scrollY;
+        const windowHeight = window.innerHeight;
+
+        // Start counting when the top of the container is at the top of the viewport (or slightly adjusted for header)
+        // End counting when the bottom of the container hits the bottom of the viewport
+
+        const start = containerTop;
+        const end = containerTop + containerHeight - windowHeight;
+
+        if (window.scrollY < start) {
+          scrolled = 0;
+        } else if (window.scrollY > end) {
+          scrolled = 100;
+        } else {
+          scrolled = ((window.scrollY - start) / (end - start)) * 100;
+        }
+      } else {
+        // Fallback to full page if no specific container found (though enableReadingProgress should imply it exists or we want page wide)
+        // For consistency with user request "only calculate valid in article page", we might want to default to 0 if not found,
+        // but let's keep page fallback for robustness or other pages if enabled.
+        const scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight =
+          document.documentElement.scrollHeight || document.body.scrollHeight;
+        const clientHeight =
+          document.documentElement.clientHeight || document.body.clientHeight;
+        scrolled = (scrollTop / (scrollHeight - clientHeight)) * 100;
+      }
+
+      progressBar.style.width = `${scrolled}%`;
+    };
+
+    window.addEventListener("scroll", updateProgress);
+    window.addEventListener("resize", updateProgress); // Recalculate on resize
+    updateProgress(); // Initial call
+
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        window.removeEventListener("scroll", updateProgress);
+        window.removeEventListener("resize", updateProgress);
+      },
+      { once: true },
+    );
+  };
+
   document.addEventListener("astro:page-load", setupMobileMenu);
+  document.addEventListener("astro:page-load", setupReadingProgress);
+
   // Also run on initial load if astro:page-load doesn't fire immediately (fallback)
   if (document.readyState === "complete") {
     setupMobileMenu();
+    setupReadingProgress();
   } else {
-    document.addEventListener("DOMContentLoaded", setupMobileMenu);
+    document.addEventListener("DOMContentLoaded", () => {
+      setupMobileMenu();
+      setupReadingProgress();
+    });
   }
 </script>
