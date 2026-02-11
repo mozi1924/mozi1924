@@ -3,11 +3,6 @@
  * Handles the visual scroll progress bar.
  */
 
-/**
- * Reading Progress Indicator
- * Handles the visual scroll progress bar.
- */
-
 export function initReadingProgress() {
     const progressBar = document.getElementById("reading-progress-bar");
     if (!progressBar) return;

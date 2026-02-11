@@ -17,7 +17,7 @@ interface Comment {
   is_admin?: number;
 }
 
-import { COMMENT_CONFIG } from "../config";
+import { COMMENT_CONFIG } from "../../config";
 
 interface CommentSectionProps {
   siteId: string;

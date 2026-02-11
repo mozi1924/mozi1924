@@ -1,0 +1,12 @@
+---
+import SearchModal from "./SearchModal";
+
+interface Props {
+    variant?: "inline" | "icon";
+    type?: "full" | "trigger" | "modal";
+}
+
+const { variant, type = "full" } = Astro.props;
+---
+
+<SearchModal client:only="react" variant={variant} type={type} />
