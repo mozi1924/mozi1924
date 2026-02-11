@@ -9,8 +9,10 @@ import {
   Facebook,
   Instagram,
 } from "lucide-react";
+import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
 
 interface Props {
+  authorId?: keyof typeof AUTHORS;
   name?: string;
   avatar?: string;
   motto?: string;
@@ -21,17 +23,18 @@ interface Props {
   }[];
 }
 
+const props = Astro.props;
+const authorId = props.authorId || DEFAULT_AUTHOR_ID;
+const author =
+  AUTHORS[authorId as keyof typeof AUTHORS] ||
+  AUTHORS[DEFAULT_AUTHOR_ID as keyof typeof AUTHORS];
+
 const {
-  name = "Mozi",
-  avatar = "https://github.com/mozi1924.png",
-  motto = "I don't care if these bitches don't like me Cause, like, I'm pretty as fuck.",
-  socials = [
-    { network: "GitHub", url: "https://github.com/mozi1924" },
-    { network: "Twitter", url: "https://twitter.com/CyberMozi" },
-    { network: "YouTube", url: "https://www.youtube.com/@moziarasaka" },
-    { network: "Email", url: "mailto:mozi1924@arasaka.ltd" },
-  ],
-} = Astro.props;
+  name = author.name,
+  avatar = author.avatar,
+  motto = author.motto,
+  socials = author.socialLinks,
+} = props;
 
 const getIcon = (network: string) => {
   switch (network.toLowerCase()) {

@@ -10,3 +10,21 @@ export const COMMENT_CONFIG = {
     // Use environment variable or fallback to hardcoded
     turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACMtIrpVNiBgyN4Y",
 };
+
+export const AUTHORS = {
+    mozi: {
+        id: "mozi",
+        name: "Mozi A.",
+        url: "/about",
+        avatar: "/assets/avatar.webp",
+        motto: "I don't care if these bitches don't like me Cause, like, I'm pretty as fuck.",
+        socialLinks: [
+            { network: "GitHub", url: "https://github.com/mozi1924" },
+            { network: "Twitter", url: "https://twitter.com/CyberMozi" },
+            { network: "YouTube", url: "https://www.youtube.com/@moziarasaka" },
+            { network: "Email", url: "mailto:mozi1924@arasaka.ltd" },
+        ],
+    },
+};
+
+export const DEFAULT_AUTHOR_ID = "mozi";
