@@ -108,6 +108,7 @@ const setupMobileTOC = () => {
             overlay.classList.add("opacity-0", "pointer-events-none");
         };
 
+
         btn.onclick = openMenu;
         backdrop.onclick = closeMenu;
         closeBtn.onclick = closeMenu;
@@ -119,16 +120,65 @@ const setupMobileTOC = () => {
 };
 
 /**
+ * Initializes tab switching logic for both mobile and desktop.
+ */
+function initTabs() {
+    const configs = [
+        {
+            btnToc: "tab-toc-btn",
+            btnSeries: "tab-series-btn",
+            contentToc: "tab-toc-content",
+            contentSeries: "tab-series-content",
+            indicator: "tab-indicator"
+        },
+        {
+            btnToc: "mobile-tab-toc-btn",
+            btnSeries: "mobile-tab-series-btn",
+            contentToc: "mobile-tab-toc-content",
+            contentSeries: "mobile-tab-series-content",
+            indicator: "mobile-tab-indicator"
+        }
+    ];
+
+    configs.forEach(config => {
+        const btnToc = document.getElementById(config.btnToc);
+        const btnSeries = document.getElementById(config.btnSeries);
+        const contentToc = document.getElementById(config.contentToc);
+        const contentSeries = document.getElementById(config.contentSeries);
+        const indicator = document.getElementById(config.indicator);
+
+        if (btnToc && btnSeries && contentToc && contentSeries) {
+            btnToc.addEventListener("click", () => {
+                btnToc.classList.add("text-white", "font-bold");
+                btnToc.classList.remove("text-gray-400", "font-medium");
+                btnSeries.classList.add("text-gray-400", "font-medium");
+                btnSeries.classList.remove("text-white", "font-bold");
+                contentToc.classList.remove("hidden");
+                contentSeries.classList.add("hidden");
+                if (indicator) indicator.style.transform = "translateX(0)";
+            });
+
+            btnSeries.addEventListener("click", () => {
+                btnSeries.classList.add("text-white", "font-bold");
+                btnSeries.classList.remove("text-gray-400", "font-medium");
+                btnToc.classList.add("text-gray-400", "font-medium");
+                btnToc.classList.remove("text-white", "font-bold");
+                contentSeries.classList.remove("hidden");
+                contentToc.classList.add("hidden");
+                if (indicator) indicator.style.transform = "translateX(100%)";
+            });
+        }
+    });
+}
+
+/**
  * Initializes TOC logic.
  */
 export function initTOC() {
-    // Only initialize if we are on a page with an article and TOC headings
-    const headings = document.querySelectorAll("article h2, article h3");
-    if (headings.length === 0) return;
-
     updateInitialActive();
     setupObserver();
     setupMobileTOC();
+    initTabs();
 
     // Re-check on scroll end or after a small timeout to handle layout shifts (images, etc)
     setTimeout(updateInitialActive, 100);

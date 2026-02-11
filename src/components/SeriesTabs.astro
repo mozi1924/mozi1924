@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+    seriesList: {
+        title: string;
+        chapters: CollectionEntry<"article">[];
+    };
+    headings: MarkdownHeading[];
+}
+
+const { seriesList, headings } = Astro.props;
+---
+
+<div class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg">
+    <div class="relative flex border-b border-white/10 mb-4">
+        <div
+            id="tab-indicator"
+            class="absolute bottom-[-1px] left-0 h-0.5 bg-blue-500 transition-all duration-300 ease-in-out"
+            style="width: 50%;"
+        >
+        </div>
+        <button
+            id="tab-toc-btn"
+            class="relative z-10 flex-1 py-2 text-sm font-bold text-white transition-colors"
+        >
+            On this page
+        </button>
+        <button
+            id="tab-series-btn"
+            class="relative z-10 flex-1 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors"
+        >
+            Series
+        </button>
+    </div>
+
+    <div id="tab-toc-content">
+        <nav class="space-y-1">
+            {
+                headings.map((heading) => (
+                    <a
+                        href={`#${heading.slug}`}
+                        class={`toc-link block py-1 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500
+              ${heading.depth > 3 ? "hidden" : ""}
+              ${heading.depth === 3 ? "ml-4" : ""}
+            `}
+                    >
+                        {heading.text}
+                    </a>
+                ))
+            }
+        </nav>
+    </div>
+
+    <div id="tab-series-content" class="hidden">
+        <div
+            class="mb-3 text-xs text-gray-500 uppercase tracking-wider font-bold"
+        >
+            {seriesList.title}
+        </div>
+        <nav
+            class="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar"
+        >
+            {
+                seriesList.chapters.map((chapter) => {
+                    const isCurrent =
+                        Astro.url.pathname.replace(/\/$/, "") ===
+                        `/article/${chapter.slug}`;
+                    return (
+                        <a
+                            href={`/article/${chapter.slug}`}
+                            class={`block text-sm transition-colors leading-snug
+                ${
+                    isCurrent
+                        ? "text-blue-400 font-bold"
+                        : "text-gray-400 hover:text-white"
+                }
+              `}
+                        >
+                            <span class="mr-2 text-xs opacity-50">
+                                {chapter.data.seriesIndex !== undefined
+                                    ? `${chapter.data.seriesIndex}.`
+                                    : "•"}
+                            </span>
+                            {chapter.data.title}
+                        </a>
+                    );
+                })
+            }
+        </nav>
+    </div>
+</div>

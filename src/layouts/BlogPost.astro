@@ -1,34 +1,48 @@
 ---
 import Layout from "./Layout.astro";
-import type { MarkdownLayoutProps } from "astro";
 import CommentSection from "../components/CommentSection";
 import BusinessCard from "../components/BusinessCard.astro";
-import { SITE, AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
+import TableOfContents from "../components/TableOfContents.astro";
+import SeriesTabs from "../components/SeriesTabs.astro";
+import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
 
-type Props = MarkdownLayoutProps<{
+import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
+
+type BlogPostFrontmatter = {
   title: string;
   date: string;
   image?: string;
   desc?: string;
   disable_comments?: boolean;
   enableBusinessCard?: boolean;
-  authorId?: keyof typeof AUTHORS;
-  pageType?: "website" | "article" | "profile";
+  authorId?: string;
+  pageType?: "website" | "article" | "profile" | "blog";
   modDate?: string;
-}>;
+  hideComment?: boolean;
+};
 
-import { List, X, Calendar, User, Clock } from "lucide-react";
+type Props = {
+  frontmatter: BlogPostFrontmatter;
+  headings: MarkdownHeading[];
+  seriesList?: {
+    title: string;
+    chapters: CollectionEntry<"article">[];
+  } | null;
+};
 
-const { frontmatter, headings } = Astro.props;
+import { Calendar, User, Clock } from "lucide-react";
+
+const { frontmatter, headings, seriesList } = Astro.props;
 
 // Resolve Author
 const authorId = frontmatter.authorId || DEFAULT_AUTHOR_ID;
-const author =
-  AUTHORS[authorId as keyof typeof AUTHORS] ||
-  AUTHORS[DEFAULT_AUTHOR_ID as keyof typeof AUTHORS];
+const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
 
 const showModDate =
   frontmatter.modDate && frontmatter.modDate !== frontmatter.date;
+
+const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
 ---
 
 <Layout
@@ -110,7 +124,11 @@ const showModDate =
     </header>
 
     <div
-      class={`grid gap-12 items-start ${frontmatter.enableBusinessCard ? "lg:grid-cols-[280px_1fr_250px]" : "lg:grid-cols-[1fr_250px]"}`}
+      class={`grid gap-12 items-start ${
+        frontmatter.enableBusinessCard
+          ? "lg:grid-cols-[280px_1fr_250px]"
+          : "lg:grid-cols-[1fr_250px]"
+      }`}
     >
       {/* Business Card Sidebar (Desktop) */}
       {
@@ -133,94 +151,31 @@ const showModDate =
         <slot />
       </article>
 
-      <!-- Mobile TOC Button (Bottom Right) -->
-      <div class="lg:hidden fixed bottom-6 right-6 z-40">
-        <button
-          id="mobile-toc-btn"
-          class="bg-[#1a1a1a]/90 backdrop-blur-md border border-white/10 text-white p-3 rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-95"
-          aria-label="Table of Contents"
-        >
-          <List className="w-6 h-6" />
-        </button>
-      </div>
-
-      <!-- Mobile TOC Menu (Bottom Sheet) -->
-      <div
-        id="mobile-toc-overlay"
-        class="lg:hidden fixed inset-0 z-50 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300"
-      >
-        <!-- Close on click outside -->
-        <div class="absolute inset-0" id="mobile-toc-backdrop"></div>
-
-        <div
-          id="mobile-toc-sheet"
-          class="absolute bottom-0 left-0 w-full max-h-[70vh] bg-[#1a1a1a] rounded-t-2xl border-t border-white/10 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col"
-        >
-          <div
-            class="p-4 border-b border-white/10 flex items-center justify-between"
-          >
-            <h3 class="text-white font-bold text-lg">Table of Contents</h3>
-            <button
-              id="mobile-toc-close"
-              class="text-gray-400 hover:text-white p-1"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-          <div class="overflow-y-auto p-4 space-y-1">
-            {
-              headings.map((heading) => (
-                <a
-                  href={`#${heading.slug}`}
-                  class={`mobile-toc-link block py-3 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent active:bg-white/5 active:text-white
-                                    ${heading.depth > 3 ? "hidden" : ""}
-                                    ${heading.depth === 3 ? "ml-4" : ""}
-                                `}
-                >
-                  {heading.text}
-                </a>
-              ))
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- Table of Contents (Desktop) -->
+      <!-- Table of Contents / Series Sidebar -->
       <aside class="hidden lg:block sticky top-24 space-y-4">
-        <div
-          class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg"
-        >
-          <h2 class="text-white font-bold mb-4 flex items-center gap-2">
-            <List className="w-5 h-5" />
-            On this page
-          </h2>
-          <nav class="space-y-1">
-            {
-              headings.map((heading) => (
-                <a
-                  href={`#${heading.slug}`}
-                  class={`toc-link block py-1 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500
-                    ${heading.depth > 3 ? "hidden" : ""}
-                    ${heading.depth === 3 ? "ml-4" : ""}
-                  `}
-                >
-                  {heading.text}
-                </a>
-              ))
-            }
-          </nav>
-        </div>
+        {
+          seriesList ? (
+            <SeriesTabs seriesList={seriesList} headings={headings} />
+          ) : (
+            <TableOfContents headings={headings} />
+          )
+        }
       </aside>
     </div>
   </div>
+
+  {/* Mobile TOC Logic (Button + Overlay) */}
+  <TableOfContents
+    headings={headings}
+    seriesList={seriesList}
+    hideOnDesktop={true}
+  />
+
+  {/* Comment Section */}
   {
-    /* Comment Section (Outside the grid to span full width or constrained as needed) */
-  }
-  {
-    !frontmatter.disable_comments && (
+    !hideComments && (
       <div class="max-w-5xl mx-auto px-4 md:px-6 pb-20">
-        {/* Construct unique ID using configured domain only, as requested */}
-        <CommentSection client:load siteId={SITE.domain} />
+        <CommentSection client:load siteId="mozi1924.com" />
       </div>
     )
   }
@@ -228,5 +183,8 @@ const showModDate =
 
 <script>
   import { initTOC } from "../scripts/toc";
-  document.addEventListener("astro:page-load", initTOC);
+
+  document.addEventListener("astro:page-load", () => {
+    initTOC();
+  });
 </script>

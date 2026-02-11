@@ -1,0 +1,49 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ArticleList from "../../components/ArticleList.astro";
+import SectionHeader from "../../components/SectionHeader.astro";
+import { getArticleList } from "../../utils/article";
+import { SITE } from "../../config";
+
+const articles = await getArticleList();
+
+const listItems = articles.map((item) => {
+    if (item.type === "series") {
+        const data = item.metadata.data;
+        return {
+            name: data.title,
+            url: new URL(`/article/${item.slug}`, SITE.url).href,
+            image: data.image,
+            description: data.desc,
+        };
+    } else {
+        const data = item.article.data;
+        const slug =
+            item.article.collection === "blog"
+                ? `/blogs/${item.article.slug}`
+                : `/article/${item.article.slug}`;
+        return {
+            name: data.title,
+            url: new URL(slug, SITE.url).href,
+            image: data.image,
+            description: data.desc,
+        };
+    }
+});
+---
+
+<Layout
+    title="Articles"
+    description="Technical articles and series"
+    items={listItems}
+>
+    <div class="max-w-7xl mx-auto px-6 py-24">
+        <SectionHeader title="Articles">
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                Deep dives, tutorials, and technical series.
+            </p>
+        </SectionHeader>
+
+        <ArticleList items={articles} />
+    </div>
+</Layout>

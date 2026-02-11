@@ -12,6 +12,7 @@ export const NAV_LINKS: NavLink[] = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Blogs", href: "/blogs" },
+    { name: "Articles", href: "/article" },
     { name: "Mozi's Rig", href: "/mozi-rig" },
     { name: "Text2Arch Tool", href: "/text-to-archbase4-encryption-decryption" },
 ];

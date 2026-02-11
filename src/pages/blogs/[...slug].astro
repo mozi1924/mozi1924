@@ -1,0 +1,21 @@
+---
+import { getCollection } from "astro:content";
+import BlogPost from "../../layouts/BlogPost.astro";
+import { getNormalizedPostData } from "../../utils/article";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog");
+    return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+const normalizedPost = getNormalizedPostData(post, "blog");
+---
+
+<BlogPost frontmatter={normalizedPost} headings={headings}>
+    <Content />
+</BlogPost>

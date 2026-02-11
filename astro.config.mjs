@@ -11,7 +11,7 @@ import mdx from '@astrojs/mdx';
 // Helper to generate redirects from blog posts
 const generateBlogRedirects = () => {
   const redirects = {};
-  const blogDir = './src/pages/blogs';
+  const blogDir = './src/content/blog';
 
   if (!fs.existsSync(blogDir)) return redirects;
 

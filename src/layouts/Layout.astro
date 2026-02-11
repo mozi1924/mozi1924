@@ -11,7 +11,7 @@ interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
-	pageType?: "website" | "article" | "profile";
+	pageType?: "website" | "article" | "profile" | "blog";
 	pubDate?: string | Date;
 	modDate?: string | Date;
 	authorName?: string;
@@ -20,21 +20,28 @@ interface Props {
 	authorMotto?: string;
 	socialLinks?: { network: string; url: string; icon?: string }[];
 	enableReadingProgress?: boolean;
+	items?: {
+		name: string;
+		url: string;
+		image?: string;
+		description?: string;
+	}[];
 }
 
 const {
 	title,
 	description = SITE.description,
-	image = "/favicon.svg",
+	image = SITE.favicon,
 	pageType = "website",
 	pubDate,
 	modDate,
-	authorName = "Mozi A.",
+	authorName = SITE.author,
 	authorUrl = `${SITE.url}/about`,
 	authorAvatar,
 	authorMotto,
 	socialLinks,
 	enableReadingProgress = false,
+	items,
 } = Astro.props;
 
 const formattedTitle =
@@ -48,21 +55,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href={SITE.favicon} />
 		<link rel="alternate icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonicalURL} />
 		<meta name="robots" content="max-image-preview:large" />
 		<title>{formattedTitle}</title>
 		<meta name="description" content={description} />
-		<meta
-			name="keywords"
-			content="mozi1924, Mozi Arasaka, Blender, Animation, Minecraft, Rigging, Web Development, Arch Linux"
-		/>
+		<meta name="keywords" content={SITE.keywords} />
 
 		<!-- Open Graph -->
 		<meta property="og:type" content="website" />
-		<meta property="og:logo" content="/favicon.svg" />
+		<meta property="og:logo" content={SITE.favicon} />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={formattedTitle} />
 		<meta property="og:description" content={description} />
@@ -90,6 +94,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 			{authorMotto}
 			{socialLinks}
 			{canonicalURL}
+			{items}
 		/>
 		<link
 			rel="alternate"

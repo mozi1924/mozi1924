@@ -3,6 +3,9 @@ export const SITE = {
     url: "https://mozi1924.com",
     title: "Mozi's website",
     description: "Mozi's personal website featuring Blender 3D animations, Minecraft rigs, and plugins.",
+    keywords: "mozi1924, Mozi Arasaka, Blender, Animation, Minecraft, Rigging, Web Development, Arch Linux",
+    favicon: "/favicon.svg",
+    author: "Mozi A.",
 };
 
 export const COMMENT_CONFIG = {
@@ -11,7 +14,19 @@ export const COMMENT_CONFIG = {
     turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACMtIrpVNiBgyN4Y",
 };
 
-export const AUTHORS = {
+export interface Author {
+    id: string;
+    name: string;
+    url: string;
+    avatar: string;
+    motto: string;
+    socialLinks: {
+        network: string;
+        url: string;
+    }[];
+}
+
+export const AUTHORS: Record<string, Author> = {
     mozi: {
         id: "mozi",
         name: "Mozi A.",

@@ -2,29 +2,20 @@
 import Layout from "../../layouts/Layout.astro";
 import ArticleList from "../../components/ArticleList.astro";
 
-import type { GetStaticPaths, MarkdownInstance } from "astro";
-
-interface Frontmatter {
-  title: string;
-  date: string;
-  image?: string;
-  desc?: string;
-  categories?: string[];
-}
+import { getCollection, type CollectionEntry } from "astro:content";
+import type { GetStaticPaths } from "astro";
 
 interface Props {
-  posts: MarkdownInstance<Frontmatter>[];
+  posts: CollectionEntry<"blog">[];
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const allPosts = Object.values(
-    import.meta.glob("../blogs/*.{md,mdx}", { eager: true }),
-  ) as MarkdownInstance<Frontmatter>[];
+  const allPosts = await getCollection("blog");
   const uniqueCategories = [
-    ...new Set(allPosts.map((post) => post.frontmatter.categories).flat()),
+    ...new Set(allPosts.map((post) => post.data.categories).flat()),
   ].filter((c): c is string => Boolean(c));
 
-  if (allPosts.some((p) => !p.frontmatter.categories)) {
+  if (allPosts.some((p) => !p.data.categories)) {
     uniqueCategories.push("uncategorized");
   }
 
@@ -32,14 +23,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return categories.map((category) => {
     const filteredPosts = allPosts.filter((post) => {
-      const postCats = post.frontmatter.categories || ["uncategorized"];
+      const postCats = post.data.categories || ["uncategorized"];
       return postCats.includes(category);
     });
 
     filteredPosts.sort(
       (a, b) =>
-        new Date(b.frontmatter.date).valueOf() -
-        new Date(a.frontmatter.date).valueOf(),
+        new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
     );
 
     return {
@@ -51,9 +41,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const { category } = Astro.params;
 const { posts } = Astro.props;
+
+const listItems = posts.map((post) => ({
+  name: post.data.title,
+  url: new URL(`/blogs/${post.slug}`, SITE.url).href,
+  image: post.data.image,
+  description: post.data.desc,
+}));
+
+import { SITE } from "../../config";
 ---
 
-<Layout title={`Category: ${category}`}>
+<Layout title={`Category: ${category}`} items={listItems}>
   <div class="pt-24 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
     <header class="text-center space-y-6 mb-16">
       <div
@@ -71,6 +70,6 @@ const { posts } = Astro.props;
       </p>
     </header>
 
-    <ArticleList posts={posts} />
+    <ArticleList items={posts.map((p) => ({ type: "single", article: p }))} />
   </div>
 </Layout>

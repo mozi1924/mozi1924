@@ -1,5 +1,6 @@
 ---
 import { FOOTER_LINKS } from "../menu";
+import { SITE } from "../config";
 const currentYear = new Date().getFullYear();
 ---
 
@@ -9,11 +10,11 @@ const currentYear = new Date().getFullYear();
     >
         <div class="flex items-center gap-2">
             <img
-                src="/favicon.svg"
-                alt="Mozi Logo"
+                src={SITE.favicon}
+                alt={`${SITE.title} Logo`}
                 class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
             />
-            <span class="text-gray-400 font-medium">Mozi's website</span>
+            <span class="text-gray-400 font-medium">{SITE.title}</span>
         </div>
 
         <div class="text-gray-500 text-sm">

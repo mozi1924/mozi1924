@@ -1,0 +1,153 @@
+---
+import { List, X } from "lucide-react";
+import type { MarkdownHeading } from "astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+    headings: MarkdownHeading[];
+    hideOnDesktop?: boolean;
+    seriesList?: {
+        title: string;
+        chapters: CollectionEntry<"article">[];
+    } | null;
+}
+
+const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
+---
+
+{
+    (headings.length > 0 || seriesList) && hideOnDesktop && (
+        <>
+            <!-- Mobile TOC Button (Bottom Right) -->
+            <div class="lg:hidden fixed bottom-6 right-6 z-40">
+                <button
+                    id="mobile-toc-btn"
+                    class="bg-[#1a1a1a]/90 backdrop-blur-md border border-white/10 text-white p-3 rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-95"
+                    aria-label="Table of Contents"
+                >
+                    <List className="w-6 h-6" />
+                </button>
+            </div>
+
+            <!-- Mobile TOC Menu (Bottom Sheet) -->
+            <div
+                id="mobile-toc-overlay"
+                class="lg:hidden fixed inset-0 z-50 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300"
+            >
+                <div class="absolute inset-0" id="mobile-toc-backdrop"></div>
+
+                <div
+                    id="mobile-toc-sheet"
+                    class="absolute bottom-0 left-0 w-full max-h-[80vh] bg-[#1a1a1a] rounded-t-2xl border-t border-white/10 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col"
+                >
+                    <div
+                        class="p-4 border-b border-white/10 flex items-center justify-between"
+                    >
+                        <div class="flex-1 flex px-2">
+                             <div class="relative flex w-full bg-white/5 rounded-lg p-1">
+                                {seriesList && (
+                                    <div 
+                                        id="mobile-tab-indicator" 
+                                        class="absolute top-1 bottom-1 left-1 bg-blue-500 rounded-md shadow-lg transition-all duration-300 ease-in-out"
+                                        style="width: calc(50% - 4px);"
+                                    ></div>
+                                )}
+                                <button
+                                    id="mobile-tab-toc-btn"
+                                    class={`relative z-10 flex-1 py-1.5 text-xs font-bold text-white rounded-md transition-all ${!seriesList ? 'bg-blue-500 shadow-lg' : ''}`}
+                                >
+                                    On this page
+                                </button>
+                                {seriesList && (
+                                    <button
+                                        id="mobile-tab-series-btn"
+                                        class="relative z-10 flex-1 py-1.5 text-xs font-medium text-gray-400 hover:text-white transition-all"
+                                    >
+                                        Series
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <button
+                            id="mobile-toc-close"
+                            class="text-gray-400 hover:text-white p-2 ml-2"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    <div class="overflow-y-auto p-4 space-y-1 pb-10">
+                        <div id="mobile-tab-toc-content">
+                            {headings.length > 0 ? (
+                                <div class="space-y-1">
+                                    {headings.map((heading) => (
+                                        <a
+                                            href={`#${heading.slug}`}
+                                            class={`mobile-toc-link block py-3 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent active:bg-white/5 active:text-white
+                                                ${heading.depth > 3 ? "hidden" : ""}
+                                                ${heading.depth === 3 ? "ml-4" : ""}
+                                            `}
+                                        >
+                                            {heading.text}
+                                        </a>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div class="py-10 text-center text-gray-500 text-sm italic">
+                                    No headings on this page
+                                </div>
+                            )}
+                        </div>
+
+                        {seriesList && (
+                            <div id="mobile-tab-series-content" class="hidden">
+                                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-4">
+                                    {seriesList.title}
+                                </div>
+                                <div class="space-y-2">
+                                    {seriesList.chapters.map((chapter) => (
+                                        <a
+                                            href={`/article/${chapter.slug}`}
+                                            class={`mobile-toc-link block py-3 text-sm transition-colors border-l-2 pl-4 active:bg-white/5
+                                                ${Astro.url.pathname.includes(chapter.slug) 
+                                                    ? "text-blue-400 border-blue-500 font-bold bg-blue-500/5" 
+                                                    : "text-gray-400 border-transparent"}
+                                            `}
+                                        >
+                                            <span class="mr-2 opacity-50">{chapter.data.seriesIndex}.</span>
+                                            {chapter.data.title}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+{
+    headings.length > 0 && !hideOnDesktop && (
+        <div class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg">
+            <h2 class="text-white font-bold mb-4 flex items-center gap-2">
+                <List className="w-5 h-5" />
+                On this page
+            </h2>
+            <nav class="space-y-1">
+                {headings.map((heading) => (
+                    <a
+                        href={`#${heading.slug}`}
+                        class={`toc-link block py-1 text-sm transition-colors border-l-2 pl-4 text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500
+                            ${heading.depth > 3 ? "hidden" : ""}
+                            ${heading.depth === 3 ? "ml-4" : ""}
+                        `}
+                    >
+                        {heading.text}
+                    </a>
+                ))}
+            </nav>
+        </div>
+    )
+}

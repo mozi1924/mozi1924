@@ -1,13 +1,15 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
+import { getCollection } from "astro:content";
+
 // Get all blog posts
-const allPosts = await Astro.glob("../blogs/*.{md,mdx}");
+const allPosts = await getCollection("blog");
 
 // Extract unique categories
 const itemsByCategory = new Map<string, number>();
 allPosts.forEach((post) => {
-    const categories = post.frontmatter.categories || ["uncategorized"];
+    const categories = post.data.categories || ["uncategorized"];
     categories.forEach((category: string) => {
         const count = itemsByCategory.get(category) || 0;
         itemsByCategory.set(category, count + 1);

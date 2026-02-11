@@ -12,7 +12,7 @@ import {
 import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
 
 interface Props {
-  authorId?: keyof typeof AUTHORS;
+  authorId?: string;
   name?: string;
   avatar?: string;
   motto?: string;
@@ -25,9 +25,7 @@ interface Props {
 
 const props = Astro.props;
 const authorId = props.authorId || DEFAULT_AUTHOR_ID;
-const author =
-  AUTHORS[authorId as keyof typeof AUTHORS] ||
-  AUTHORS[DEFAULT_AUTHOR_ID as keyof typeof AUTHORS];
+const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
 
 const {
   name = author.name,

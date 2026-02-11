@@ -1,6 +1,7 @@
 ---
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS } from "../menu";
+import { SITE } from "../config";
 
 interface Props {
   enableReadingProgress?: boolean;
@@ -25,12 +26,12 @@ const currentPath = normalizePath(pathname);
     <a href="/" class="flex items-center gap-2 group">
       <div class="relative w-8 h-8 flex items-center justify-center">
         <img
-          src="/favicon.svg"
-          alt="Mozi Logo"
+          src={SITE.favicon}
+          alt={`${SITE.title} Logo`}
           class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
         />
       </div>
-      <span class="font-bold text-lg tracking-tight">Mozi's website</span>
+      <span class="font-bold text-lg tracking-tight">{SITE.title}</span>
     </a>
 
     <nav class="hidden md:flex items-center gap-8">

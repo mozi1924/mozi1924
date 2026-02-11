@@ -1,6 +1,5 @@
 ---
 categories: ["Blender"]
-layout: /src/layouts/BlogPost.astro
 title: "Understanding Blender Drivers"
 date: "2026-01-14"
 desc: "A deep dive into how drivers work in Blender and how to use them for rigging."
