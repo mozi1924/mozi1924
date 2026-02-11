@@ -19,17 +19,26 @@ const currentPath = normalizePath(pathname);
 ---
 
 <header
-  class="fixed top-0 w-full z-50 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-colors duration-300"
+  id="main-header"
+  class="fixed top-0 w-full z-50 pointer-events-none group"
 >
+  <!-- Background Layer -->
   <div
-    class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-50 bg-[#1110]"
+    id="header-bg"
+    class="absolute inset-0 h-16 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-all duration-500 z-10 pointer-events-auto"
   >
-    <a href="/" class="flex items-center gap-2 group">
+  </div>
+
+  <!-- Content Layer -->
+  <div
+    class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-30 pointer-events-auto"
+  >
+    <a href="/" class="flex items-center gap-2 group/logo text-white">
       <div class="relative w-8 h-8 flex items-center justify-center">
         <img
           src={SITE.favicon}
           alt={`${SITE.title} Logo`}
-          class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
+          class="w-8 h-8 group-hover/logo:scale-110 transition-transform duration-300"
         />
       </div>
       <span class="font-bold text-lg tracking-tight">{SITE.title}</span>
@@ -89,7 +98,7 @@ const currentPath = normalizePath(pathname);
     enableReadingProgress && (
       <div
         id="reading-progress-container"
-        class="absolute bottom-0 left-0 w-full h-1 bg-transparent z-50 pointer-events-none"
+        class="absolute top-16 left-0 w-full h-1 bg-transparent z-40 pointer-events-none"
       >
         <div
           id="reading-progress-bar"
@@ -98,36 +107,36 @@ const currentPath = normalizePath(pathname);
       </div>
     )
   }
-</header>
 
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="md:hidden menu-transition">
-  <nav
-    id="mobile-menu-content"
-    class="h-full flex flex-col items-center pt-24 pb-8 px-6 opacity-0 content-transition overflow-y-auto"
-  >
-    <div class="flex flex-col items-center space-y-8 w-full max-w-md">
-      {
-        NAV_LINKS.map((link) => {
-          const isActive =
-            link.href === "/"
-              ? currentPath === "/"
-              : currentPath.startsWith(link.href);
-          return (
-            <a
-              href={link.href}
-              class={`mobile-link text-2xl font-medium transition-colors ${
-                isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
-              }`}
-            >
-              {link.name}
-            </a>
-          );
-        })
-      }
-    </div>
-  </nav>
-</div>
+  <!-- Mobile Menu - Now inside header for stacking context -->
+  <div id="mobile-menu" class="md:hidden menu-transition">
+    <nav
+      id="mobile-menu-content"
+      class="h-full flex flex-col items-center pt-24 pb-8 px-6 opacity-0 content-transition overflow-y-auto"
+    >
+      <div class="flex flex-col items-center space-y-8 w-full max-w-md">
+        {
+          NAV_LINKS.map((link) => {
+            const isActive =
+              link.href === "/"
+                ? currentPath === "/"
+                : currentPath.startsWith(link.href);
+            return (
+              <a
+                href={link.href}
+                class={`mobile-link text-2xl font-medium transition-colors ${
+                  isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </a>
+            );
+          })
+        }
+      </div>
+    </nav>
+  </div>
+</header>
 
 <!-- Page Load Progress Bar -->
 <div
@@ -144,7 +153,7 @@ const currentPath = normalizePath(pathname);
     inset: 0;
     height: 100vh;
     background-color: #111;
-    z-index: 40;
+    z-index: 20;
     clip-path: inset(0 0 100% 0);
     opacity: 0;
     transition:
@@ -171,10 +180,8 @@ const currentPath = normalizePath(pathname);
   }
 
   /* Header open state */
-  header.is-menu-open {
-    background-color: #111 !important;
-    backdrop-filter: none !important;
-    border-color: transparent !important;
+  header.is-menu-open #header-bg {
+    border-color: transparent;
   }
 
   /* Hide scrollbar for mobile menu content */
