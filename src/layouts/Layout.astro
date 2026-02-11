@@ -107,7 +107,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		class="scroll-smooth bg-[#111] text-white font-sans antialiased min-h-screen flex flex-col"
 	>
 		<Header enableReadingProgress={enableReadingProgress} />
-		<main class="flex-grow pt-16" transition:animate="fade">
+		<main
+			class="flex-grow pt-16"
+			transition:animate="fade"
+			data-pagefind-body
+		>
 			<slot />
 		</main>
 		<Footer />

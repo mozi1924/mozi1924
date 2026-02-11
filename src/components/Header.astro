@@ -2,7 +2,7 @@
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS } from "../menu";
 import { SITE } from "../config";
-import Search from "./Search";
+import Search from "./Search.astro";
 
 interface Props {
   enableReadingProgress?: boolean;
@@ -54,12 +54,12 @@ const currentPath = normalizePath(pathname);
           );
         })
       }
-      <Search client:load variant="icon" />
+      <Search variant="icon" />
     </nav>
 
     <div class="flex items-center gap-2">
       <div class="md:hidden">
-        <Search client:load variant="icon" />
+        <Search variant="icon" />
       </div>
       <button
         id="mobile-menu-btn"

@@ -62,11 +62,10 @@ export default defineConfig({
   site: 'https://mozi1924.com',
   vite: {
     plugins: [tailwindcss()],
-    optimizeDeps: {
-      include: ['fuse.js']
-    },
+
     build: {
       rollupOptions: {
+        external: ['/pagefind/pagefind.js'],
         output: {
           assetFileNames: '_astro/style.[hash][extname]',
         },
