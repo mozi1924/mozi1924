@@ -120,15 +120,37 @@ export default function Search({ variant = 'inline' }: SearchProps) {
     }, [handleOpen]);
 
     // Prevent body scroll when modal is open
-    // Prevent body scroll when modal is open
     useEffect(() => {
+        const updateOverflow = (hidden: boolean) => {
+            const osInstance = (window as any).overlayscrollbarsInstance;
+
+            if (osInstance) {
+                if (hidden) {
+                    osInstance.options({ overflow: { y: 'hidden' } });
+                } else {
+                    osInstance.options({ overflow: { y: 'scroll' } });
+                }
+            } else {
+                if (hidden) {
+                    document.body.style.overflow = 'hidden';
+                    // Add class for additionalCSS control if needed
+                    document.body.classList.add('search-open');
+                } else {
+                    document.body.style.overflow = '';
+                    document.body.classList.remove('search-open');
+                }
+            }
+        };
+
         if (shouldRender) {
-            document.body.style.overflow = 'hidden';
+            updateOverflow(true);
         } else {
-            document.body.style.overflow = 'unset';
+            // Only restore if we're not unmounting, or if we are unmounting and it was open
+            updateOverflow(false);
         }
+
         return () => {
-            document.body.style.overflow = 'unset';
+            updateOverflow(false);
         };
     }, [shouldRender]);
 

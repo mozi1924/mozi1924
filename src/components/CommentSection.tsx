@@ -43,16 +43,15 @@ const RepliesModal: React.FC<{
     setLoading(true);
     try {
       const currentLastId = reset ? undefined : lastId;
-      let url = `${workerUrl}/api/comments/${parentComment.id}/replies?limit=10${
-        currentLastId ? `&last_id=${currentLastId}` : ""
-      }`;
-      
+      let url = `${workerUrl}/api/comments/${parentComment.id}/replies?limit=10${currentLastId ? `&last_id=${currentLastId}` : ""
+        }`;
+
       // If it's the first load and we have a highlight ID, pass it to the backend
       // expecting the backend to return the page containing this comment
       if (reset && highlightCommentId) {
-          url += `&highlight_id=${highlightCommentId}`;
+        url += `&highlight_id=${highlightCommentId}`;
       }
-      
+
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -77,19 +76,19 @@ const RepliesModal: React.FC<{
 
   // Scroll to highlighted comment after replies load
   useEffect(() => {
-      if (highlightCommentId && !loading && replies.length > 0) {
-          const el = document.getElementById(`comment-${highlightCommentId}`);
-          if (el) {
-              setTimeout(() => {
-                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  el.classList.add('highlight-comment');
-              }, 500);
-          }
+    if (highlightCommentId && !loading && replies.length > 0) {
+      const el = document.getElementById(`comment-${highlightCommentId}`);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('highlight-comment');
+        }, 500);
       }
+    }
   }, [loading, replies, highlightCommentId]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       <div
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
@@ -116,7 +115,7 @@ const RepliesModal: React.FC<{
               siteId={siteId}
               turnstileSiteKey={turnstileSiteKey}
               onReplySuccess={() => loadReplies(true)} // Refresh replies if referenced
-              onViewReplies={() => {}} // No-op, we are already viewing
+              onViewReplies={() => { }} // No-op, we are already viewing
               isPreview={true}
             />
           </div>
@@ -131,7 +130,7 @@ const RepliesModal: React.FC<{
                 siteId={siteId}
                 turnstileSiteKey={turnstileSiteKey}
                 onReplySuccess={() => loadReplies(true)}
-                onViewReplies={() => {}}
+                onViewReplies={() => { }}
                 isPreview={true}
               />
             ))}
@@ -150,10 +149,10 @@ const RepliesModal: React.FC<{
                 Load more replies
               </button>
             )}
-            
-             {!loading && replies.length === 0 && (
-                <div className="text-center text-gray-500 py-4 italic">No replies yet.</div>
-             )}
+
+            {!loading && replies.length === 0 && (
+              <div className="text-center text-gray-500 py-4 italic">No replies yet.</div>
+            )}
           </div>
         </div>
 
@@ -213,44 +212,44 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   // Handle Deep Linking (Local & Server)
   useEffect(() => {
     const handleDeepLink = async () => {
-        if (!window.location.hash || !window.location.hash.startsWith("#comment-")) return;
-        
-        const commentIdStr = window.location.hash.substring(9); // remove #comment-
-        const commentId = parseInt(commentIdStr, 10);
-        if (isNaN(commentId)) return;
+      if (!window.location.hash || !window.location.hash.startsWith("#comment-")) return;
 
-        // 1. Try to find locally first (fast path)
-        const el = document.getElementById(`comment-${commentId}`);
-        if (el) {
-             setTimeout(() => {
-                el.scrollIntoView({ behavior: "smooth", block: "center" });
-                el.classList.add("highlight-comment");
-            }, 500);
-            return;
-        }
+      const commentIdStr = window.location.hash.substring(9); // remove #comment-
+      const commentId = parseInt(commentIdStr, 10);
+      if (isNaN(commentId)) return;
 
-        // 2. If not found, and we have done initial load, try server lookup
-        if (initialLoadDone) {
-            try {
-                // Fetch context
-                const res = await fetch(`${workerUrl}/api/comments/${commentId}?site_id=${siteId}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.root_comment) {
-                         // It's a reply or a root comment we don't have.
-                         // Open modal for the root.
-                         setHighlightedCommentId(commentId);
-                         setActiveParent(data.root_comment);
-                    } else if (data.comment) {
-                        // Fallback if structure is different
-                         setHighlightedCommentId(commentId);
-                         setActiveParent(data.comment); // Assume it's a root
-                    }
-                }
-            } catch (e) {
-                console.error("Failed to fetch deep link context", e);
+      // 1. Try to find locally first (fast path)
+      const el = document.getElementById(`comment-${commentId}`);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.classList.add("highlight-comment");
+        }, 500);
+        return;
+      }
+
+      // 2. If not found, and we have done initial load, try server lookup
+      if (initialLoadDone) {
+        try {
+          // Fetch context
+          const res = await fetch(`${workerUrl}/api/comments/${commentId}?site_id=${siteId}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.root_comment) {
+              // It's a reply or a root comment we don't have.
+              // Open modal for the root.
+              setHighlightedCommentId(commentId);
+              setActiveParent(data.root_comment);
+            } else if (data.comment) {
+              // Fallback if structure is different
+              setHighlightedCommentId(commentId);
+              setActiveParent(data.comment); // Assume it's a root
             }
+          }
+        } catch (e) {
+          console.error("Failed to fetch deep link context", e);
         }
+      }
     };
 
     handleDeepLink();
@@ -357,115 +356,115 @@ const CommentItem: React.FC<{
   onViewReplies,
   isPreview,
 }) => {
-  const [replying, setReplying] = useState(false);
-  const avatarSrc = comment.avatar_id
-    ? `${workerUrl}/api/avatar/${comment.avatar_id}`
-    : "/assets/default.webp";
+    const [replying, setReplying] = useState(false);
+    const avatarSrc = comment.avatar_id
+      ? `${workerUrl}/api/avatar/${comment.avatar_id}`
+      : "/assets/default.webp";
 
-  return (
-    <div id={`comment-${comment.id}`} className="group">
-      <div className="flex gap-3 sm:gap-4">
-        <div className="flex-shrink-0 pt-1">
-          <img
-            src={avatarSrc}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/assets/default.webp";
-            }}
-            alt={comment.author_name}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
-          />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="bg-[#1a1a1a] p-3 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition-colors">
-            <div className="flex items-center justify-between mb-2 sm:mb-3">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <span className="font-bold text-gray-200 text-sm">
-                  {comment.author_name}
-                </span>
-                <span className="text-xs font-medium text-gray-500">
-                  {formatDistanceToNow(comment.created_at)} ago
-                </span>
-              </div>
-              <div className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                <a
-                  href={`#comment-${comment.id}`}
-                  className="text-gray-500 hover:text-blue-400 text-xs transition-colors"
-                >
-                  #{comment.id}
-                </a>
-              </div>
-            </div>
-
-            <div className="text-gray-300 whitespace-pre-wrap leading-relaxed text-sm">
-              {comment.content}
-            </div>
-
-            <div className="mt-3 sm:mt-4 flex items-center gap-4">
-              {!isPreview && (
-                <button
-                  onClick={() => setReplying(!replying)}
-                  className="text-xs font-semibold text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-1.5"
-                >
-                  <Reply className="h-3.5 w-3.5" />
-                  {replying ? "Cancel" : "Reply"}
-                </button>
-              )}
-            </div>
+    return (
+      <div id={`comment-${comment.id}`} className="group">
+        <div className="flex gap-3 sm:gap-4">
+          <div className="flex-shrink-0 pt-1">
+            <img
+              src={avatarSrc}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/assets/default.webp";
+              }}
+              alt={comment.author_name}
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
+            />
           </div>
+          <div className="flex-1 min-w-0">
+            <div className="bg-[#1a1a1a] p-3 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition-colors">
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className="font-bold text-gray-200 text-sm">
+                    {comment.author_name}
+                  </span>
+                  <span className="text-xs font-medium text-gray-500">
+                    {formatDistanceToNow(comment.created_at)} ago
+                  </span>
+                </div>
+                <div className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a
+                    href={`#comment-${comment.id}`}
+                    className="text-gray-500 hover:text-blue-400 text-xs transition-colors"
+                  >
+                    #{comment.id}
+                  </a>
+                </div>
+              </div>
 
-          {replying && (
-            <div className="mt-4 animate-fadeIn px-2 sm:px-0">
-              <CommentForm
-                siteId={siteId}
-                workerUrl={workerUrl}
-                parentId={comment.id}
-                onSuccess={() => {
-                  setReplying(false);
-                  onReplySuccess();
-                }}
-                turnstileSiteKey={turnstileSiteKey}
-                autoFocus
-                placeholder={`Reply to ${comment.author_name}...`}
-              />
-            </div>
-          )}
+              <div className="text-gray-300 whitespace-pre-wrap leading-relaxed text-sm">
+                {comment.content}
+              </div>
 
-          {/* Admin Reply Preview */}
-          {comment.admin_reply && (
-            <div className="mt-4 ml-4 sm:ml-8 relative">
-              <div className="absolute left-[-20px] top-0 bottom-0 w-px bg-white/10 hidden sm:block"></div>
-              <CommentItem
-                comment={comment.admin_reply}
-                workerUrl={workerUrl}
-                siteId={siteId}
-                turnstileSiteKey={turnstileSiteKey}
-                onReplySuccess={onReplySuccess}
-                onViewReplies={() => {}}
-                isPreview={true}
-              />
+              <div className="mt-3 sm:mt-4 flex items-center gap-4">
+                {!isPreview && (
+                  <button
+                    onClick={() => setReplying(!replying)}
+                    className="text-xs font-semibold text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+                  >
+                    <Reply className="h-3.5 w-3.5" />
+                    {replying ? "Cancel" : "Reply"}
+                  </button>
+                )}
+              </div>
             </div>
-          )}
 
-          {/* View Remaining Replies Button */}
-          {comment.reply_count &&
-          comment.reply_count > (comment.admin_reply ? 1 : 0) &&
-          !isPreview ? (
-            <div className="mt-3 ml-4 sm:ml-8 pl-4 border-l-2 border-white/10">
-              <button
-                onClick={() => onViewReplies(comment)}
-                className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
-                type="button"
-              >
-                View {comment.reply_count - (comment.admin_reply ? 1 : 0)} more
-                replies
-              </button>
-            </div>
-          ) : null}
+            {replying && (
+              <div className="mt-4 animate-fadeIn px-2 sm:px-0">
+                <CommentForm
+                  siteId={siteId}
+                  workerUrl={workerUrl}
+                  parentId={comment.id}
+                  onSuccess={() => {
+                    setReplying(false);
+                    onReplySuccess();
+                  }}
+                  turnstileSiteKey={turnstileSiteKey}
+                  autoFocus
+                  placeholder={`Reply to ${comment.author_name}...`}
+                />
+              </div>
+            )}
+
+            {/* Admin Reply Preview */}
+            {comment.admin_reply && (
+              <div className="mt-4 ml-4 sm:ml-8 relative">
+                <div className="absolute left-[-20px] top-0 bottom-0 w-px bg-white/10 hidden sm:block"></div>
+                <CommentItem
+                  comment={comment.admin_reply}
+                  workerUrl={workerUrl}
+                  siteId={siteId}
+                  turnstileSiteKey={turnstileSiteKey}
+                  onReplySuccess={onReplySuccess}
+                  onViewReplies={() => { }}
+                  isPreview={true}
+                />
+              </div>
+            )}
+
+            {/* View Remaining Replies Button */}
+            {comment.reply_count &&
+              comment.reply_count > (comment.admin_reply ? 1 : 0) &&
+              !isPreview ? (
+              <div className="mt-3 ml-4 sm:ml-8 pl-4 border-l-2 border-white/10">
+                <button
+                  onClick={() => onViewReplies(comment)}
+                  className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  type="button"
+                >
+                  View {comment.reply_count - (comment.admin_reply ? 1 : 0)} more
+                  replies
+                </button>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 // Form Component
 interface CommentFormProps {
@@ -504,7 +503,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
   const [content, setContent] = useState(() => {
     if (typeof window !== "undefined") {
-        return localStorage.getItem(draftKey) || "";
+      return localStorage.getItem(draftKey) || "";
     }
     return "";
   });
@@ -516,9 +515,9 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
   // Save draft to localStorage
   useEffect(() => {
-      if (typeof window !== "undefined") {
-          localStorage.setItem(draftKey, content);
-      }
+    if (typeof window !== "undefined") {
+      localStorage.setItem(draftKey, content);
+    }
   }, [content, draftKey]);
 
   // Save to localStorage when name/email changes
@@ -535,23 +534,23 @@ const CommentForm: React.FC<CommentFormProps> = ({
     if (!isExpanded && e.target.value.length > 0) {
       setIsExpanded(true);
     }
-    
+
     // Resize logic
     if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto'; 
-        textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`; // Max height 200px
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`; // Max height 200px
     }
   };
 
   const handleFocus = () => {
-      setIsExpanded(true);
+    setIsExpanded(true);
   };
-  
+
   const handleCancel = () => {
-      setIsExpanded(false);
-      // We do NOT clear content per user request ("save draft")
-      setError(null);
-      if (textareaRef.current) textareaRef.current.style.height = 'auto';
+    setIsExpanded(false);
+    // We do NOT clear content per user request ("save draft")
+    setError(null);
+    if (textareaRef.current) textareaRef.current.style.height = 'auto';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -589,7 +588,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
       setContent("");
       if (typeof window !== "undefined") {
-          localStorage.removeItem(draftKey);
+        localStorage.removeItem(draftKey);
       }
       setToken(null);
       setIsExpanded(false);
@@ -609,104 +608,104 @@ const CommentForm: React.FC<CommentFormProps> = ({
         ${isExpanded ? 'border-white/20 shadow-lg p-4' : 'border-white/10 p-2'}
       `}
     >
-        <div className="relative">
+      <div className="relative">
         {!isExpanded ? (
-          <div 
+          <div
             onClick={() => {
-                setIsExpanded(true);
-                // setTimeout to ensure render cycle completes if needed, but autoFocus usually works
+              setIsExpanded(true);
+              // setTimeout to ensure render cycle completes if needed, but autoFocus usually works
             }}
             className="h-[40px] px-3 py-2 text-sm flex items-center text-gray-200 cursor-text w-full transition-all"
           >
-             {content ? (
-                 <span className="truncate w-full block leading-normal">{content.replace(/\n/g, ' ')}</span>
-             ) : (
-                 <span className="text-gray-500 truncate w-full block leading-normal">{placeholder}</span>
-             )}
+            {content ? (
+              <span className="truncate w-full block leading-normal">{content.replace(/\n/g, ' ')}</span>
+            ) : (
+              <span className="text-gray-500 truncate w-full block leading-normal">{placeholder}</span>
+            )}
           </div>
         ) : (
-            <textarea
-                ref={textareaRef}
-                required
-                value={content}
-                onChange={handleInput}
-                rows={3}
-                className="w-full bg-transparent text-gray-200 outline-none resize-none placeholder:text-gray-500 min-h-[80px] text-sm"
-                placeholder={placeholder}
-                autoFocus
-                style={{ maxHeight: '200px' }}
-            />
+          <textarea
+            ref={textareaRef}
+            required
+            value={content}
+            onChange={handleInput}
+            rows={3}
+            className="w-full bg-transparent text-gray-200 outline-none resize-none placeholder:text-gray-500 min-h-[80px] text-sm"
+            placeholder={placeholder}
+            autoFocus
+            style={{ maxHeight: '200px' }}
+          />
         )}
       </div>
 
       {isExpanded && (
         <div className="animate-fadeIn mt-4 flex flex-col gap-4">
-            
-            {/* Actions Bar & Inputs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 pt-2 border-t border-white/5">
-                
-                {/* Left Side: Inputs (Desktop) / Top (Mobile) */}
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto flex-1 sm:mr-4">
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full animate-fadeIn">
-                        <input
-                            type="text"
-                            required
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
-                            placeholder="Name"
-                        />
-                        <input
-                            type="email"
-                            required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
-                            placeholder="Email"
-                        />
-                    </div>
-                </div>
 
-                {/* Right Side: Turnstile & Buttons (Desktop) / Bottom (Mobile) */}
-                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 shrink-0">
-                     <div className="transform origin-center sm:origin-right scale-90 sm:scale-100">
-                         <Turnstile
-                            siteKey={turnstileSiteKey}
-                            onSuccess={(t) => setToken(t)}
-                            onExpire={() => setToken(null)}
-                            options={{ theme: 'dark' }}
-                        /> 
-                    </div>
+          {/* Actions Bar & Inputs */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 pt-2 border-t border-white/5">
 
-                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className="px-4 py-2 rounded-full font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={submitting || !token}
-                            className={`px-6 py-2 rounded-full font-bold text-white transition-all transform text-sm whitespace-nowrap
-                                ${submitting || !token
-                                    ? "bg-white/10 cursor-not-allowed text-gray-500"
-                                    : "bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20"
-                                }`}
-                        >
-                            {submitting ? "Posting..." : "Comment"}
-                        </button>
-                    </div>
-                </div>
+            {/* Left Side: Inputs (Desktop) / Top (Mobile) */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto flex-1 sm:mr-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full animate-fadeIn">
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
+                  placeholder="Name"
+                />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
+                  placeholder="Email"
+                />
+              </div>
             </div>
-            
-            {error && (
-                <div className="text-red-400 text-xs mt-2 flex items-center gap-1">
-                     <AlertCircle className="w-3 h-3" />
-                    {error}
-                </div>
-            )}
+
+            {/* Right Side: Turnstile & Buttons (Desktop) / Bottom (Mobile) */}
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 shrink-0">
+              <div className="transform origin-center sm:origin-right scale-90 sm:scale-100">
+                <Turnstile
+                  siteKey={turnstileSiteKey}
+                  onSuccess={(t) => setToken(t)}
+                  onExpire={() => setToken(null)}
+                  options={{ theme: 'dark' }}
+                />
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="px-4 py-2 rounded-full font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || !token}
+                  className={`px-6 py-2 rounded-full font-bold text-white transition-all transform text-sm whitespace-nowrap
+                                ${submitting || !token
+                      ? "bg-white/10 cursor-not-allowed text-gray-500"
+                      : "bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20"
+                    }`}
+                >
+                  {submitting ? "Posting..." : "Comment"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {error && (
+            <div className="text-red-400 text-xs mt-2 flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" />
+              {error}
+            </div>
+          )}
         </div>
       )}
     </form>

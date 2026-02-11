@@ -137,7 +137,6 @@ const currentPath = normalizePath(pathname);
 
 <script>
   import { initProgressBar } from "../scripts/progress-bar";
-  import { initReadingProgress } from "../scripts/reading-progress";
 
   // Initialize global progress bar (runs once due to singleton check)
   initProgressBar();
@@ -233,17 +232,14 @@ const currentPath = normalizePath(pathname);
 
   document.addEventListener("astro:page-load", () => {
     setupMobileMenu();
-    initReadingProgress();
   });
 
   // Fallback for initial load
   if (document.readyState === "complete") {
     setupMobileMenu();
-    initReadingProgress();
   } else {
     document.addEventListener("DOMContentLoaded", () => {
       setupMobileMenu();
-      initReadingProgress();
     });
   }
 </script>

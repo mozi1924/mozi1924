@@ -112,8 +112,32 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		</main>
 		<Footer />
 		<script>
+			import { OverlayScrollbars } from "overlayscrollbars";
 			import { initEmailDecode } from "../scripts/email-decode";
-			document.addEventListener("astro:page-load", initEmailDecode);
+			import { initReadingProgress } from "../scripts/reading-progress";
+
+			const initOverlayScrollbars = () => {
+				(window as any).overlayscrollbarsInstance = OverlayScrollbars(
+					document.body,
+					{
+						scrollbars: {
+							theme: "os-theme-dark",
+							autoHide: "leave",
+							clickScroll: true,
+						},
+						overflow: {
+							x: "hidden",
+						},
+					},
+				);
+			};
+
+			document.addEventListener("astro:page-load", () => {
+				initEmailDecode();
+				initOverlayScrollbars();
+				// Initialize reading progress after custom scrollbars
+				initReadingProgress();
+			});
 		</script>
 	</body>
 </html>
