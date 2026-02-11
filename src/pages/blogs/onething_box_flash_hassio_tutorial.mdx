@@ -3,6 +3,7 @@ categories: ["tutorial"]
 layout: /src/layouts/BlogPost.astro
 title: "玩客云刷hassio教程"
 date: "2023-05-03"
+modDate: "2026-02-11"
 desc: "刷Armbain,建议https://github.com/hzyitc/armbian-onecloud/releases  刷好后登入玩客云ssh  执行cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 修正时间  执行nano..."
 image: "/assets/onething_box_flash_hassio_tutorial/onecloud.webp"
 ---
@@ -15,29 +16,27 @@ image: "/assets/onething_box_flash_hassio_tutorial/onecloud.webp"
 
 执行cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 修正时间
 
-执行nano /etc/apt/sources.list
+### 2026年更新：
+你可以使用这两条命令来快速修改您的软件源为国内源
 
-删除所有内容，替换为：
+```bash
+sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list # sources.list
 
-```
-https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
-
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
-
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
-
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
-
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
-
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
-
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
-
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources # DEB822格式
 ```
 
-Ctrl + X后按Y回车保存
+同时由于国内不同地区的网络环境不同，建议也替换security源
+
+```bash
+# sources.list
+sudo sed -i -e 's|security.debian.org/\? |security.debian.org/debian-security |g' \
+            -e 's|security.debian.org|mirrors.ustc.edu.cn|g' \
+            -e 's|deb.debian.org/debian-security|mirrors.ustc.edu.cn/debian-security|g' \
+            /etc/apt/sources.list
+
+# DEB822格式
+sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+```
 
 ## 安装依赖
 
