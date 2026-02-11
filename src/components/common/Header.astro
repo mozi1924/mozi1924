@@ -232,11 +232,15 @@ const currentPath = normalizePath(pathname);
       const setScrollLock = (lock: boolean) => {
         const osInstance = (window as any).overlayscrollbarsInstance;
         if (osInstance) {
-          osInstance.options({
-            overflow: {
-              y: lock ? "hidden" : "scroll",
-            },
-          });
+          const { overflow } = osInstance.options();
+          if (overflow.y !== (lock ? "hidden" : "scroll")) {
+            osInstance.options({
+              overflow: {
+                y: lock ? "hidden" : "scroll",
+              },
+            });
+          }
+          return;
         }
 
         // Fallback or additional safety
@@ -251,8 +255,14 @@ const currentPath = normalizePath(pathname);
         }
       };
 
+      let openTimeout: ReturnType<typeof setTimeout> | undefined;
+      let closeTimeout: ReturnType<typeof setTimeout> | undefined;
+
       const toggleMenu = (forceClose = false) => {
         const shouldClose = forceClose || isOpen;
+
+        clearTimeout(openTimeout);
+        clearTimeout(closeTimeout);
 
         if (shouldClose) {
           menu.classList.remove("is-open");
@@ -260,8 +270,8 @@ const currentPath = normalizePath(pathname);
 
           // Delay restoring scrollbar until animation is finished
           // This prevents the desktop scrollbar's layout shift from killing the animation
-          const currentCloseId = setTimeout(() => {
-            if (!isOpen) setScrollLock(false);
+          closeTimeout = setTimeout(() => {
+            setScrollLock(false);
           }, 600);
 
           isOpen = false;
@@ -271,7 +281,7 @@ const currentPath = normalizePath(pathname);
 
           // 2. Add an intentional delay to allow the browser to process
           // scrollbar changes before starting the layout-sensitive animation.
-          setTimeout(() => {
+          openTimeout = setTimeout(() => {
             menu.classList.add("is-open");
             header.classList.add("is-menu-open");
             isOpen = true;
