@@ -75,7 +75,9 @@ export default defineConfig({
 
   integrations: [react(), sitemap(), mdx()],
 
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'compile',
+  }),
 
   redirects: generateBlogRedirects()
 });
