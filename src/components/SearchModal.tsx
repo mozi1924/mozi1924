@@ -29,6 +29,7 @@ export default function SearchModal({ variant = 'inline' }: Props) {
     // Refs for focus management
     const inputRef = useRef<HTMLInputElement>(null);
     const resultsRef = useRef<HTMLDivElement>(null);
+    const interactionType = useRef<'mouse' | 'keyboard'>('keyboard');
 
     useEffect(() => {
         setIsMounted(true);
@@ -183,9 +184,11 @@ export default function SearchModal({ variant = 'inline' }: Props) {
 
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
+                interactionType.current = 'keyboard';
                 setSelectedIndex(i => (i + 1) % Math.max(1, results.length));
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
+                interactionType.current = 'keyboard';
                 setSelectedIndex(i => (i - 1 + results.length) % Math.max(1, results.length));
             } else if (e.key === 'Enter') {
                 e.preventDefault();
@@ -202,8 +205,9 @@ export default function SearchModal({ variant = 'inline' }: Props) {
     }, [isOpen, results, selectedIndex, query, recents]); // Updated dependency
 
     // Scroll selected index into view
+    // Scroll selected index into view
     useEffect(() => {
-        if (!resultsRef.current) return;
+        if (!resultsRef.current || interactionType.current !== 'keyboard') return;
         // Use a slight delay to ensure render is complete
         requestAnimationFrame(() => {
             const selectedElement = resultsRef.current?.querySelector(`[data-index="${selectedIndex}"]`) as HTMLElement;
@@ -353,7 +357,10 @@ export default function SearchModal({ variant = 'inline' }: Props) {
                                         e.preventDefault();
                                         handleSelect(result.url);
                                     }}
-                                    onMouseEnter={() => setSelectedIndex(index)}
+                                    onMouseEnter={() => {
+                                        interactionType.current = 'mouse';
+                                        setSelectedIndex(index);
+                                    }}
                                 >
                                     <div className="flex items-center justify-between mb-1">
                                         <h3 className={`font-medium text-lg leading-tight ${index === selectedIndex ? 'text-[#3F89FC]' : 'text-gray-200 group-hover:text-[#3F89FC]'
