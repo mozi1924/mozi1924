@@ -2,6 +2,7 @@
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS } from "../menu";
 import { SITE } from "../config";
+import Search from "./Search";
 
 interface Props {
   enableReadingProgress?: boolean;
@@ -53,24 +54,30 @@ const currentPath = normalizePath(pathname);
           );
         })
       }
+      <Search client:load variant="icon" />
     </nav>
 
-    <button
-      id="mobile-menu-btn"
-      class="md:hidden text-white p-2 focus:outline-none relative w-10 h-10 flex items-center justify-center"
-      aria-label="Toggle menu"
-    >
-      <div class="relative w-6 h-6">
-        <Menu
-          className="w-6 h-6 absolute inset-0 transition-all duration-300 opacity-100 rotate-0 scale-100"
-          id="menu-icon-open"
-        />
-        <X
-          className="w-6 h-6 absolute inset-0 transition-all duration-300 opacity-0 -rotate-90 scale-50"
-          id="menu-icon-close"
-        />
+    <div class="flex items-center gap-2">
+      <div class="md:hidden">
+        <Search client:load variant="icon" />
       </div>
-    </button>
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden text-white p-2 focus:outline-none relative w-10 h-10 flex items-center justify-center"
+        aria-label="Toggle menu"
+      >
+        <div class="relative w-6 h-6">
+          <Menu
+            className="w-6 h-6 absolute inset-0 transition-all duration-300 opacity-100 rotate-0 scale-100"
+            id="menu-icon-open"
+          />
+          <X
+            className="w-6 h-6 absolute inset-0 transition-all duration-300 opacity-0 -rotate-90 scale-50"
+            id="menu-icon-close"
+          />
+        </div>
+      </button>
+    </div>
   </div>
 
   <!-- Mobile Menu -->

@@ -1,12 +1,26 @@
 
+import { getCollection } from 'astro:content';
+
 export async function GET(context) {
-    const postImportResult = import.meta.glob('./blogs/*.{md,mdx}', { eager: true });
-    const posts = Object.values(postImportResult).map((post) => ({
-        title: post.frontmatter.title,
-        description: post.frontmatter.desc || post.frontmatter.description,
-        url: post.url,
-        type: 'blog',
-    }));
+    const blogPosts = await getCollection('blog');
+    const articles = await getCollection('article');
+
+    const posts = [
+        ...blogPosts.map((post) => ({
+            title: post.data.title,
+            description: post.data.desc || post.data.description || "",
+            url: `/blogs/${post.slug.replace(/\/index$/, "")}`,
+            type: 'blog',
+            content: post.body,
+        })),
+        ...articles.map((post) => ({
+            title: post.data.title,
+            description: post.data.desc || post.data.description || "",
+            url: `/article/${post.slug.replace(/\/index$/, "")}`,
+            type: 'article',
+            content: post.body,
+        }))
+    ];
 
     const staticPages = [
         {
@@ -14,18 +28,21 @@ export async function GET(context) {
             description: "Mozi's personal website featuring Blender 3D animations, Minecraft rigs, and plugins.",
             url: "/",
             type: 'page',
+            content: "",
         },
         {
             title: "About",
             description: "Learn more about Mozi1924.",
             url: "/about",
             type: 'page',
+            content: "",
         },
         {
             title: "Mozi's Rig",
             description: "Check out Mozi's Minecraft rigs.",
             url: "/mozi-rig",
             type: 'page',
+            content: "",
         },
     ];
 
@@ -35,3 +52,4 @@ export async function GET(context) {
         },
     });
 }
+

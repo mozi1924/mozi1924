@@ -62,6 +62,9 @@ export default defineConfig({
   site: 'https://mozi1924.com',
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['fuse.js']
+    },
     build: {
       rollupOptions: {
         output: {
