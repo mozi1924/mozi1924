@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
@@ -71,6 +72,8 @@ export default defineConfig({
   },
 
   integrations: [react(), sitemap(), mdx()],
+
+  adapter: cloudflare(),
 
   redirects: generateBlogRedirects()
 });

@@ -1,4 +1,9 @@
 /**
+ * Persistent observer to allow cleanup between navigations.
+ */
+let tocObserver: IntersectionObserver | null = null;
+
+/**
  * Updates the active class for TOC links.
  * @param {string} id - The ID of the section to highlight.
  */
@@ -61,7 +66,12 @@ function updateInitialActive() {
  * Set up IntersectionObserver to highlight TOC links as the user scrolls.
  */
 const setupObserver = () => {
-    const observer = new IntersectionObserver((entries) => {
+    // Disconnect existing observer if it exists
+    if (tocObserver) {
+        tocObserver.disconnect();
+    }
+
+    tocObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             const id = entry.target.getAttribute("id");
             if (entry.intersectionRatio > 0 && id) {
@@ -72,7 +82,7 @@ const setupObserver = () => {
 
     // Track all headings that have an id
     document.querySelectorAll("article h2, article h3").forEach((heading) => {
-        observer.observe(heading);
+        tocObserver?.observe(heading);
     });
 };
 
@@ -112,6 +122,10 @@ const setupMobileTOC = () => {
  * Initializes TOC logic.
  */
 export function initTOC() {
+    // Only initialize if we are on a page with an article and TOC headings
+    const headings = document.querySelectorAll("article h2, article h3");
+    if (headings.length === 0) return;
+
     updateInitialActive();
     setupObserver();
     setupMobileTOC();
