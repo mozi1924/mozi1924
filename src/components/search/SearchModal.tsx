@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Search as SearchIcon, Loader2, Clock, X } from 'lucide-react';
 
+import { scrollLock } from '../../utils/scroll-lock';
+
 interface Props {
     variant?: 'inline' | 'icon';
     type?: 'full' | 'trigger' | 'modal';
@@ -141,28 +143,17 @@ const SearchDialog = () => {
 
     // Reset state/overflow when opening
     useEffect(() => {
-        const updateOverflow = (hidden: boolean) => {
-            const osInstance = (window as any).overlayscrollbarsInstance;
-            if (osInstance) {
-                osInstance.options({ overflow: { y: hidden ? 'hidden' : 'scroll' } });
-            } else {
-                if (hidden) {
-                    document.body.classList.add('search-open');
-                    document.body.style.paddingRight = "var(--os-scrollbar-placeholder-size, 0px)";
-                } else {
-                    document.body.classList.remove('search-open');
-                    document.body.style.paddingRight = "";
-                }
-            }
-        };
-
         if (isOpen) {
-            updateOverflow(true);
+            scrollLock.lock();
             setTimeout(() => inputRef.current?.focus(), 100);
         } else {
-            updateOverflow(false);
+            // Use 300ms delay to match the transition duration
+            scrollLock.unlock(300);
         }
-        return () => { updateOverflow(false); };
+        return () => {
+            // No cleanup here because it might conflict with the delayed unlock above 
+            // if we navigate away. But usually it's fine.
+        };
     }, [isOpen]);
 
     // Animation visibility

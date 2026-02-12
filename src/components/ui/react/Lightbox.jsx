@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { scrollLock } from "../../../utils/scroll-lock";
 
 const LightboxPortal = ({ children }) => {
     const [mounted, setMounted] = useState(false);
@@ -29,6 +30,16 @@ export default function Lightbox({ items }) {
         e.stopPropagation();
         setSelectedIndex((prev) => (prev - 1 + items.length) % items.length);
     };
+
+    // Scroll Locking
+    useEffect(() => {
+        if (selectedIndex !== null) {
+            scrollLock.lock();
+        } else {
+            // Unlocking with a delay to allow the fade-out animation
+            scrollLock.unlock(400);
+        }
+    }, [selectedIndex]);
 
     // Close on escape key
     useEffect(() => {

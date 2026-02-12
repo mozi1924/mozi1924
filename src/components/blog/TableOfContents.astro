@@ -41,27 +41,27 @@ const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
                     class="absolute bottom-0 left-0 w-full max-h-[80vh] bg-[#1a1a1a] rounded-t-2xl border-t border-white/10 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col"
                 >
                     <div
-                        class="p-4 border-b border-white/10 flex items-center justify-between"
+                        class="flex items-center justify-between border-b border-white/10 px-4"
                     >
-                        <div class="flex-1 flex px-2">
-                             <div class="relative flex w-full bg-white/5 rounded-lg p-1">
+                        <div class="flex-1 flex">
+                             <div class="relative flex w-full">
                                 {seriesList && (
                                     <div 
                                         id="mobile-tab-indicator" 
-                                        class="absolute top-1 bottom-1 left-1 bg-blue-500 rounded-md shadow-lg transition-all duration-300 ease-in-out"
-                                        style="width: calc(50% - 4px);"
+                                        class="absolute bottom-[-1px] left-0 h-0.5 bg-blue-500 transition-all duration-300 ease-in-out"
+                                        style="width: 50%;"
                                     ></div>
                                 )}
                                 <button
                                     id="mobile-tab-toc-btn"
-                                    class={`relative z-10 flex-1 py-1.5 text-xs font-bold text-white rounded-md transition-all ${!seriesList ? 'bg-blue-500 shadow-lg' : ''}`}
+                                    class={`relative z-10 flex-1 py-4 text-xs font-bold text-white transition-all`}
                                 >
                                     On this page
                                 </button>
                                 {seriesList && (
                                     <button
                                         id="mobile-tab-series-btn"
-                                        class="relative z-10 flex-1 py-1.5 text-xs font-medium text-gray-400 hover:text-white transition-all"
+                                        class="relative z-10 flex-1 py-4 text-xs font-medium text-gray-400 hover:text-white transition-all"
                                     >
                                         Series
                                     </button>
@@ -70,7 +70,7 @@ const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
                         </div>
                         <button
                             id="mobile-toc-close"
-                            class="text-gray-400 hover:text-white p-2 ml-2"
+                            class="text-gray-400 hover:text-white p-2 ml-4"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -100,10 +100,7 @@ const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
                         </div>
 
                         {seriesList && (
-                            <div id="mobile-tab-series-content" class="hidden">
-                                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-4">
-                                    {seriesList.title}
-                                </div>
+                            <div id="mobile-tab-series-content" class="hidden pt-4">
                                 <div class="space-y-2">
                                     {seriesList.chapters.map((chapter) => (
                                         <a

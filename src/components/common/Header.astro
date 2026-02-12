@@ -226,6 +226,7 @@ const currentPath = normalizePath(pathname);
 </style>
 <script>
   import { initProgressBar } from "../../scripts/progress-bar";
+  import { scrollLock } from "../../utils/scroll-lock";
 
   const setupMobileMenu = () => {
     const btn = document.getElementById("mobile-menu-btn");
@@ -235,32 +236,6 @@ const currentPath = normalizePath(pathname);
 
     if (btn && menu && header) {
       let isOpen = false;
-
-      const setScrollLock = (lock: boolean) => {
-        const osInstance = (window as any).overlayscrollbarsInstance;
-        if (osInstance) {
-          const { overflow } = osInstance.options();
-          if (overflow.y !== (lock ? "hidden" : "scroll")) {
-            osInstance.options({
-              overflow: {
-                y: lock ? "hidden" : "scroll",
-              },
-            });
-          }
-          return;
-        }
-
-        // Fallback or additional safety
-        if (lock) {
-          document.body.style.overflow = "hidden";
-          // Prevent scroll jump on desktop browsers with visible scrollbars
-          document.body.style.paddingRight =
-            "var(--os-scrollbar-placeholder-size, 0px)";
-        } else {
-          document.body.style.overflow = "";
-          document.body.style.paddingRight = "";
-        }
-      };
 
       let openTimeout: ReturnType<typeof setTimeout> | undefined;
       let closeTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -277,14 +252,12 @@ const currentPath = normalizePath(pathname);
 
           // Delay restoring scrollbar until animation is finished
           // This prevents the desktop scrollbar's layout shift from killing the animation
-          closeTimeout = setTimeout(() => {
-            setScrollLock(false);
-          }, 600);
+          scrollLock.unlock(600);
 
           isOpen = false;
         } else {
           // 1. Lock scroll first
-          setScrollLock(true);
+          scrollLock.lock();
 
           // 2. Add an intentional delay to allow the browser to process
           // scrollbar changes before starting the layout-sensitive animation.
@@ -317,5 +290,7 @@ const currentPath = normalizePath(pathname);
   document.addEventListener("astro:page-load", () => {
     initProgressBar();
     setupMobileMenu();
+    // Ensure scroll is unlocked on page load if it was locked
+    scrollLock.clear();
   });
 </script>

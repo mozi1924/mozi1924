@@ -40,10 +40,6 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Prevent scroll jump when search is open */
-body.search-open {
-    overflow: hidden !important;
-}
 
 /* Pagefind Highlight */
 mark {

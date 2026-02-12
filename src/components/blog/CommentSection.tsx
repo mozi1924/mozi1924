@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Reply, AlertCircle } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { formatDistanceToNow } from "date-fns";
+import { scrollLock } from "../../utils/scroll-lock";
 
 // Types
 interface Comment {
@@ -24,6 +26,16 @@ interface CommentSectionProps {
   workerUrl?: string; // Optional, defaults to hardcoded
   turnstileSiteKey?: string; // Optional, defaults to hardcoded/env
 }
+
+// Portal Component for SSR safety
+const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+  return mounted ? createPortal(children, document.body) : null;
+};
 
 // Modal Component for Replies
 const RepliesModal: React.FC<{
@@ -88,89 +100,92 @@ const RepliesModal: React.FC<{
   }, [loading, replies, highlightCommentId]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      ></div>
-      <div className="bg-[#1a1a1a] w-full max-w-2xl h-[80vh] rounded-2xl shadow-2xl relative flex flex-col overflow-hidden animate-fadeIn border border-white/10">
-        {/* Header */}
-        <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
-          <h3 className="font-bold text-lg text-white">Thread</h3>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {/* Pinned Parent Comment */}
-          <div className="p-4 sm:p-6 bg-white/5 border-b border-white/10">
-            <CommentItem
-              comment={parentComment}
-              workerUrl={workerUrl}
-              siteId={siteId}
-              turnstileSiteKey={turnstileSiteKey}
-              onReplySuccess={() => loadReplies(true)} // Refresh replies if referenced
-              onViewReplies={() => { }} // No-op, we are already viewing
-              isPreview={true}
-            />
+    <ModalPortal>
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6">
+        <div
+          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          onClick={onClose}
+        ></div>
+        <div className="bg-[#1a1a1a] w-full max-w-2xl h-[80vh] rounded-2xl shadow-2xl relative flex flex-col overflow-hidden animate-fadeIn border border-white/10">
+          {/* Header */}
+          <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
+            <h3 className="font-bold text-lg text-white">Thread</h3>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Replies List */}
-          <div className="p-4 sm:p-6 space-y-6">
-            {replies.map((r) => (
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {/* Pinned Parent Comment */}
+            <div className="p-4 sm:p-6 bg-white/5 border-b border-white/10">
               <CommentItem
-                key={r.id}
-                comment={r}
+                comment={parentComment}
                 workerUrl={workerUrl}
                 siteId={siteId}
                 turnstileSiteKey={turnstileSiteKey}
-                onReplySuccess={() => loadReplies(true)}
-                onViewReplies={() => { }}
+                onReplySuccess={() => loadReplies(true)} // Refresh replies if referenced
+                onViewReplies={() => { }} // No-op, we are already viewing
                 isPreview={true}
               />
-            ))}
+            </div>
 
-            {loading && (
-              <div className="flex justify-center py-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-              </div>
-            )}
+            {/* Replies List */}
+            <div className="p-4 sm:p-6 space-y-6">
+              {replies.map((r) => (
+                <CommentItem
+                  key={r.id}
+                  comment={r}
+                  workerUrl={workerUrl}
+                  siteId={siteId}
+                  turnstileSiteKey={turnstileSiteKey}
+                  onReplySuccess={() => loadReplies(true)}
+                  onViewReplies={() => { }}
+                  isPreview={true}
+                />
+              ))}
 
-            {!loading && hasMore && (
-              <button
-                onClick={() => loadReplies(false)}
-                className="w-full py-3 bg-white/5 hover:bg-white/10 text-blue-400 font-semibold rounded-xl transition-colors border border-dashed border-white/10"
-              >
-                Load more replies
-              </button>
-            )}
+              {loading && (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                </div>
+              )}
 
-            {!loading && replies.length === 0 && (
-              <div className="text-center text-gray-500 py-4 italic">No replies yet.</div>
-            )}
+              {!loading && hasMore && (
+                <button
+                  onClick={() => loadReplies(false)}
+                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-blue-400 font-semibold rounded-xl transition-colors border border-dashed border-white/10"
+                >
+                  Load more replies
+                </button>
+              )}
+
+              {!loading && replies.length === 0 && (
+                <div className="text-center text-gray-500 py-4 italic">No replies yet.</div>
+              )}
+            </div>
+          </div>
+
+          {/* Reply Box (Footer) */}
+          <div className="p-4 border-t border-white/10 bg-[#1a1a1a] shrink-0">
+            <CommentForm
+              siteId={siteId}
+              workerUrl={workerUrl}
+              parentId={parentComment.id}
+              onSuccess={() => loadReplies(true)}
+              turnstileSiteKey={turnstileSiteKey}
+              placeholder={`Reply to ${parentComment.author_name}...`}
+            />
           </div>
         </div>
-
-        {/* Reply Box (Footer) */}
-        <div className="p-4 border-t border-white/10 bg-[#1a1a1a] shrink-0">
-          <CommentForm
-            siteId={siteId}
-            workerUrl={workerUrl}
-            parentId={parentComment.id}
-            onSuccess={() => loadReplies(true)}
-            turnstileSiteKey={turnstileSiteKey}
-            placeholder={`Reply to ${parentComment.author_name}...`}
-          />
-        </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 };
+
 
 const CommentSection: React.FC<CommentSectionProps> = ({
   siteId,
@@ -208,6 +223,20 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   useEffect(() => {
     fetchComments();
   }, [siteId]);
+
+  // Scroll Locking
+  useEffect(() => {
+    if (activeParent) {
+      scrollLock.lock();
+    } else {
+      // Use delay to prevent layout shift during modal fade-out
+      scrollLock.unlock(300);
+    }
+    return () => {
+      // Cleanup on unmount
+      scrollLock.clear();
+    };
+  }, [activeParent]);
 
   // Handle Deep Linking (Local & Server)
   useEffect(() => {
@@ -510,8 +539,16 @@ const CommentForm: React.FC<CommentFormProps> = ({
   const [token, setToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  // Expand by default if autoFocus is true (usually for replies) or if there's a draft
+  const [isExpanded, setIsExpanded] = useState(!!autoFocus || (!!content && content.length > 0));
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // Sync isExpanded if autoFocus prop changes
+  useEffect(() => {
+    if (autoFocus) {
+      setIsExpanded(true);
+    }
+  }, [autoFocus]);
 
   // Save draft to localStorage
   useEffect(() => {
@@ -531,19 +568,12 @@ const CommentForm: React.FC<CommentFormProps> = ({
   // Auto-resize textarea
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
-    if (!isExpanded && e.target.value.length > 0) {
-      setIsExpanded(true);
-    }
 
     // Resize logic
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`; // Max height 200px
     }
-  };
-
-  const handleFocus = () => {
-    setIsExpanded(true);
   };
 
   const handleCancel = () => {
@@ -611,11 +641,10 @@ const CommentForm: React.FC<CommentFormProps> = ({
       <div className="relative">
         {!isExpanded ? (
           <div
-            onClick={() => {
-              setIsExpanded(true);
-              // setTimeout to ensure render cycle completes if needed, but autoFocus usually works
-            }}
-            className="h-[40px] px-3 py-2 text-sm flex items-center text-gray-200 cursor-text w-full transition-all"
+            onClick={() => setIsExpanded(true)}
+            onFocus={() => setIsExpanded(true)}
+            tabIndex={0}
+            className="h-[40px] px-3 py-2 text-sm flex items-center text-gray-200 cursor-text w-full transition-all outline-none"
           >
             {content ? (
               <span className="truncate w-full block leading-normal">{content.replace(/\n/g, ' ')}</span>
