@@ -44,7 +44,7 @@ const currentPath = normalizePath(pathname);
       <span class="font-bold text-lg tracking-tight">{SITE.title}</span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-8">
+    <nav class="hidden md:flex items-center gap-2">
       {
         NAV_LINKS.map((link) => {
           const isActive =
@@ -54,8 +54,10 @@ const currentPath = normalizePath(pathname);
           return (
             <a
               href={link.href}
-              class={`text-sm font-medium transition-colors ${
-                isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
+              class={`text-sm font-medium transition-all px-3 py-2 rounded-lg ${
+                isActive
+                  ? "text-[#3F89FC] bg-white/5"
+                  : "text-gray-300 hover:text-white hover:bg-white/5"
               }`}
             >
               {link.name}
@@ -72,7 +74,7 @@ const currentPath = normalizePath(pathname);
       </div>
       <button
         id="mobile-menu-btn"
-        class="md:hidden text-white p-2 focus:outline-none relative w-10 h-10 flex items-center justify-center"
+        class="md:hidden text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all focus:outline-none relative w-10 h-10 flex items-center justify-center"
         aria-label="Toggle menu"
       >
         <div class="relative w-6 h-6">
