@@ -8,6 +8,7 @@ interface Props {
     title: string;
     date: string;
     image?: string;
+    lang?: string;
     desc?: string;
     authorId?: string;
     chapters: any[];
@@ -17,6 +18,7 @@ const {
     title,
     date,
     image,
+    lang,
     desc,
     authorId = DEFAULT_AUTHOR_ID,
     chapters,
@@ -38,6 +40,7 @@ const listItems = chapters.map((chapter) => ({
     title={title}
     description={desc}
     image={image}
+    lang={lang}
     pageType="article"
     pubDate={date}
     authorName={author.name}

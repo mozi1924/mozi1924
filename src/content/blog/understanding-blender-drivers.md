@@ -1,4 +1,5 @@
 ---
+lang: en
 categories: ["Blender"]
 title: "Understanding Blender Drivers"
 date: "2026-01-14"

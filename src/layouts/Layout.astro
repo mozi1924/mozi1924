@@ -12,6 +12,7 @@ interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
+	lang?: string;
 	pageType?: "website" | "article" | "profile" | "blog";
 	pubDate?: string | Date;
 	modDate?: string | Date;
@@ -33,6 +34,7 @@ const {
 	title,
 	description = SITE.description,
 	image = SITE.favicon,
+	lang = "en",
 	pageType = "website",
 	pubDate,
 	modDate,
@@ -52,7 +54,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang={lang} class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />

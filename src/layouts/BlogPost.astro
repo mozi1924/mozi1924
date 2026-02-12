@@ -14,6 +14,7 @@ type BlogPostFrontmatter = {
   date: string;
   image?: string;
   desc?: string;
+  lang?: string;
   disable_comments?: boolean;
   enableBusinessCard?: boolean;
   authorId?: string;
@@ -49,6 +50,7 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
   title={frontmatter.title}
   description={frontmatter.desc}
   image={frontmatter.image}
+  lang={frontmatter.lang}
   pageType={frontmatter.pageType || "article"}
   pubDate={frontmatter.date}
   modDate={frontmatter.modDate}
