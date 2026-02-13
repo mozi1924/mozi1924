@@ -21,6 +21,10 @@ type BlogPostFrontmatter = {
   pageType?: "website" | "article" | "profile" | "blog";
   modDate?: string;
   hideComment?: boolean;
+  images?: { url: string; alt?: string }[];
+  videos?: { url: string }[];
+  keywords?: string;
+  wordCount?: number;
 };
 
 type Props = {
@@ -60,6 +64,10 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
   authorMotto={author.motto}
   socialLinks={author.socialLinks}
   enableReadingProgress={true}
+  articleImages={frontmatter.images}
+  articleVideos={frontmatter.videos}
+  wordCount={frontmatter.wordCount}
+  keywords={frontmatter.keywords}
 >
   <div
     id="article-main-container"
@@ -185,8 +193,10 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
 
 <script>
   import { initTOC } from "../scripts/toc";
+  import { initScrollPersistence } from "../scripts/scroll-persistence";
 
   document.addEventListener("astro:page-load", () => {
     initTOC();
+    initScrollPersistence();
   });
 </script>

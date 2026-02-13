@@ -109,9 +109,9 @@ const setupMobileTOC = () => {
         };
 
 
-        btn.onclick = openMenu;
-        backdrop.onclick = closeMenu;
-        closeBtn.onclick = closeMenu;
+        btn.addEventListener("click", openMenu);
+        backdrop.addEventListener("click", closeMenu);
+        closeBtn.addEventListener("click", closeMenu);
 
         links.forEach((link) => {
             link.addEventListener("click", closeMenu);

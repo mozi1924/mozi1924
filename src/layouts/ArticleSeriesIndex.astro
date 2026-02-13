@@ -5,23 +5,31 @@ import { Calendar, User, Layers } from "lucide-react";
 import ArticleList from "../components/blog/ArticleList.astro";
 
 interface Props {
-    title: string;
-    date: string;
-    image?: string;
-    lang?: string;
-    desc?: string;
-    authorId?: string;
-    chapters: any[];
+  title: string;
+  date: string;
+  image?: string;
+  lang?: string;
+  desc?: string;
+  authorId?: string;
+  chapters: any[];
+  articleImages?: { url: string; alt?: string }[];
+  articleVideos?: { url: string }[];
+  keywords?: string;
+  wordCount?: number;
 }
 
 const {
-    title,
-    date,
-    image,
-    lang,
-    desc,
-    authorId = DEFAULT_AUTHOR_ID,
-    chapters,
+  title,
+  date,
+  image,
+  lang,
+  desc,
+  authorId = DEFAULT_AUTHOR_ID,
+  chapters,
+  articleImages,
+  articleVideos,
+  keywords,
+  wordCount,
 } = Astro.props;
 
 const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
@@ -29,121 +37,117 @@ const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
 import { SITE } from "../config";
 
 const listItems = chapters.map((chapter) => ({
-    name: chapter.data.title,
-    url: new URL(`/article/${chapter.slug}`, SITE.url).href,
-    image: chapter.data.image,
-    description: chapter.data.desc,
+  name: chapter.data.title,
+  url: new URL(`/article/${chapter.slug}`, SITE.url).href,
+  image: chapter.data.image,
+  description: chapter.data.desc,
 }));
 ---
 
 <Layout
-    title={title}
-    description={desc}
-    image={image}
-    lang={lang}
-    pageType="article"
-    pubDate={date}
-    authorName={author.name}
-    authorUrl={author.url}
-    authorAvatar={author.avatar}
-    authorMotto={author.motto}
-    socialLinks={author.socialLinks}
-    items={listItems}
+  title={title}
+  description={desc}
+  image={image}
+  lang={lang}
+  pageType="article"
+  pubDate={date}
+  authorName={author.name}
+  authorUrl={author.url}
+  authorAvatar={author.avatar}
+  authorMotto={author.motto}
+  socialLinks={author.socialLinks}
+  items={listItems}
+  articleImages={articleImages}
+  articleVideos={articleVideos}
+  wordCount={wordCount}
+  keywords={keywords}
 >
-    <div class="max-w-6xl mx-auto px-6 py-16">
-        <!-- Compact Header -->
-        <header
-            class="text-center space-y-6 mb-16 max-w-4xl mx-auto border-b border-white/5 pb-12"
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <!-- Compact Header -->
+    <header
+      class="text-center space-y-6 mb-16 max-w-4xl mx-auto border-b border-white/5 pb-12"
+    >
+      <div
+        class="flex flex-wrap items-center justify-center gap-4 text-sm font-medium"
+      >
+        <div
+          class="flex items-center gap-1.5 px-3 py-1 text-blue-400 bg-blue-500/10 rounded-full"
         >
-            <div
-                class="flex flex-wrap items-center justify-center gap-4 text-sm font-medium"
-            >
-                <div
-                    class="flex items-center gap-1.5 px-3 py-1 text-blue-400 bg-blue-500/10 rounded-full"
-                >
-                    <Calendar className="w-4 h-4" />
-                    <span>{date}</span>
-                </div>
-                <div
-                    class="flex items-center gap-1.5 px-3 py-1 text-emerald-400 bg-emerald-500/10 rounded-full"
-                >
-                    <Layers className="w-4 h-4" />
-                    <span>{chapters.length} Parts Series</span>
-                </div>
-                <a
-                    href={author.url}
-                    class="flex items-center gap-1.5 px-3 py-1 text-purple-400 bg-purple-500/10 rounded-full hover:bg-purple-500/20 transition-colors"
-                >
-                    <User className="w-4 h-4" />
-                    <span>{author.name}</span>
-                </a>
-            </div>
-
-            <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
-                {title}
-            </h1>
-
-            {
-                desc && (
-                    <p class="text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
-                        {desc}
-                    </p>
-                )
-            }
-        </header>
-
-        <!-- Intro Section: Image Left, Content Right -->
-        <div class="grid lg:grid-cols-5 gap-12 items-start mb-20">
-            <div class="lg:col-span-2">
-                <div
-                    class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
-                >
-                    {
-                        image ? (
-                            <img
-                                src={image}
-                                alt={title}
-                                class="w-full h-full object-cover"
-                            />
-                        ) : (
-                            <div class="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
-                                <Layers className="w-20 h-20 text-gray-800" />
-                            </div>
-                        )
-                    }
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
-                    >
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-3">
-                <div
-                    class="prose prose-lg prose-invert max-w-none text-gray-300"
-                >
-                    <slot />
-                </div>
-            </div>
+          <Calendar className="w-4 h-4" />
+          <span>{date}</span>
         </div>
+        <div
+          class="flex items-center gap-1.5 px-3 py-1 text-emerald-400 bg-emerald-500/10 rounded-full"
+        >
+          <Layers className="w-4 h-4" />
+          <span>{chapters.length} Parts Series</span>
+        </div>
+        <a
+          href={author.url}
+          class="flex items-center gap-1.5 px-3 py-1 text-purple-400 bg-purple-500/10 rounded-full hover:bg-purple-500/20 transition-colors"
+        >
+          <User className="w-4 h-4" />
+          <span>{author.name}</span>
+        </a>
+      </div>
 
-        <!-- Chapters List -->
-        <section class="border-t border-white/10 pt-16">
-            <h2
-                class="text-3xl font-bold text-white mb-10 flex items-center gap-3"
-            >
-                <span class="w-2 h-8 bg-blue-500 rounded-full"></span>
-                In this Series
-            </h2>
+      <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+        {title}
+      </h1>
 
-            <ArticleList
-                items={chapters.map((chapter) => ({
-                    type: "single",
-                    article: chapter,
-                }))}
-                mode="grid"
-                showIndex={true}
-            />
-        </section>
+      {
+        desc && (
+          <p class="text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
+            {desc}
+          </p>
+        )
+      }
+    </header>
+
+    <!-- Intro Section: Image Left, Content Right -->
+    <div class="grid lg:grid-cols-5 gap-12 items-start mb-20">
+      <div class="lg:col-span-2">
+        <div
+          class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+        >
+          {
+            image ? (
+              <img src={image} alt={title} class="w-full h-full object-cover" />
+            ) : (
+              <div class="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
+                <Layers className="w-20 h-20 text-gray-800" />
+              </div>
+            )
+          }
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+          >
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3">
+        <div class="prose prose-lg prose-invert max-w-none text-gray-300">
+          <slot />
+        </div>
+      </div>
     </div>
+
+    <!-- Chapters List -->
+    <section class="border-t border-white/10 pt-16">
+      <h2 class="text-3xl font-bold text-white mb-10 flex items-center gap-3">
+        <span class="w-2 h-8 bg-blue-500 rounded-full"></span>
+        In this Series
+      </h2>
+
+      <ArticleList
+        items={chapters.map((chapter) => ({
+          type: "single",
+          article: chapter,
+        }))}
+        mode="grid"
+        showIndex={true}
+      />
+    </section>
+  </div>
 </Layout>

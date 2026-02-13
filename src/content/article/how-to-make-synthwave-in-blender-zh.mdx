@@ -1,0 +1,231 @@
+---
+title: "如何在Blender中使用几何节点制作Synthwave场景"
+image: "/assets/how-to-make-synthwave-in-blender/0-synthwave_tutorial_cover.webp"
+date: "2026-02-14"
+modDate: "2026-02-14"
+desc: "本教程将带你一步步学习如何使用Blender的几何节点制作Synthwave场景，并深入理解每个节点的作用。"
+hideComment: false
+lang: zh
+keywords: "Blender, 几何节点, Synthwave, 建模教程, 三维动画, Blender Geometry Nodes"
+---
+
+Read this article in English: [How to Make a Synthwave Scene in Blender with Geometry Nodes](/article/how-to-make-synthwave-in-blender-en)
+
+## 前言
+
+Hello，这里是Mozi1924！今天我们来学习如何使用Blender的几何节点制作一个充满复古风情的Synthwave场景。从视频转到图文教程，希望能带给你不一样的阅读体验。别忘了收藏我的网站 mozi1924.com 哦！
+
+在这篇教程里，我们将一起创建这样一个动态的Synthwave世界：
+
+<video src="/assets/how-to-make-synthwave-in-blender/1-synthwave.webm" autoplay loop muted playsinline></video>
+
+## 什么是几何节点？
+
+几何节点是Blender内置的一个强大工具，它通过节点图的方式来生成和修改几何体。你可以像搭建积木一样组合各种节点，用数学逻辑创造出无限复杂的模型，而且一切都是程序化的，方便后期调整。
+
+## 你将学到什么？
+
+本教程将带你完成一个完整的Synthwave场景，涉及以下核心知识点：
+
+- 使用 `Grid` 节点创建基础网格
+- 用 `Set Position` 节点控制网格形状
+- 结合 `Noise Texture` 生成起伏的山丘
+- 利用 `Map Range` 制作笔直的公路
+- 通过 `Store Named Attribute` 将数据传递给材质
+- 理解基础的数学与矢量运算
+
+在材质部分，我们还会学习：
+
+- 用 `Wave Texture` 制作网格发光效果
+- 用 `Color Ramp` 控制颜色与遮罩
+- 用 `Mix Shader` 混合透明材质
+
+准备好了吗？让我们直接开始！
+
+## 构建地面
+
+### 1. 创建基础网格
+
+在场景中新建一个平面（`Shift+A` → Mesh → Plane），选中它，然后进入**几何节点编辑器**，点击 `New` 创建一个新的节点树。
+
+默认情况下你会看到 `Group Input` 和 `Group Output` 两个节点。我们先删除 `Group Input`，然后添加一个 `Grid` 节点，把它连到 `Group Output` 上。
+
+![添加Grid节点](/assets/how-to-make-synthwave-in-blender/5-add-grid-node.webp)
+
+在 `Grid` 节点中，将 `Size X/Y` 都设为 `200`，`Vertices X/Y` 也设为 `200`，得到一个足够大的网格地面。
+
+### 2. 让地面起伏
+
+接下来添加一个 `Set Position` 节点，插在 `Grid` 和 `Group Output` 之间。这个节点可以改变每个顶点的位置。
+
+为了控制高度（Z轴），我们需要一个 `Combine XYZ` 节点，将其输出连到 `Set Position` 的 `Offset` 输入上。
+
+![combine xyz节点与set position节点](/assets/how-to-make-synthwave-in-blender/8-combine-xyz-node-and-set-position-node.webp)
+
+现在添加一个 `Noise Texture` 节点，把它的 `Fac` 输出连到 `Combine XYZ` 的 Z 输入上。你会发现地面变成了凹凸不平的噪点——但这还不是山丘，因为噪声缺少位置信息。
+
+把 `Grid` 节点的 `UV Map` 输出连到 `Noise Texture` 的 `Vector` 输入，噪点立刻变得平滑，形成了自然的山丘轮廓。
+
+![grid节点与noise texture节点](/assets/how-to-make-synthwave-in-blender/11-grid-node-and-noise-texture-node.webp)
+
+现在用 `Math` 节点（Multiply）放大噪点强度，比如乘以 `50`，山丘的高度就变得明显了。你可以根据自己的喜好调整噪点参数和乘法系数。
+
+### 3. 制作地面移动效果
+
+为了让地面产生“向前推进”的感觉，我们需要让 UV 坐标随时间变化。在 `Grid` 和 `Noise Texture` 之间插入一个 `Vector Math` 节点，运算模式设为 `Add`。
+
+![vector math节点与grid uv map节点和noise texture节点](/assets/how-to-make-synthwave-in-blender/12-vector-math-node-and-grid-uv-map-node-and-noise-texture-node.webp)
+
+接着添加 `Scene Time` 节点，用 `Combine XYZ` 把它单独作用在 Y 轴上：将 `Scene Time` 的 `Seconds` 连到 `Combine XYZ` 的 Y 输入，然后将这个 `Combine XYZ` 连到 `Vector Math` 的第二个输入上。
+
+![scene time节点与combine xyz节点](/assets/how-to-make-synthwave-in-blender/14-scene-time-node-and-combine-xyz-node.webp)
+
+播放动画（空格键），地面就会向 Y 轴正方向移动。如果速度太快，可以在中间加一个 `Math`（Multiply）节点，将时间乘以一个较小的系数（例如 `0.1`）来减速。
+
+![math节点与scene time节点和combine xyz节点](/assets/how-to-make-synthwave-in-blender/15-math-node-and-scene-time-node-and-combine-xyz-node.webp)
+
+现在地面已经有了起伏和动态，接下来我们为它开辟一条笔直的公路。
+
+## 构建公路
+
+公路的本质是一个沿 X 轴对称的凹陷带。我们通过分离坐标轴并做数学运算来生成这个遮罩。
+
+添加一个 `Separate XYZ` 节点，把 `Grid` 的 UV Map 连给它，取出 X 轴。然后：
+
+- 先用 `Math`（Subtract）减去一个值（比如 `0`，保持对称中心），
+- 再用 `Math`（Absolute）取绝对值，这样 X 轴两侧的值就对称了。
+
+![separate xyz节点与math节点](/assets/how-to-make-synthwave-in-blender/16-separate-xyz-node-and-math-node.webp)
+
+将这个对称值作为高度影响的系数：在噪点乘法节点之后、进入 `Combine XYZ` 之前，再插入一个 `Math`（Multiply）节点，把对称值乘上去。
+
+![math节点与multiply节点和combine xyz节点](/assets/how-to-make-synthwave-in-blender/17-math-node-and-multiply-node-and-combine-xyz-node.webp)
+
+此时你会看到地面中央出现一条细线凹陷——这正是公路的雏形。但线条太细，我们需要用 `Map Range` 节点来调整它的宽度和过渡。
+
+将 `Map Range` 接在 `Absolute` 节点之后，调节 `From Min / Max` 控制凹陷的范围，`To Min / Max` 控制凹陷的强度（通常保持 0–1）。如果想让过渡更平滑，可以把插值类型改为 `Smooth Step`。
+
+![map range节点与absolute节点和multiply节点](/assets/how-to-make-synthwave-in-blender/18-map-range-node-and-absolute-node-and-multiply-node.webp)
+
+现在公路的凹陷和两侧的山丘自然地融合在一起，效果已经相当不错了。
+
+## 将数据传递到材质：Store Named Attribute
+
+为了让材质也能读取地面的移动坐标（这样才能让发光的网格跟随地面运动），我们需要将坐标数据“存储”到几何体中。这里用到 `Store Named Attribute` 节点。
+
+将它放在几何数据流上（例如在 `Set Position` 之后），数据类型选 `Vector`，属性名设为 `v_pos`（或其他你喜欢的名称）。把之前 `Vector Math` 输出的坐标连到它的 `Value` 输入上。
+
+![store named attribute节点](/assets/how-to-make-synthwave-in-blender/19-store-named-attribute-node.webp)
+
+这样，每个顶点的最终位置就被保存到了 `v_pos` 属性中，后续材质节点可以随时调用。
+
+目前的完整节点图大致如下：
+
+![整体节点图](/assets/how-to-make-synthwave-in-blender/20-whole-node-tree.webp)
+
+别忘了在几何节点末尾添加一个 `Set Material` 节点，指定我们即将创建的材质，否则材质无法生效。
+
+## 地面材质：发光网格
+
+切换到**着色器编辑器**，新建一个材质。回到几何节点，用 `Set Material` 节点将材质指定给地面。
+
+现在开始制作材质。我们要实现的效果是：一个跟随地形起伏的发光网格。
+
+1. 添加 `Attribute` 节点，类型选 `Geometry`，名称输入之前定义的 `v_pos`。这样我们就获得了每个顶点的世界坐标（经过位移和起伏后的坐标）。
+2. 使用两个 `Wave Texture` 节点分别生成 X 方向和 Y 方向的条纹：
+   - 第一个：Bands Direction = X，Wave Profile = Sine
+   - 第二个：Bands Direction = Y，Wave Profile = Sine
+   - 用一个 `Value` 节点控制两者的 `Scale`（例如 10），调节网格密度。
+
+![wave texture节点](/assets/how-to-make-synthwave-in-blender/24-wave-texture-node.webp)
+
+3. 每个 `Wave Texture` 后面接一个 `Color Ramp`，将渐变更改为锐利的黑白条纹：
+   - 第一个颜色设为纯黑（位置 0），第二个颜色纯白（位置 0.02），插值类型设为 `Constant`。
+   - 这样只保留了波峰附近的一小段白色，其余为黑色，形成细线。
+
+![color ramp节点](/assets/how-to-make-synthwave-in-blender/25-color-ramp-node.webp)
+
+4. 用 `Math`（Multiply）将两个 `Color Ramp` 的输出相乘，得到交叉的网格（白色部分就是网格线）。
+
+![当前节点图](/assets/how-to-make-synthwave-in-blender/26-current-node-tree.webp)
+
+5. 再添加一个 `Color Ramp`，将相乘结果转换成硬遮罩：第一个颜色设为纯白，第二个纯黑，插值 Constant，第二个颜色的位置设为 0.5。这样，大于 0.5 的白色区域变为白色（网格线），其余变为黑色。
+
+![color ramp节点](/assets/how-to-make-synthwave-in-blender/27-color-ramp-node.webp)
+
+6. 创建两个 `Emission` 节点，颜色分别设为喜欢的颜色（比如紫色和玫红）。用 `Mix Shader` 混合它们，系数就使用上一步的遮罩。
+
+![当前节点图](/assets/how-to-make-synthwave-in-blender/28-current-node-tree.webp)
+
+最终，你会看到发光的网格完美贴合地面起伏，并且随着地面移动而移动。调整前面的 `Value` 节点可以改变网格密度，两个 Emission 的颜色可以自由搭配。
+
+![地面材质](/assets/how-to-make-synthwave-in-blender/29-ground-material.webp)
+
+## 创建复古太阳
+
+Synthwave 的标志性视觉元素——百叶窗夕阳，可以用一个简单的球体配合程序化材质来实现。
+
+### 1. 基础设置
+
+在场景中添加一个 UV 球体（`Shift+A` → Mesh → UV Sphere），右键选择平滑着色。将球体的缩放设为 `(50, 0.01, 50)`——Y 轴压扁，形成一个扁平的圆盘，方便观察条纹效果。把它移动到场景后方合适的位置。
+
+![uv sphere](/assets/how-to-make-synthwave-in-blender/30-uv-sphere.webp)
+
+### 2. 材质思路
+
+这个材质可以拆解为两部分：垂直方向的颜色渐变，和水平方向的透明条纹。
+
+### 3. 获取坐标并分离 Z 轴
+
+新建材质，添加 `Texture Coordinate` 节点，使用 **Object** 输出。因为我们要基于物体自身的 Z 轴（上下方向）做渐变，使用 Object 坐标可以保证无论物体如何旋转，Z 轴始终指向物体的上下方向。
+
+添加 `Separate XYZ` 节点，提取 Z 轴。此时黑白渐变从下（黑）到上（白）分布。
+
+![texture coordinate节点](/assets/how-to-make-synthwave-in-blender/32-texture-coordinate-node.webp)
+
+### 4. 制作颜色渐变
+
+将 Z 轴连入 `Color Ramp`，设置两个色标：
+- 左侧（底部）：深紫色或黑色
+- 右侧（顶部）：亮橙色或黄色
+
+将 `Color Ramp` 输出连到 `Emission` 节点，适当提高强度（如 1.0~2.0），让太阳发光。
+
+![color ramp节点](/assets/how-to-make-synthwave-in-blender/33-color-ramp-node.webp)
+
+### 5. 数学组合：制作条纹
+
+我们需要将连续的 Z 轴变成间断的条纹。这里用一套经典的数学运算：**乘法 → 取小数 → 比较**。
+
+- **Multiply（乘法）**：控制条纹密度。图中用了两个分支，分别乘以 `10.14` 和 `9.60`，这样两个频率略微不同的波形叠加，可以避免条纹过于呆板，产生更丰富的细节。
+- **Fraction（取小数部分）**：将连续值变成锯齿波，产生重复。
+- **Greater Than（大于）**：设定阈值（如 0.5），将锯齿波二值化，大于阈值输出 1（白），否则 0（黑）。调整阈值可以控制条纹粗细。
+
+将两个分支的结果用 `Multiply` 相乘，得到最终的条纹遮罩（白条为透明区域，黑条为发光区域）。最后再用一个 `Less Than` 节点将遮罩取反（根据需求调整），使其符合 Mix Shader 的系数要求（0=发光，1=透明）。
+
+![math节点](/assets/how-to-make-synthwave-in-blender/34-math-node.webp)
+
+### 6. 混合透明
+
+添加 `Mix Shader` 节点：
+- 上插槽（Shader 1）：连接我们做好的 `Emission` 节点
+- 下插槽（Shader 2）：连接 `Transparent BSDF` 节点
+- 系数（Fac）：连接上一步数学运算的输出（最终遮罩）
+
+![mix shader节点](/assets/how-to-make-synthwave-in-blender/35-mix-shader-node.webp)
+
+这样，系数为 0 的地方显示发光太阳，系数为 1 的地方显示透明，太阳就被“挖”出了条纹，呈现出经典的百叶窗效果。
+
+你可以继续调整颜色、条纹密度和粗细，创造属于你自己的复古夕阳。
+
+## 天空
+
+在侧边的属性面板中点击 World（世界）属性，将背景颜色设置为深紫色或者别的你喜欢的颜色
+
+![world属性](/assets/how-to-make-synthwave-in-blender/36-world-properties.webp)
+
+## 结语
+
+至此，我们完成了整个 Synthwave 场景的建模与材质制作。从几何节点的程序化地形，到材质节点的动态网格和条纹太阳，每一步都充满了数学与美学的结合。希望这篇教程能帮助你更好地掌握 Blender 的几何节点和材质节点，并激发你创作更多有趣的作品！
+
+如果你喜欢这篇教程，别忘了收藏我的网站 mozi1924.com，更多精彩内容正在路上。我们下次再见！

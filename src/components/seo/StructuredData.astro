@@ -2,176 +2,208 @@
 import { SITE } from "../../config";
 
 interface Props {
-    title: string;
-    description: string;
-    image: string;
-    pageType?: "website" | "article" | "profile" | "blog";
-    pubDate?: string | Date;
-    modDate?: string | Date;
-    authorName: string;
-    authorUrl: string;
-    authorAvatar?: string;
-    authorMotto?: string;
-    socialLinks?: { network: string; url: string; icon?: string }[];
-    canonicalURL: URL;
-    items?: {
-        name: string;
-        url: string;
-        image?: string;
-        description?: string;
-    }[];
+  title: string;
+  description: string;
+  image: string;
+  pageType?: "website" | "article" | "profile" | "blog";
+  pubDate?: string | Date;
+  modDate?: string | Date;
+  authorName: string;
+  authorUrl: string;
+  authorAvatar?: string;
+  authorMotto?: string;
+  socialLinks?: { network: string; url: string; icon?: string }[];
+  canonicalURL: URL;
+  items?: {
+    name: string;
+    url: string;
+    image?: string;
+    description?: string;
+  }[];
+  articleImages?: { url: string; alt?: string }[];
+  articleVideos?: { url: string }[];
+  inLanguage?: string;
+  wordCount?: number;
+  keywords?: string;
 }
 
 const {
-    title,
-    description,
-    image,
-    pageType,
-    pubDate,
-    modDate,
-    authorName,
-    authorUrl,
-    authorAvatar,
-    authorMotto,
-    socialLinks,
-    canonicalURL,
-    items,
+  title,
+  description,
+  image,
+  pageType,
+  pubDate,
+  modDate,
+  authorName,
+  authorUrl,
+  authorAvatar,
+  authorMotto,
+  socialLinks,
+  canonicalURL,
+  items,
+  articleImages,
+  articleVideos,
+  inLanguage = "en",
+  wordCount,
+  keywords,
 } = Astro.props;
 
 const resolvedImage = new URL(image, Astro.site).href;
 const resolvedAuthorAvatar = authorAvatar
-    ? new URL(authorAvatar, Astro.site).href
-    : undefined;
+  ? new URL(authorAvatar, Astro.site).href
+  : undefined;
 
 // JSON-LD Logic
 const { pathname } = Astro.url;
 const segments = pathname.split("/").filter((s) => s);
 
 const breadcrumbs = [
-    {
-        name: "Home",
-        item: SITE.url,
-    },
-    ...segments.map((segment, index) => {
-        const path = segments.slice(0, index + 1).join("/");
-        return {
-            name: decodeURIComponent(segment)
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (c) => c.toUpperCase()),
-            item: new URL(path, SITE.url).href,
-        };
-    }),
+  {
+    name: "Home",
+    item: SITE.url,
+  },
+  ...segments.map((segment, index) => {
+    const path = segments.slice(0, index + 1).join("/");
+    return {
+      name: decodeURIComponent(segment)
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase()),
+      item: new URL(path, SITE.url).href,
+    };
+  }),
 ];
 
 const schema: any = {
-    "@context": "https://schema.org",
-    "@graph": [
-        {
-            "@type": "WebSite",
-            "@id": `${SITE.url}/#website`,
-            url: SITE.url,
-            name: SITE.domain,
-            description: "Mozi's personal website",
-            publisher: {
-                "@type": "Person",
-                name: authorName,
-                url: authorUrl,
-                logo: {
-                    "@type": "ImageObject",
-                    url: new URL("/favicon.svg", SITE.url).href,
-                },
-            },
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#website`,
+      url: SITE.url,
+      name: SITE.domain,
+      description: "Mozi's personal website",
+      inLanguage: inLanguage,
+      publisher: {
+        "@type": "Person",
+        name: authorName,
+        url: authorUrl,
+        logo: {
+          "@type": "ImageObject",
+          url: new URL("/favicon.svg", SITE.url).href,
         },
-        {
-            "@type": "BreadcrumbList",
-            "@id": `${canonicalURL.href}/#breadcrumb`,
-            itemListElement: breadcrumbs.map((crumb, index) => ({
-                "@type": "ListItem",
-                position: index + 1,
-                name: crumb.name,
-                item: crumb.item,
-            })),
-        },
-    ],
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${canonicalURL.href}/#breadcrumb`,
+      itemListElement: breadcrumbs.map((crumb, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: crumb.name,
+        item: crumb.item,
+      })),
+    },
+  ],
 };
 
 if (pageType === "article" || pageType === "blog") {
-    schema["@graph"].push({
-        "@type": "BlogPosting",
-        "@id": `${canonicalURL.href}/#${pageType}`,
-        url: canonicalURL.href,
-        headline: title,
-        description: description,
-        image: {
-            "@type": "ImageObject",
-            url: resolvedImage,
-        },
-        datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
-        dateModified:
-            modDate || pubDate
-                ? new Date(modDate || pubDate!).toISOString()
-                : undefined,
-        author: {
-            "@type": "Person",
-            name: authorName,
-            url: authorUrl,
-        },
-        isPartOf: { "@id": `${SITE.url}/#website` },
-        mainEntityOfPage: { "@id": canonicalURL.href },
-        breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
-    });
+  const articleImageObjects =
+    articleImages?.map((img) => ({
+      "@type": "ImageObject",
+      url: new URL(img.url, Astro.site).href,
+      caption: img.alt,
+    })) || [];
+
+  schema["@graph"].push({
+    "@type": "BlogPosting",
+    "@id": `${canonicalURL.href}/#${pageType}`,
+    url: canonicalURL.href,
+    headline: title,
+    description: description,
+    inLanguage: inLanguage,
+    wordCount: wordCount,
+    keywords: keywords,
+    image: [
+      {
+        "@type": "ImageObject",
+        url: resolvedImage,
+      },
+      ...articleImageObjects,
+    ],
+    video: articleVideos?.map((vid) => ({
+      "@type": "VideoObject",
+      name: title,
+      description: description,
+      thumbnailUrl: resolvedImage,
+      uploadDate: pubDate ? new Date(pubDate).toISOString() : undefined,
+      contentUrl: new URL(vid.url, Astro.site).href,
+    })),
+    datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
+    dateModified:
+      modDate || pubDate
+        ? new Date(modDate || pubDate!).toISOString()
+        : undefined,
+    author: {
+      "@type": "Person",
+      name: authorName,
+      url: authorUrl,
+    },
+    isPartOf: { "@id": `${SITE.url}/#website` },
+    mainEntityOfPage: { "@id": canonicalURL.href },
+    breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
+  });
 } else if (pageType === "profile") {
-    schema["@graph"].push({
-        "@type": "ProfilePage",
-        "@id": `${canonicalURL.href}/#profile`,
-        url: canonicalURL.href,
-        name: title,
-        description: description,
-        dateCreated: pubDate ? new Date(pubDate).toISOString() : undefined,
-        dateModified:
-            modDate || pubDate
-                ? new Date(modDate || pubDate!).toISOString()
-                : undefined,
-        mainEntity: {
-            "@type": "Person",
-            name: authorName,
-            url: authorUrl,
-            image:
-                resolvedAuthorAvatar ||
-                resolvedImage ||
-                new URL("/favicon.svg", Astro.site).href,
-            description: authorMotto || description,
-            sameAs: socialLinks?.map((link) => link.url),
-        },
-        isPartOf: { "@id": `${SITE.url}/#website` },
-        breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
-    });
+  schema["@graph"].push({
+    "@type": "ProfilePage",
+    "@id": `${canonicalURL.href}/#profile`,
+    url: canonicalURL.href,
+    name: title,
+    description: description,
+    dateCreated: pubDate ? new Date(pubDate).toISOString() : undefined,
+    dateModified:
+      modDate || pubDate
+        ? new Date(modDate || pubDate!).toISOString()
+        : undefined,
+    mainEntity: {
+      "@type": "Person",
+      name: authorName,
+      url: authorUrl,
+      image:
+        resolvedAuthorAvatar ||
+        resolvedImage ||
+        new URL("/favicon.svg", Astro.site).href,
+      description: authorMotto || description,
+      sameAs: socialLinks?.map((link) => link.url),
+    },
+    isPartOf: { "@id": `${SITE.url}/#website` },
+    breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
+  });
 } else {
-    schema["@graph"].push({
-        "@type": "WebPage",
-        "@id": `${canonicalURL.href}/#webpage`,
-        url: canonicalURL.href,
-        name: title,
-        description: description,
-        isPartOf: { "@id": `${SITE.url}/#website` },
-        breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
-    });
+  schema["@graph"].push({
+    "@type": "WebPage",
+    "@id": `${canonicalURL.href}/#webpage`,
+    url: canonicalURL.href,
+    name: title,
+    description: description,
+    isPartOf: { "@id": `${SITE.url}/#website` },
+    breadcrumb: { "@id": `${canonicalURL.href}/#breadcrumb` },
+  });
 }
 
 if (items && items.length > 0) {
-    schema["@graph"].push({
-        "@type": "ItemList",
-        "@id": `${canonicalURL.href}/#itemlist`,
-        name: title,
-        description: description,
-        itemListElement: items.map((item, index) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            url: item.url,
-            name: item.name,
-            image: item.image ? new URL(item.image, SITE.url).href : undefined,
-        })),
-    });
+  schema["@graph"].push({
+    "@type": "ItemList",
+    "@id": `${canonicalURL.href}/#itemlist`,
+    name: title,
+    description: description,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: item.url,
+      name: item.name,
+      image: item.image ? new URL(item.image, SITE.url).href : undefined,
+    })),
+  });
 }
 ---
 

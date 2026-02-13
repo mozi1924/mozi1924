@@ -8,34 +8,30 @@ import { SITE } from "../../config";
 const items = await getArticleList("blog");
 
 const listItems = items.map((item) => {
-  if (item.type === "series") {
-    const data = item.metadata.data;
-    return {
-      name: data.title,
-      url: new URL(`/blogs/${item.slug}`, SITE.url).href,
-      image: data.image,
-      description: data.desc,
-    };
-  } else {
-    const data = item.article.data;
-    return {
-      name: data.title,
-      url: new URL(`/blogs/${item.article.slug}`, SITE.url).href,
-      image: data.image,
-      description: data.desc,
-    };
-  }
+  const isSeries = item.type === "series";
+  const data = isSeries ? item.metadata.data : item.article.data;
+  const slug = isSeries ? `/blogs/${item.slug}` : `/blogs/${item.article.slug}`;
+
+  return {
+    name: data.title,
+    url: new URL(slug, SITE.url).href,
+    image: data.image,
+    description: data.desc,
+  };
 });
 ---
 
 <Layout
   title="Blogs"
-  description="Thoughts, tutorials, and updates."
+  description="Thoughts, tutorials, and life updates."
   items={listItems}
+  pageType="blog"
 >
-  <div class="pt-12 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+  <div class="max-w-7xl mx-auto px-6 py-24 min-h-screen">
     <SectionHeader title="My Blogs">
-      <p class="text-gray-400">Thoughts, tutorials, and updates.</p>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+        Thoughts, tutorials, and life updates.
+      </p>
     </SectionHeader>
 
     <ArticleList items={items} />

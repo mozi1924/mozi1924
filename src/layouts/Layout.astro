@@ -9,152 +9,172 @@ import { SITE } from "../config";
 import StructuredData from "../components/seo/StructuredData.astro";
 
 interface Props {
-	title?: string;
-	description?: string;
-	image?: string;
-	lang?: string;
-	pageType?: "website" | "article" | "profile" | "blog";
-	pubDate?: string | Date;
-	modDate?: string | Date;
-	authorName?: string;
-	authorUrl?: string;
-	authorAvatar?: string;
-	authorMotto?: string;
-	socialLinks?: { network: string; url: string; icon?: string }[];
-	enableReadingProgress?: boolean;
-	items?: {
-		name: string;
-		url: string;
-		image?: string;
-		description?: string;
-	}[];
+  title?: string;
+  description?: string;
+  image?: string;
+  lang?: string;
+  pageType?: "website" | "article" | "profile" | "blog";
+  pubDate?: string | Date;
+  modDate?: string | Date;
+  authorName?: string;
+  authorUrl?: string;
+  authorAvatar?: string;
+  authorMotto?: string;
+  socialLinks?: { network: string; url: string; icon?: string }[];
+  enableReadingProgress?: boolean;
+  items?: {
+    name: string;
+    url: string;
+    image?: string;
+    description?: string;
+  }[];
+  articleImages?: { url: string; alt?: string }[];
+  articleVideos?: { url: string }[];
+  keywords?: string;
+  wordCount?: number;
 }
 
 const {
-	title,
-	description = SITE.description,
-	image = SITE.favicon,
-	lang = "en",
-	pageType = "website",
-	pubDate,
-	modDate,
-	authorName = SITE.author,
-	authorUrl = `${SITE.url}/about`,
-	authorAvatar,
-	authorMotto,
-	socialLinks,
-	enableReadingProgress = false,
-	items,
+  title,
+  description = SITE.description,
+  image = SITE.favicon,
+  lang = "en",
+  pageType = "website",
+  pubDate,
+  modDate,
+  authorName = SITE.author,
+  authorUrl = `${SITE.url}/about`,
+  authorAvatar,
+  authorMotto,
+  socialLinks,
+  enableReadingProgress = false,
+  items,
+  articleImages,
+  articleVideos,
+  keywords = SITE.keywords,
+  wordCount,
 } = Astro.props;
 
+// Map ISO 639-1 to OpenGraph Locale (simplified)
+const ogLocaleMap: Record<string, string> = {
+  en: "en_US",
+  zh: "zh_CN",
+  "zh-CN": "zh_CN",
+  "zh-HK": "zh_HK",
+  "zh-TW": "zh_TW",
+};
+const ogLocale = ogLocaleMap[lang] || "en_US";
+
 const formattedTitle =
-	title && title !== SITE.title ? `${title} - ${SITE.title}` : SITE.title;
+  title && title !== SITE.title ? `${title} - ${SITE.title}` : SITE.title;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
 <html lang={lang} class="scroll-smooth">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href={SITE.favicon} />
-		<link rel="alternate icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="canonical" href={canonicalURL} />
-		<meta name="robots" content="max-image-preview:large" />
-		<title>{formattedTitle}</title>
-		<meta name="description" content={description} />
-		<meta name="keywords" content={SITE.keywords} />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href={SITE.favicon} />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="max-image-preview:large" />
+    <title>{formattedTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
 
-		<!-- Open Graph -->
-		<meta property="og:type" content="website" />
-		<meta property="og:logo" content={SITE.favicon} />
-		<meta property="og:url" content={canonicalURL} />
-		<meta property="og:title" content={formattedTitle} />
-		<meta property="og:description" content={description} />
-		<meta property="og:image" content={new URL(image, Astro.url)} />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:logo" content={SITE.favicon} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={formattedTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
 
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={canonicalURL} />
-		<meta property="twitter:title" content={formattedTitle} />
-		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={new URL(image, Astro.url)} />
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={formattedTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
-		<Analytics />
-		<ClientRouter />
-		<StructuredData
-			title={formattedTitle}
-			{description}
-			{image}
-			{pageType}
-			{pubDate}
-			{modDate}
-			{authorName}
-			{authorUrl}
-			{authorAvatar}
-			{authorMotto}
-			{socialLinks}
-			{canonicalURL}
-			{items}
-		/>
-		<link
-			rel="alternate"
-			type="application/rss+xml"
-			title="Mozi's Blog RSS Feed"
-			href="/rss.xml"
-		/>
-	</head>
-	<body
-		class="scroll-smooth bg-[#111] text-white font-sans antialiased min-h-screen flex flex-col"
-	>
-		<Header enableReadingProgress={enableReadingProgress} />
-		<main
-			class="flex-grow pt-16"
-			transition:animate="fade"
-			data-pagefind-body
-		>
-			<slot />
-		</main>
-		<Footer />
-		<Search type="modal" />
-		<script>
-			import { OverlayScrollbars } from "overlayscrollbars";
-			import { initEmailDecode } from "../scripts/email-decode";
-			import { initReadingProgress } from "../scripts/reading-progress";
+    <Analytics />
+    <ClientRouter />
+    <StructuredData
+      title={formattedTitle}
+      {description}
+      {image}
+      {pageType}
+      {pubDate}
+      {modDate}
+      {authorName}
+      {authorUrl}
+      {authorAvatar}
+      {authorMotto}
+      {socialLinks}
+      {canonicalURL}
+      {items}
+      {articleImages}
+      {articleVideos}
+      inLanguage={lang}
+      {wordCount}
+      {keywords}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Mozi's Blog RSS Feed"
+      href="/rss.xml"
+    />
+  </head>
+  <body
+    class="scroll-smooth bg-[#111] text-white font-sans antialiased min-h-screen flex flex-col"
+  >
+    <Header enableReadingProgress={enableReadingProgress} />
+    <main class="flex-grow pt-16" transition:animate="fade" data-pagefind-body>
+      <slot />
+    </main>
+    <Footer />
+    <Search type="modal" />
+    <script>
+      import { OverlayScrollbars } from "overlayscrollbars";
+      import { initEmailDecode } from "../scripts/email-decode";
+      import { initReadingProgress } from "../scripts/reading-progress";
 
-			const initOverlayScrollbars = () => {
-				(window as any).overlayscrollbarsInstance = OverlayScrollbars(
-					document.body,
-					{
-						scrollbars: {
-							theme: "os-theme-dark",
-							autoHide: "leave",
-							clickScroll: true,
-						},
-						overflow: {
-							x: "hidden",
-						},
-					},
-				);
-			};
+      const initOverlayScrollbars = () => {
+        (window as any).overlayscrollbarsInstance = OverlayScrollbars(
+          document.body,
+          {
+            scrollbars: {
+              theme: "os-theme-dark",
+              autoHide: "leave",
+              clickScroll: true,
+            },
+            overflow: {
+              x: "hidden",
+            },
+          },
+        );
+      };
 
-			document.addEventListener("astro:page-load", () => {
-				initEmailDecode();
-				initOverlayScrollbars();
-				// Initialize reading progress after custom scrollbars
-				initReadingProgress();
-			});
-		</script>
-	</body>
+      document.addEventListener("astro:page-load", () => {
+        initEmailDecode();
+        initOverlayScrollbars();
+        // Initialize reading progress after custom scrollbars
+        initReadingProgress();
+      });
+    </script>
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
 </style>

@@ -188,10 +188,84 @@ export async function getSeriesList(currentSlug: string) {
 }
 
 /**
+ * Extracts images from markdown/MDX body.
+ */
+export function extractImagesFromBody(body: string) {
+    const images: { url: string; alt?: string }[] = [];
+    
+    // Regex for standard markdown images ![alt](url)
+    const mdImageRegex = /!\[(.*?)\]\((.*?)\)/g;
+    let match;
+    while ((match = mdImageRegex.exec(body)) !== null) {
+        images.push({ alt: match[1], url: match[2] });
+    }
+
+    // Regex for HTML img tags <img src="url" alt="alt" />
+    const htmlImgRegex = /<img.*?src=["'](.*?)["'].*?(?:alt=["'](.*?)["'])?.*?>/g;
+    while ((match = htmlImgRegex.exec(body)) !== null) {
+        // Skip video or other tags if they accidentally match partly (unlikely with this regex)
+        images.push({ url: match[1], alt: match[2] });
+    }
+
+    // Remove duplicates
+    return Array.from(new Map(images.map(img => [img.url, img])).values());
+}
+
+/**
+ * Extracts video sources from markdown/MDX body.
+ */
+export function extractVideosFromBody(body: string) {
+    const videos: { url: string }[] = [];
+    const videoRegex = /<video.*?src=["'](.*?)["'].*?>/g;
+    let match;
+    while ((match = videoRegex.exec(body)) !== null) {
+        videos.push({ url: match[1] });
+    }
+    return Array.from(new Map(videos.map(v => [v.url, v])).values());
+}
+
+/**
+ * Simple word count for Chinese and English text.
+ */
+export function countWords(text: string) {
+    if (!text) return 0;
+    // Count Chinese characters
+    const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+    // Count English words (splitting by whitespace)
+    const englishWords = text.replace(/[\u4e00-\u9fa5]/g, ' ').split(/\s+/).filter(word => word.length > 0) || [];
+    return chineseChars.length + englishWords.length;
+}
+
+export interface NormalizedPost {
+    title: string;
+    date: string;
+    image?: string;
+    desc?: string;
+    modDate?: string;
+    authorId: string;
+    disable_comments: boolean;
+    pageType: "blog" | "article";
+    slug: string;
+    id: string;
+    images: { url: string; alt?: string }[];
+    videos: { url: string }[];
+    wordCount: number;
+    lang: string;
+    keywords: string;
+}
+
+/**
  * Normalizes post data from both 'blog' and 'article' collections
  * into a unified format for layouts.
  */
-export function getNormalizedPostData(post: CollectionEntry<"blog"> | CollectionEntry<"article">, type: "blog" | "article") {
+export function getNormalizedPostData(post: CollectionEntry<"blog"> | CollectionEntry<"article">, type: "blog" | "article"): NormalizedPost {
+    const bodyImages = extractImagesFromBody(post.body);
+    const bodyVideos = extractVideosFromBody(post.body);
+    const wordCount = countWords(post.body);
+    
+    // Default language handling: if 'zh' is used, refine to 'zh-CN' for better SEO
+    const lang = post.data.lang === 'zh' ? 'zh-CN' : (post.data.lang || 'en');
+
     return {
         title: post.data.title,
         date: post.data.date,
@@ -202,6 +276,11 @@ export function getNormalizedPostData(post: CollectionEntry<"blog"> | Collection
         disable_comments: (post.collection === 'blog' ? post.data.disable_comments : (post.data as any).hideComment) || false,
         pageType: type,
         slug: post.slug,
-        id: post.id
+        id: post.id,
+        images: bodyImages,
+        videos: bodyVideos,
+        wordCount,
+        lang,
+        keywords: (post.data as any).keywords || ""
     };
 }

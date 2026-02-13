@@ -3,22 +3,22 @@ import { getCollection } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 import ArticleSeriesIndex from "../../layouts/ArticleSeriesIndex.astro";
 import {
-    getSeriesNavigation,
-    getSeriesContent,
-    getSeriesList,
-    getNormalizedPostData,
+  getSeriesNavigation,
+  getSeriesContent,
+  getSeriesList,
+  getNormalizedPostData,
 } from "../../utils/article";
 import { ChevronRight, ChevronLeft, Map } from "lucide-react";
 
 export async function getStaticPaths() {
-    const articles = await getCollection("article");
-    return articles.map((article) => {
-        const slug = article.slug.replace(/\/index$/, "");
-        return {
-            params: { slug },
-            props: { article },
-        };
-    });
+  const articles = await getCollection("article");
+  return articles.map((article) => {
+    const slug = article.slug.replace(/\/index$/, "");
+    return {
+      params: { slug },
+      props: { article },
+    };
+  });
 }
 
 const { article } = Astro.props;
@@ -33,76 +33,79 @@ const isSeriesIndex = seriesData && seriesData.isSeriesIndex;
 ---
 
 {
-    isSeriesIndex ? (
-        <ArticleSeriesIndex
-            title={article.data.title}
-            date={article.data.date}
-            image={article.data.image}
-            desc={article.data.desc}
-            authorId={article.data.authorId}
-            chapters={seriesData.chapters}
-        >
-            <Content />
-        </ArticleSeriesIndex>
-    ) : (
-        <BlogPost
-            frontmatter={normalizedPost}
-            headings={headings}
-            seriesList={seriesList}
-        >
-            <Content />
+  isSeriesIndex ? (
+    <ArticleSeriesIndex
+      title={article.data.title}
+      date={article.data.date}
+      image={article.data.image}
+      desc={article.data.desc}
+      authorId={article.data.authorId}
+      chapters={seriesData.chapters}
+      articleImages={normalizedPost.images}
+      articleVideos={normalizedPost.videos}
+      wordCount={normalizedPost.wordCount}
+      keywords={normalizedPost.keywords}
+    >
+      <Content />
+    </ArticleSeriesIndex>
+  ) : (
+    <BlogPost
+      frontmatter={normalizedPost}
+      headings={headings}
+      seriesList={seriesList}
+    >
+      <Content />
 
-            {navigation && (
-                <nav class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-4">
-                    {navigation.prev ? (
-                        <a
-                            href={`/article/${navigation.prev.slug}`}
-                            class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all text-left max-w-[48%]"
-                        >
-                            <ChevronLeft className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
-                            <div>
-                                <div class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">
-                                    Previous
-                                </div>
-                                <div class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors line-clamp-1">
-                                    {navigation.prev.data.title}
-                                </div>
-                            </div>
-                        </a>
-                    ) : (
-                        <div />
-                    )}
+      {navigation && (
+        <nav class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-4">
+          {navigation.prev ? (
+            <a
+              href={`/article/${navigation.prev.slug}`}
+              class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all text-left max-w-[48%]"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+              <div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">
+                  Previous
+                </div>
+                <div class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors line-clamp-1">
+                  {navigation.prev.data.title}
+                </div>
+              </div>
+            </a>
+          ) : (
+            <div />
+          )}
 
-                    {navigation.seriesIndex !== undefined && (
-                        <div class="hidden sm:flex flex-col items-center justify-center text-sm text-gray-500">
-                            <Map className="w-4 h-4 mb-1" />
-                            <span>
-                                Part {navigation.seriesIndex} of{" "}
-                                {navigation.total}
-                            </span>
-                        </div>
-                    )}
+          {navigation.seriesIndex !== undefined && (
+            <div class="hidden sm:flex flex-col items-center justify-center text-sm text-gray-500">
+              <Map className="w-4 h-4 mb-1" />
+              <span>
+                Part {navigation.seriesIndex} of {navigation.total}
+              </span>
+            </div>
+          )}
 
-                    {navigation.next ? (
-                        <a
-                            href={`/article/${navigation.next.slug}`}
-                            class="group flex items-center justify-end gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all text-right max-w-[48%]"
-                        >
-                            <div>
-                                <div class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">
-                                    Next
-                                </div>
-                                <div class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors line-clamp-1">
-                                    {navigation.next.data.title}
-                                </div>
-                            </div>
-                            <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
-                        </a>
-                    ) : (
-                        <div />
-                    )}
-                </nav>
-            )}
-        </BlogPost>
-    )
+          {navigation.next ? (
+            <a
+              href={`/article/${navigation.next.slug}`}
+              class="group flex items-center justify-end gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all text-right max-w-[48%]"
+            >
+              <div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">
+                  Next
+                </div>
+                <div class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors line-clamp-1">
+                  {navigation.next.data.title}
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+            </a>
+          ) : (
+            <div />
+          )}
+        </nav>
+      )}
+    </BlogPost>
+  )
 }

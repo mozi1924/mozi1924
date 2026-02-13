@@ -31,19 +31,23 @@ const currentPath = normalizePath(pathname);
 
   <!-- Content Layer -->
   <div
-    class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-30 pointer-events-auto"
+    class="max-w-7xl mx-auto px-6 h-16 flex items-center relative z-30 pointer-events-auto"
   >
-    <a href="/" class="flex items-center gap-2 group/logo text-white">
-      <div class="relative w-8 h-8 flex items-center justify-center">
-        <img
-          src={SITE.favicon}
-          alt={`${SITE.title} Logo`}
-          class="w-8 h-8 group-hover/logo:scale-110 transition-transform duration-300"
-        />
-      </div>
-      <span class="font-bold text-lg tracking-tight">{SITE.title}</span>
-    </a>
+    <!-- Left: Logo -->
+    <div class="flex-1 flex items-center">
+      <a href="/" class="flex items-center gap-2 group/logo text-white">
+        <div class="relative w-8 h-8 flex items-center justify-center">
+          <img
+            src={SITE.favicon}
+            alt={`${SITE.title} Logo`}
+            class="w-8 h-8 group-hover/logo:scale-110 transition-transform duration-300"
+          />
+        </div>
+        <span class="font-bold text-lg tracking-tight">{SITE.title}</span>
+      </a>
+    </div>
 
+    <!-- Center: Navigation Links -->
     <nav class="hidden md:flex items-center gap-2">
       {
         NAV_LINKS.map((link) => {
@@ -65,13 +69,11 @@ const currentPath = normalizePath(pathname);
           );
         })
       }
-      <Search variant="icon" type="trigger" />
     </nav>
 
-    <div class="flex items-center gap-2">
-      <div class="md:hidden">
-        <Search variant="icon" type="trigger" />
-      </div>
+    <!-- Right: Actions -->
+    <div class="flex-1 flex items-center justify-end gap-2">
+      <Search variant="icon" type="trigger" />
       <button
         id="mobile-menu-btn"
         class="md:hidden text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all focus:outline-none relative w-10 h-10 flex items-center justify-center"

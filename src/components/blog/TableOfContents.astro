@@ -41,10 +41,12 @@ const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
                     class="absolute bottom-0 left-0 w-full max-h-[80vh] bg-[#1a1a1a] rounded-t-2xl border-t border-white/10 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col"
                 >
                     <div
-                        class="flex items-center justify-between border-b border-white/10 px-4"
+                        class="grid grid-cols-[3rem_1fr_3rem] items-center border-b border-white/10 px-2"
                     >
-                        <div class="flex-1 flex">
-                             <div class="relative flex w-full">
+                        <div class="w-12"></div> <!-- Spacer to balance the close button -->
+                        
+                        <div class="flex-1 flex justify-center">
+                             <div class="relative flex w-full max-w-[240px]">
                                 {seriesList && (
                                     <div 
                                         id="mobile-tab-indicator" 
@@ -54,26 +56,30 @@ const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
                                 )}
                                 <button
                                     id="mobile-tab-toc-btn"
-                                    class={`relative z-10 flex-1 py-4 text-xs font-bold text-white transition-all`}
+                                    class={`relative z-10 flex-1 py-4 text-xs font-bold text-white transition-all text-center`}
                                 >
                                     On this page
                                 </button>
                                 {seriesList && (
                                     <button
                                         id="mobile-tab-series-btn"
-                                        class="relative z-10 flex-1 py-4 text-xs font-medium text-gray-400 hover:text-white transition-all"
+                                        class="relative z-10 flex-1 py-4 text-xs font-medium text-gray-400 hover:text-white transition-all text-center"
                                     >
                                         Series
                                     </button>
                                 )}
                             </div>
                         </div>
-                        <button
-                            id="mobile-toc-close"
-                            class="text-gray-400 hover:text-white p-2 ml-4"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
+
+                        <div class="flex justify-end pr-2">
+                            <button
+                                id="mobile-toc-close"
+                                class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/5 transition-colors z-20"
+                                aria-label="Close"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
 
                     <div class="overflow-y-auto p-4 space-y-1 pb-10">
