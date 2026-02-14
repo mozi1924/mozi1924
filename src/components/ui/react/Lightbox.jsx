@@ -39,7 +39,7 @@ export default function Lightbox({ items }) {
             // Unlocking with a delay to allow the fade-out animation
             scrollLock.unlock(400);
         }
-    }, [selectedIndex]);
+    }, [selectedIndex !== null]);
 
     // Close on escape key
     useEffect(() => {

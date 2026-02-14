@@ -233,10 +233,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       scrollLock.unlock(300);
     }
     return () => {
-      // Cleanup on unmount
+      // Cleanup on unmount or when state changes
       scrollLock.clear();
     };
-  }, [activeParent]);
+  }, [activeParent !== null]);
 
   // Handle Deep Linking (Local & Server)
   useEffect(() => {
