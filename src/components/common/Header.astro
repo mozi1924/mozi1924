@@ -21,11 +21,12 @@ const currentPath = normalizePath(pathname);
 <header
   id="main-header"
   class="fixed top-0 w-full z-50 pointer-events-none group"
+  transition:persist
 >
   <!-- Background Layer -->
   <div
     id="header-bg"
-    class="absolute inset-0 h-16 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-all duration-500 z-10 pointer-events-auto"
+    class="absolute inset-0 h-16 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-[border-color] duration-500 z-10 pointer-events-auto"
   >
   </div>
 
@@ -48,7 +49,15 @@ const currentPath = normalizePath(pathname);
     </div>
 
     <!-- Center: Navigation Links -->
-    <nav class="hidden md:flex items-center gap-2">
+    <nav
+      id="desktop-nav"
+      class="hidden md:flex items-center gap-1 relative px-1 py-1 bg-white/[0.03] rounded-xl border border-white/5"
+    >
+      <div
+        id="nav-indicator"
+        class="absolute bg-white/10 rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
+      >
+      </div>
       {
         NAV_LINKS.map((link) => {
           const isActive =
@@ -58,12 +67,14 @@ const currentPath = normalizePath(pathname);
           return (
             <a
               href={link.href}
-              class={`text-sm font-medium transition-all px-3 py-2 rounded-lg ${
-                isActive
-                  ? "text-[#3F89FC] bg-white/5"
-                  : "text-gray-300 hover:text-white hover:bg-white/5"
+              data-nav-link
+              data-href={link.href}
+              class={`relative z-10 text-sm font-medium transition-colors px-4 py-2 rounded-lg group/link ${
+                isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
               }`}
             >
+              {/* Separate hover background - only fades in/out, doesn't move */}
+              <div class="absolute inset-0 bg-white/[0.04] rounded-lg opacity-0 group-hover/link:opacity-100 transition-opacity duration-200 -z-10 pointer-events-none" />
               {link.name}
             </a>
           );
@@ -128,6 +139,8 @@ const currentPath = normalizePath(pathname);
             return (
               <a
                 href={link.href}
+                data-mobile-link
+                data-href={link.href}
                 class={`mobile-link text-2xl font-medium transition-colors ${
                   isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
                 }`}
@@ -273,6 +286,7 @@ const currentPath = normalizePath(pathname);
         }
       };
 
+      // @ts-ignore
       btn.onclick = (e) => {
         e.stopPropagation();
         toggleMenu();
@@ -291,9 +305,96 @@ const currentPath = normalizePath(pathname);
     }
   };
 
+  const setupDesktopNav = () => {
+    const nav = document.getElementById("desktop-nav");
+    const indicator = document.getElementById("nav-indicator");
+    const links = document.querySelectorAll("[data-nav-link]");
+
+    if (!nav || !indicator) return;
+
+    const updateIndicator = (el: Element | null) => {
+      if (el) {
+        const target = el as HTMLElement;
+        const rect = target.getBoundingClientRect();
+        const navRect = nav.getBoundingClientRect();
+
+        indicator.style.width = `${rect.width}px`;
+        indicator.style.height = `${rect.height}px`;
+        indicator.style.left = `${rect.left - navRect.left}px`;
+        indicator.style.top = `${rect.top - navRect.top}px`;
+        indicator.style.opacity = "1";
+      } else {
+        indicator.style.opacity = "0";
+      }
+    };
+
+    const getActiveLink = () => {
+      const pathname = window.location.pathname;
+      const normalizePath = (path: string) => path.replace(/\/$/, "") || "/";
+      const currentPath = normalizePath(pathname);
+
+      let activeLink: Element | null = null;
+      links.forEach((link) => {
+        const href = link.getAttribute("data-href");
+        const isActive =
+          href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+        if (isActive) activeLink = link;
+      });
+      return activeLink;
+    };
+
+    // Initial position - only update to active link
+    setTimeout(() => {
+      updateIndicator(getActiveLink());
+    }, 100);
+
+    // Remove mouseenter/mouseleave movement listeners to prevent indicator from following hover
+    window.addEventListener("resize", () => {
+      updateIndicator(getActiveLink());
+    });
+  };
+
+  const updateActiveLinks = () => {
+    const pathname = window.location.pathname;
+    const normalizePath = (path: string) => path.replace(/\/$/, "") || "/";
+    const currentPath = normalizePath(pathname);
+
+    // Desktop links
+    document.querySelectorAll("[data-nav-link]").forEach((link) => {
+      const href = link.getAttribute("data-href");
+      const isActive =
+        href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+
+      if (isActive) {
+        link.classList.add("text-[#3F89FC]");
+        link.classList.remove("text-gray-300", "hover:text-white");
+      } else {
+        link.classList.remove("text-[#3F89FC]");
+        link.classList.add("text-gray-300", "hover:text-white");
+      }
+    });
+
+    // Mobile links
+    document.querySelectorAll("[data-mobile-link]").forEach((link) => {
+      const href = link.getAttribute("data-href");
+      const isActive =
+        href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+
+      if (isActive) {
+        link.classList.add("text-[#3F89FC]");
+        link.classList.remove("text-gray-300", "hover:text-white");
+      } else {
+        link.classList.remove("text-[#3F89FC]");
+        link.classList.add("text-gray-300", "hover:text-white");
+      }
+    });
+  };
+
   document.addEventListener("astro:page-load", () => {
+    updateActiveLinks();
     initProgressBar();
     setupMobileMenu();
+    setupDesktopNav();
     // Ensure scroll is unlocked on page load if it was locked
     scrollLock.clear();
   });

@@ -8,11 +8,14 @@ export function initScrollPersistence() {
     const articleContainer = document.getElementById("article-main-container");
     if (!articleContainer) return;
 
-    const path = window.location.pathname;
+    const rangePath = window.location.pathname;
+    const path = rangePath.endsWith('/') && rangePath.length > 1 ? rangePath.slice(0, -1) : rangePath;
     const storageKey = `scroll-position-${path}`;
     
-    // Save this as the absolute last read article
-    localStorage.setItem("last-read-article", path);
+    // Save this as the absolute last read article (excluding about page)
+    if (path !== "/about" && path !== "/about/") {
+        localStorage.setItem("last-read-article", path);
+    }
     
     // Flag to prevent saving during restoration phase
     let isInitialized = false;
