@@ -4,6 +4,7 @@ import CommentSection from "../components/blog/CommentSection";
 import BusinessCard from "../components/ui/BusinessCard.astro";
 import TableOfContents from "../components/blog/TableOfContents.astro";
 import SeriesTabs from "../components/blog/SeriesTabs.astro";
+import LicenseCard from "../components/blog/LicenseCard.astro";
 import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
 
 import type { CollectionEntry } from "astro:content";
@@ -150,16 +151,25 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
       }
 
       <!-- Article Content -->
-      <article
-        class="min-w-0 break-words prose prose-lg prose-invert text-gray-300 max-w-none
-        prose-headings:text-white prose-headings:font-bold prose-headings:scroll-mt-24
-        prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-        prose-strong:text-white prose-code:text-blue-300
-        prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-white/10
-        prose-img:rounded-xl prose-img:shadow-lg prose-img:mx-auto"
-      >
-        <slot />
-      </article>
+      <div class="min-w-0">
+        <article
+          class="break-words prose prose-lg prose-invert text-gray-300 max-w-none
+          prose-headings:text-white prose-headings:font-bold prose-headings:scroll-mt-24
+          prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+          prose-strong:text-white prose-code:text-blue-300
+          prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-white/10
+          prose-img:rounded-xl prose-img:shadow-lg prose-img:mx-auto"
+        >
+          <slot />
+        </article>
+        <LicenseCard
+          title={frontmatter.title}
+          authorId={authorId}
+          pubDate={frontmatter.date}
+          url={Astro.url.pathname}
+          lang={frontmatter.lang}
+        />
+      </div>
 
       <!-- Table of Contents / Series Sidebar -->
       <aside class="hidden lg:block sticky top-24 space-y-4">

@@ -1,0 +1,154 @@
+---
+import { User, Calendar, Shield, Share2 } from "lucide-react";
+import { AUTHORS, DEFAULT_AUTHOR_ID, SITE } from "../../config";
+
+interface Props {
+  title: string;
+  authorId?: string;
+  pubDate: string;
+  url: string;
+  lang?: string;
+}
+
+const {
+  title,
+  authorId = DEFAULT_AUTHOR_ID,
+  pubDate,
+  url,
+  lang = "zh",
+} = Astro.props;
+const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
+const fullUrl = `${SITE.url}${url}`;
+
+const license = {
+  name: "CC BY-NC-SA 4.0",
+  url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+};
+
+const t = {
+  zh: {
+    author: "本文作者",
+    pubDate: "发布时间",
+    license: "版权声明",
+    link: "本文链接：",
+    notice: `本文采用 <a href="${license.url}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline font-bold">${license.name}</a> 许可协议。转载请注明出处！`,
+  },
+  en: {
+    author: "Author",
+    pubDate: "Published on",
+    license: "License",
+    link: "Article Link:",
+    notice: `This article is licensed under <a href="${license.url}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline font-bold">${license.name}</a>. Please credit the author when reposting!`,
+  },
+};
+
+const i18n = (lang?.startsWith("zh") ? t.zh : t.en) as typeof t.zh;
+---
+
+<div
+  class="relative overflow-hidden bg-[#1a1a1a] rounded-2xl border border-white/10 p-6 md:p-8 mt-12 mb-8 group transition-all duration-300 hover:border-blue-500/30 shadow-2xl"
+>
+  <!-- Decorative background elements -->
+  <div
+    class="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-500"
+  >
+  </div>
+  <div
+    class="absolute bottom-0 left-0 -mb-8 -ml-8 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-colors duration-500"
+  >
+  </div>
+
+  <div
+    class="relative z-10 flex flex-col md:flex-row gap-8 items-start text-left"
+  >
+    <!-- QR Code Placeholder or Avatar -->
+    <div class="hidden sm:block shrink-0">
+      <div
+        class="relative w-24 h-24 rounded-xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center p-2"
+      >
+        <img
+          src={author.avatar}
+          alt={author.name}
+          class="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent"
+        >
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 space-y-4">
+      <!-- Article Info -->
+      <div class="space-y-1">
+        <h3
+          class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-1"
+        >
+          {title}
+        </h3>
+        <p class="text-sm text-gray-500 flex items-start sm:items-center gap-2">
+          <Share2 className="w-4 h-4 shrink-0 mt-0.5 sm:mt-0" />
+          <span class="shrink-0">{i18n.link}</span>
+          <a
+            href={fullUrl}
+            class="text-blue-400 hover:text-blue-300 underline decoration-blue-500/30 underline-offset-4 transition-colors break-all"
+          >
+            {fullUrl}
+          </a>
+        </p>
+      </div>
+
+      <!-- Metadata Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex items-center gap-3 text-gray-400">
+          <div class="p-2 rounded-lg bg-white/5">
+            <User className="w-4 h-4" />
+          </div>
+          <div class="flex flex-col">
+            <span
+              class="text-[10px] uppercase tracking-wider text-gray-500 font-bold"
+              >{i18n.author}</span
+            >
+            <a
+              href={author.url}
+              class="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              {author.name}
+            </a>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 text-gray-400">
+          <div class="p-2 rounded-lg bg-white/5">
+            <Calendar className="w-4 h-4" />
+          </div>
+          <div class="flex flex-col">
+            <span
+              class="text-[10px] uppercase tracking-wider text-gray-500 font-bold"
+              >{i18n.pubDate}</span
+            >
+            <span class="text-sm font-medium text-gray-300">{pubDate}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- License Info -->
+      <div class="pt-2">
+        <div
+          class="flex items-start gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 group-hover:border-blue-500/20 transition-all"
+        >
+          <Shield className="w-5 h-5 text-blue-400 shrink-0 mt-1" />
+          <div class="flex flex-col gap-1">
+            <span class="text-sm font-semibold text-blue-400"
+              >{i18n.license}</span
+            >
+            <p
+              class="text-xs text-gray-400 leading-relaxed"
+              set:html={i18n.notice}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

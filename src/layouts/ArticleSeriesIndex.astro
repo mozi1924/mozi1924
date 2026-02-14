@@ -3,6 +3,7 @@ import Layout from "./Layout.astro";
 import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
 import { Calendar, User, Layers } from "lucide-react";
 import ArticleList from "../components/blog/ArticleList.astro";
+import LicenseCard from "../components/blog/LicenseCard.astro";
 
 interface Props {
   title: string;
@@ -130,6 +131,13 @@ const listItems = chapters.map((chapter) => ({
         <div class="prose prose-lg prose-invert max-w-none text-gray-300">
           <slot />
         </div>
+        <LicenseCard
+          title={title}
+          authorId={authorId}
+          pubDate={date}
+          url={Astro.url.pathname}
+          lang={lang}
+        />
       </div>
     </div>
 
