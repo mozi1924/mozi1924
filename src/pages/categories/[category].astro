@@ -52,7 +52,11 @@ const listItems = posts.map((post) => ({
 import { SITE } from "../../config";
 ---
 
-<Layout title={`Category: ${category}`} items={listItems}>
+<Layout
+  title={`Category: ${category}`}
+  description={`Browse all articles in the ${category} category. ${posts.length} articles found.`}
+  items={listItems}
+>
   <div class="pt-24 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
     <header class="text-center space-y-6 mb-16">
       <div
