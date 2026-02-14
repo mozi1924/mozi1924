@@ -5,7 +5,20 @@
 
 export function initReadingProgress() {
     const progressBar = document.getElementById("reading-progress-bar");
-    if (!progressBar) return;
+    const container = document.getElementById("reading-progress-container");
+    if (!progressBar || !container) return;
+
+    // Check if progress bar should be enabled for the current page
+    const shouldEnable = document.body.dataset.readingProgress === "true";
+
+    if (!shouldEnable) {
+        container.style.opacity = "0";
+        progressBar.style.width = "0%";
+        return;
+    }
+
+    // Show the container
+    container.style.opacity = "1";
 
     // Determine scroll target (OverlayScrollbars compatible)
     const getScrollTarget = () => {
@@ -40,14 +53,10 @@ export function initReadingProgress() {
         if (articleContainer) {
             // Calculate based on specific container
             const containerRect = articleContainer.getBoundingClientRect();
-            // containerRect.top is relative to viewport. 
-            // The actual top position in the scrollable content is:
             const containerTop = containerRect.top + currentScrollY;
             const containerHeight = containerRect.height;
             const windowHeight = clientHeight;
 
-            // Start counting when the top of the container is at the top of the viewport
-            // End counting when the bottom of the container hits the bottom of the viewport
             const start = containerTop;
             const end = containerTop + containerHeight - windowHeight;
 
@@ -70,19 +79,16 @@ export function initReadingProgress() {
         progressBar.style.width = `${scrolled}%`;
     };
 
-    // Remove previous listeners if any (optional safety)
-
     // Attach listeners
     scrollTarget.addEventListener("scroll", updateProgress);
     window.addEventListener("resize", updateProgress);
     updateProgress();
 
-    document.addEventListener(
-        "astro:before-swap",
-        () => {
-            scrollTarget.removeEventListener("scroll", updateProgress);
-            window.removeEventListener("resize", updateProgress);
-        },
-        { once: true }
-    );
+    // Store listener for removal on navigation
+    const cleanup = () => {
+        scrollTarget.removeEventListener("scroll", updateProgress);
+        window.removeEventListener("resize", updateProgress);
+    };
+
+    document.addEventListener("astro:before-swap", cleanup, { once: true });
 }

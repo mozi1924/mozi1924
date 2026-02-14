@@ -109,19 +109,16 @@ const currentPath = normalizePath(pathname);
   </div>
 
   <!-- Reading Progress Bar -->
-  {
-    enableReadingProgress && (
-      <div
-        id="reading-progress-container"
-        class="absolute top-16 left-0 w-full h-1 bg-transparent z-40 pointer-events-none"
-      >
-        <div
-          id="reading-progress-bar"
-          class="h-full bg-[#3F89FC] shadow-[0_0_15px_#3F89FC] w-0 transition-all duration-100 ease-out"
-        />
-      </div>
-    )
-  }
+  <div
+    id="reading-progress-container"
+    class="absolute top-16 left-0 w-full h-1 bg-transparent z-40 pointer-events-none opacity-0 transition-opacity duration-300"
+  >
+    <div
+      id="reading-progress-bar"
+      class="h-full bg-[#3F89FC] shadow-[0_0_15px_#3F89FC] w-0 transition-all duration-100 ease-out"
+    >
+    </div>
+  </div>
 
   <!-- Mobile Menu - Now inside header for stacking context -->
   <div id="mobile-menu" class="md:hidden menu-transition">
@@ -129,7 +126,15 @@ const currentPath = normalizePath(pathname);
       id="mobile-menu-content"
       class="h-full flex flex-col items-center pt-24 pb-8 px-6 opacity-0 content-transition overflow-y-auto"
     >
-      <div class="flex flex-col items-center space-y-8 w-full max-w-md">
+      <div
+        id="mobile-links-container"
+        class="flex flex-col items-center space-y-4 w-full max-w-[280px] relative"
+      >
+        <div
+          id="mobile-nav-indicator"
+          class="absolute bg-white/10 rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
+        >
+        </div>
         {
           NAV_LINKS.map((link) => {
             const isActive =
@@ -141,10 +146,11 @@ const currentPath = normalizePath(pathname);
                 href={link.href}
                 data-mobile-link
                 data-href={link.href}
-                class={`mobile-link text-2xl font-medium transition-colors ${
+                class={`mobile-link relative z-10 text-2xl font-medium transition-colors px-6 py-3 rounded-lg group/mobile-link w-full text-center ${
                   isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
                 }`}
               >
+                <div class="absolute inset-0 bg-white/[0.04] rounded-lg opacity-0 group-hover/mobile-link:opacity-100 transition-opacity duration-200 -z-10 pointer-events-none" />
                 {link.name}
               </a>
             );
@@ -250,43 +256,66 @@ const currentPath = normalizePath(pathname);
     const menu = document.getElementById("mobile-menu");
     const header = document.querySelector("header");
     const mobileLinks = document.querySelectorAll(".mobile-link");
+    const container = document.getElementById("mobile-links-container");
+    const indicator = document.getElementById("mobile-nav-indicator");
 
-    if (btn && menu && header) {
+    if (btn && menu && header && container && indicator) {
       let isOpen = false;
-
       let openTimeout: ReturnType<typeof setTimeout> | undefined;
-      let closeTimeout: ReturnType<typeof setTimeout> | undefined;
+
+      const updateIndicator = (el: Element | null) => {
+        if (el) {
+          const target = el as HTMLElement;
+          const rect = target.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          indicator.style.width = `${rect.width}px`;
+          indicator.style.height = `${rect.height}px`;
+          indicator.style.left = `${rect.left - containerRect.left}px`;
+          indicator.style.top = `${rect.top - containerRect.top}px`;
+          indicator.style.opacity = "1";
+        } else {
+          indicator.style.opacity = "0";
+        }
+      };
+
+      const getActiveLink = () => {
+        const pathname = window.location.pathname;
+        const normalizePath = (path: string) => path.replace(/\/$/, "") || "/";
+        const currentPath = normalizePath(pathname);
+
+        let activeLink: Element | null = null;
+        mobileLinks.forEach((link) => {
+          const href = link.getAttribute("data-href");
+          const isActive =
+            href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+          if (isActive) activeLink = link;
+        });
+        return activeLink;
+      };
 
       const toggleMenu = (forceClose = false) => {
         const shouldClose = forceClose || isOpen;
 
         clearTimeout(openTimeout);
-        clearTimeout(closeTimeout);
 
         if (shouldClose) {
           menu.classList.remove("is-open");
           header.classList.remove("is-menu-open");
-
-          // Delay restoring scrollbar until animation is finished
-          // This prevents the desktop scrollbar's layout shift from killing the animation
           scrollLock.unlock(600);
-
           isOpen = false;
         } else {
-          // 1. Lock scroll first
           scrollLock.lock();
-
-          // 2. Add an intentional delay to allow the browser to process
-          // scrollbar changes before starting the layout-sensitive animation.
           openTimeout = setTimeout(() => {
             menu.classList.add("is-open");
             header.classList.add("is-menu-open");
             isOpen = true;
+            // Update indicator when menu opens
+            setTimeout(() => updateIndicator(getActiveLink()), 100);
           }, 50);
         }
       };
 
-      // @ts-ignore
       btn.onclick = (e) => {
         e.stopPropagation();
         toggleMenu();
@@ -299,6 +328,8 @@ const currentPath = normalizePath(pathname);
       const handleResize = () => {
         if (window.innerWidth >= 768 && isOpen) {
           toggleMenu(true);
+        } else if (isOpen) {
+          updateIndicator(getActiveLink());
         }
       };
       window.addEventListener("resize", handleResize);
