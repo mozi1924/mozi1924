@@ -72,7 +72,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={lang} class="scroll-smooth">
+<html lang={lang} class="scroll-smooth bg-[#111]">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -102,8 +102,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
     <!-- Google AdSense -->
-    <meta name="google-adsense-account" content="ca-pub-9710599762617358">
+    <meta name="google-adsense-account" content="ca-pub-9710599762617358" />
 
+    <meta name="color-scheme" content="dark" />
     <Analytics />
     <ClientRouter />
     <StructuredData
@@ -174,11 +175,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </body>
 </html>
 
-<style>
+<style is:global>
   html,
   body {
     margin: 0;
     width: 100%;
     height: 100%;
+    background-color: #111;
+    color-scheme: dark;
   }
 </style>
