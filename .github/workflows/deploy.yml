@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          INDEXNOW_KEY: ${{ env.INDEXNOW_KEY }}
 
       - name: Publish to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name=mozi1924
