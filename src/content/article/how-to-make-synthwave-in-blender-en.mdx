@@ -195,9 +195,9 @@ Connect the `Color Ramp` output to an `Emission` node. Increase the strength sli
 
 ### 5. Math Combination: Making the Stripes
 
-We need to turn the continuous Z-axis into间断的 stripes. This uses a classic series of math operations: **Multiply → Fraction → Compare**.
+We need to turn the continuous Z-axis into intermittent stripes. This uses a classic series of math operations: **Multiply → Fraction → Compare**.
 
--   **Multiply**: Controls the stripe density. In the example, two branches are used, multiplying by slightly different values like `10.14` and `9.60`. This叠加 two slightly different frequencies, preventing the stripes from looking too rigid and creating more interesting detail.
+-   **Multiply**: Controls the stripe density. In the example, two branches are used, multiplying by slightly different values like `10.14` and `9.60`. This adds two slightly different frequencies, preventing the stripes from looking too rigid and creating more interesting detail.
 -   **Fraction**: Takes the fractional part of the value, turning the continuous line into a repeating sawtooth wave.
 -   **Greater Than**: Sets a threshold (e.g., 0.5). It binarizes the sawtooth wave: outputs 1 (white) where the value is greater than the threshold, otherwise 0 (black). Adjusting the threshold controls the stripe thickness.
 
