@@ -113,7 +113,13 @@ const listItems = chapters.map((chapter) => ({
         >
           {
             image ? (
-              <img src={image} alt={title} class="w-full h-full object-cover" />
+              <img
+                src={image}
+                alt={title}
+                class="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             ) : (
               <div class="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
                 <Layers className="w-20 h-20 text-gray-800" />

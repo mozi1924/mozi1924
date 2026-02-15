@@ -121,6 +121,8 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
               src={frontmatter.image}
               alt={frontmatter.title}
               class="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         )

@@ -71,6 +71,8 @@ export default function Lightbox({ items }) {
                             src={item.thumbnail}
                             alt={item.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-6 text-center">
                             <h3 className="text-white font-bold text-xl mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{item.title}</h3>
@@ -96,6 +98,7 @@ export default function Lightbox({ items }) {
                                     alt={currentItem.title}
                                     className="max-w-full max-h-full object-contain cursor-pointer"
                                     onClick={nextImage}
+                                    decoding="async"
                                 />
 
                                 {/* Navigation Buttons */}

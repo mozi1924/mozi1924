@@ -30,6 +30,9 @@ const seriesList = await getSeriesList(article.slug);
 
 const normalizedPost = getNormalizedPostData(article, "article");
 const isSeriesIndex = seriesData && seriesData.isSeriesIndex;
+
+import MDXImage from "../../components/blog/MDXImage.astro";
+const components = { img: MDXImage };
 ---
 
 {
@@ -46,7 +49,7 @@ const isSeriesIndex = seriesData && seriesData.isSeriesIndex;
       wordCount={normalizedPost.wordCount}
       keywords={normalizedPost.keywords}
     >
-      <Content />
+      <Content components={components} />
     </ArticleSeriesIndex>
   ) : (
     <BlogPost
@@ -54,7 +57,7 @@ const isSeriesIndex = seriesData && seriesData.isSeriesIndex;
       headings={headings}
       seriesList={seriesList}
     >
-      <Content />
+      <Content components={components} />
 
       {navigation && (
         <nav class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-4">

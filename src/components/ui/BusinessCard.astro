@@ -69,6 +69,8 @@ const getIcon = (network: string) => {
       src={avatar}
       alt={`${name} Avatar`}
       class="relative w-full h-full rounded-full object-cover border-2 border-white/10 group-hover:border-blue-500/50 transition-colors duration-300"
+      loading="lazy"
+      decoding="async"
     />
   </div>
 

@@ -5,33 +5,35 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer class="bg-[#0a0a0a] border-t border-white/5 py-12 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-6">
-        <div class="flex items-center gap-2">
-            <img
-                src={SITE.favicon}
-                alt={`${SITE.title} Logo`}
-                class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
-            />
-            <span class="text-gray-400 font-medium">{SITE.title}</span>
-        </div>
-
-        <div class="text-gray-500 text-sm text-center">
-            &copy; 2020 - {currentYear} Mozi1924. All rights reserved.
-        </div>
-
-        <div class="flex gap-6">
-            {
-                FOOTER_LINKS.map((link) => (
-                    <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-gray-400 hover:text-white transition-colors"
-                    >
-                        {link.name}
-                    </a>
-                ))
-            }
-        </div>
+  <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-6">
+    <div class="flex items-center gap-2">
+      <img
+        src={SITE.favicon}
+        alt={`${SITE.title} Logo`}
+        class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="text-gray-400 font-medium">{SITE.title}</span>
     </div>
+
+    <div class="text-gray-500 text-sm text-center">
+      &copy; 2020 - {currentYear} Mozi1924. All rights reserved.
+    </div>
+
+    <div class="flex gap-6">
+      {
+        FOOTER_LINKS.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-400 hover:text-white transition-colors"
+          >
+            {link.name}
+          </a>
+        ))
+      }
+    </div>
+  </div>
 </footer>

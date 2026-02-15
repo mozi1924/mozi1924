@@ -46,6 +46,8 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
                     src={item.metadata.data.image}
                     alt={item.metadata.data.title}
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <div class="w-full h-full flex items-center justify-center text-gray-700">
@@ -100,6 +102,8 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
                     src={item.metadata.data.image}
                     alt={item.metadata.data.title}
                     class="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <div class="w-full h-full bg-[#222] flex items-center justify-center text-gray-800">
@@ -151,6 +155,8 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
                   src={data.image}
                   alt={data.title}
                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div class="w-full h-full flex items-center justify-center text-gray-700">
@@ -198,6 +204,8 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
                   src={data.image}
                   alt={data.title}
                   class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div class="w-full h-full bg-[#222] flex items-center justify-center text-gray-800">
