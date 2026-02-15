@@ -35,22 +35,18 @@ export const generateBlogRedirects = () => {
       const slug = file.replace(/\.mdx?$/, '');
 
       // Ensure date parts are padded (e.g. 2024-6-8 -> 2024/06/08)
-      const dateParts = dateStr.split(/[-/]/).map(num => num.padStart(2, '0'));
-      const [year, month, day] = dateParts;
+      const [year, month, day] = dateStr.split(/[-/]/).map(num => num.padStart(2, '0'));
 
-      const oldPathNoSlash = `/${year}/${month}/${day}/${slug}`;
-      const oldPathWithSlash = `/${year}/${month}/${day}/${slug}/`;
+      const oldPath = `/${year}/${month}/${day}/${slug}/`;
       const newPath = `/blogs/${slug}/`;
 
-      // Add redirects
-      redirects[oldPathNoSlash] = newPath;
-      redirects[oldPathWithSlash] = newPath;
+      // Add redirect
+      redirects[oldPath] = newPath;
     }
   });
 
-  // Generate Category Redirects: /[category] and /[category]/ -> /categories/[category]/
+  // Generate Category Redirects: /[category]/ -> /categories/[category]/
   categoriesSet.forEach(cat => {
-    redirects[`/${cat}`] = `/categories/${cat}/`;
     redirects[`/${cat}/`] = `/categories/${cat}/`;
   });
 
