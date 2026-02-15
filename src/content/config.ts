@@ -9,6 +9,7 @@ const baseSchema = z.object({
     authorId: z.string().optional(),
     lang: z.string().optional(),
     pageType: z.enum(["article", "blog", "website", "profile"]).optional(),
+    draft: z.boolean().optional().default(false),
 });
 
 const articleCollection = defineCollection({

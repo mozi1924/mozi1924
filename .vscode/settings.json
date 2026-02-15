@@ -1,5 +1,10 @@
 {
   "path-intellisense.mappings": {
-    "/": "${workspaceFolder}/public"
-  }
+    "/": "${workspaceFolder}/public",
+    "@": "${workspaceFolder}/src",
+    "/assets": "${workspaceFolder}/public/assets"
+  },
+  "path-intellisense.absolutePathToWorkspace": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "mdx.server.root": "${workspaceFolder}"
 }

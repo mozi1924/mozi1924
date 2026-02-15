@@ -19,7 +19,12 @@ export interface SingleArticle {
 export type ArticleItem = SeriesGroup | SingleArticle;
 
 export async function getArticleList(collection: "article" | "blog" = "article"): Promise<ArticleItem[]> {
-    const allArticles = await getCollection(collection);
+    const allArticles = (await getCollection(collection)).filter(item => {
+        if (import.meta.env.PROD) {
+            return !item.data.draft;
+        }
+        return true;
+    });
     const items: ArticleItem[] = [];
 
     // Group by root folder

@@ -1,0 +1,36 @@
+{
+	"MDX Frontmatter": {
+		"prefix": "frontmatter",
+		"body": [
+			"---",
+			"lang: ${1|zh,en|}",
+			"title: \"$2\"",
+			"date: \"${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}\"",
+			"desc: \"$3\"",
+			"image: \"/assets/$4/cover.webp\"",
+			"draft: ${5|true,false|}",
+			"---",
+			"",
+			"# $2",
+			"",
+			"$0"
+		],
+		"description": "Generate MDX frontmatter"
+	},
+	"MDX Image": {
+		"prefix": "img",
+		"body": [
+			"![$1]($2)"
+		],
+		"description": "Standard Markdown Image"
+	},
+	"License Card": {
+		"prefix": "license",
+		"body": [
+			"import LicenseCard from \"../../components/blog/LicenseCard.astro\";",
+			"",
+			"<LicenseCard />"
+		],
+		"description": "Insert License Card"
+	}
+}
