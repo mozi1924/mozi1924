@@ -11,6 +11,8 @@ image: "/assets/qwen3-tts-finetuning-zh/cover.webp"
 
 ---
 
+Read this article in English: [Qwen3-TTS Fine-tuning Complete Guide: Train Your Own Voice Model from Scratch](/article/qwen3-tts-finetuning-en)
+
 ## 为什么你需要微调，而不是仅仅用零样本克隆？
 
 最近 AI 语音克隆非常火爆，你或许听说过“只需几秒钟音频就能克隆任何人的声音”。这种技术叫 **零样本语音克隆（Zero-shot TTS）**，确实方便快捷。但它有一个致命缺陷：**稳定性差**。同一句话生成两次，音色可能忽远忽近；说不同句子时，声音甚至会“飘”成另一个人。

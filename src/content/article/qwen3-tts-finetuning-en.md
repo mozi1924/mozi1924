@@ -2,14 +2,16 @@
 lang: en
 title: "Qwen3-TTS Fine-tuning Complete Guide: Train Your Own Voice Model from Scratch"
 date: "2026-02-22"
-desc: "Want AI to read novels with your voice? Need a custom voice for video characters? This article provides a step-by-step guide to using the Qwen3-TTS Easy Finetuning tool to create a stable, natural, cross-lingual, accent-free专属 voice model."
+desc: "Want AI to read novels with your voice? Need a custom voice for video characters? This article provides a step-by-step guide to using the Qwen3-TTS Easy Finetuning tool to create a stable, natural, cross-lingual, accent-free voice model."
 image: "/assets/qwen3-tts-finetuning-en/cover.webp"
 ---
 
 > Want AI to read novels with your voice? Need a custom voice for video characters?
-> This article provides a step-by-step guide to using the **Qwen3-TTS Easy Finetuning** tool to create a stable, natural, cross-lingual, accent-free专属 voice model through fine-tuning.
+> This article provides a step-by-step guide to using the **Qwen3-TTS Easy Finetuning** tool to create a stable, natural, cross-lingual, accent-free voice model through fine-tuning.
 
 ---
+
+阅读本文的中文版本：[Qwen3-TTS微调完全指南：从零开始训练你的专属声音模型](/article/qwen3-tts-finetuning)
 
 ## Why You Need Fine-tuning, Not Just Zero-shot Cloning?
 
