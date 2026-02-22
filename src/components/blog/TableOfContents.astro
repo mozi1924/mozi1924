@@ -133,12 +133,12 @@ const { headings, hideOnDesktop = false, seriesList = null } = Astro.props;
 
 {
     headings.length > 0 && !hideOnDesktop && (
-        <div class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg">
-            <h2 class="text-white font-bold mb-4 flex items-center gap-2">
+        <div class="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 shadow-lg flex flex-col max-h-[calc(100vh-160px)]">
+            <h2 class="text-white font-bold mb-4 flex items-center gap-2 shrink-0">
                 <List className="w-5 h-5" />
                 On this page
             </h2>
-            <nav class="space-y-1">
+            <nav class="space-y-1 overflow-y-auto flex-1 custom-scrollbar pr-2">
                 {headings.map((heading) => (
                     <a
                         href={`#${heading.slug}`}
