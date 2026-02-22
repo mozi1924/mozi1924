@@ -130,7 +130,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link
       rel="alternate"
       type="application/rss+xml"
-      title="Mozi's Blog RSS Feed"
+      title={`${SITE.title} - Articles`}
+      href="/rss-articles.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.title} - Blogs`}
+      href="/rss-blogs.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.title} - All Content`}
       href="/rss.xml"
     />
   </head>

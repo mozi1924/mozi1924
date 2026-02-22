@@ -22,5 +22,5 @@ export const FOOTER_LINKS: FooterLink[] = [
     { name: "Mozi Store", href: "https://store.mozi1924.com/" },
     { name: "YouTube", href: "https://www.youtube.com/@moziarasaka" },
     { name: "Bilibili", href: "https://space.bilibili.com/434156493" },
-    { name: "RSS", href: "/rss.xml" },
+    { name: "RSS", href: "/rss" },
 ];
