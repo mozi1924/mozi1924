@@ -257,6 +257,7 @@ export interface NormalizedPost {
     wordCount: number;
     lang: string;
     keywords: string;
+    translations?: { lang: string; url: string }[];
 }
 
 /**
@@ -270,6 +271,16 @@ export function getNormalizedPostData(post: CollectionEntry<"blog"> | Collection
     
     // Default language handling: if 'zh' is used, refine to 'zh-CN' for better SEO
     const lang = post.data.lang === 'zh' ? 'zh-CN' : (post.data.lang || 'en');
+
+    // Handle translations
+    const alternates = (post.data as any).translations || [];
+    const translations = [
+        { lang, url: `/${type}/${post.slug}` },
+        ...alternates.map((t: any) => ({
+            lang: t.lang === 'zh' ? 'zh-CN' : t.lang,
+            url: `/${type}/${t.slug}`
+        }))
+    ];
 
     return {
         title: post.data.title,
@@ -286,6 +297,7 @@ export function getNormalizedPostData(post: CollectionEntry<"blog"> | Collection
         videos: bodyVideos,
         wordCount,
         lang,
-        keywords: (post.data as any).keywords || ""
+        keywords: (post.data as any).keywords || "",
+        translations
     };
 }

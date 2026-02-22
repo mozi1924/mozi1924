@@ -26,6 +26,7 @@ type BlogPostFrontmatter = {
   videos?: { url: string }[];
   keywords?: string;
   wordCount?: number;
+  translations?: { lang: string; url: string }[];
 };
 
 type Props = {
@@ -69,6 +70,7 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
   articleVideos={frontmatter.videos}
   wordCount={frontmatter.wordCount}
   keywords={frontmatter.keywords}
+  translations={frontmatter.translations}
 >
   <div
     id="article-main-container"

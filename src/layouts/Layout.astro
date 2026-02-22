@@ -32,6 +32,7 @@ interface Props {
   articleVideos?: { url: string }[];
   keywords?: string;
   wordCount?: number;
+  translations?: { lang: string; url: string }[];
 }
 
 const {
@@ -53,6 +54,7 @@ const {
   articleVideos,
   keywords = SITE.keywords,
   wordCount,
+  translations,
 } = Astro.props;
 
 // Map ISO 639-1 to OpenGraph Locale (simplified)
@@ -175,6 +177,15 @@ const isArticle = pageType === "article" || pageType === "blog";
       title={`${SITE.title} - All Content`}
       href="/rss.xml"
     />
+    {
+      translations?.map((t: { lang: string; url: string }) => (
+        <link
+          rel="alternate"
+          hreflang={t.lang}
+          href={new URL(t.url, Astro.site)}
+        />
+      ))
+    }
   </head>
   <body
     class="scroll-smooth bg-[#111] text-white font-sans antialiased min-h-screen flex flex-col"

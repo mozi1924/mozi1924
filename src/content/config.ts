@@ -10,6 +10,10 @@ const baseSchema = z.object({
     lang: z.string().optional(),
     pageType: z.enum(["article", "blog", "website", "profile"]).optional(),
     draft: z.boolean().optional().default(false),
+    translations: z.array(z.object({
+        lang: z.string(),
+        slug: z.string(),
+    })).optional(),
 });
 
 const articleCollection = defineCollection({

@@ -3,7 +3,10 @@ lang: en
 title: "Qwen3-TTS Fine-tuning Complete Guide: Train Your Own Voice Model from Scratch"
 date: "2026-02-22"
 desc: "Want AI to read novels with your voice? Need a custom voice for video characters? This article provides a step-by-step guide to using the Qwen3-TTS Easy Finetuning tool to create a stable, natural, cross-lingual, accent-free voice model."
-image: "/assets/qwen3-tts-finetuning-en/cover.webp"
+image: "/assets/qwen3-tts-finetuning/cover.webp"
+translations:
+  - lang: zh
+    slug: qwen3-tts-finetuning-zh
 ---
 
 > Want AI to read novels with your voice? Need a custom voice for video characters?
@@ -113,9 +116,10 @@ You can specify a `ref.wav` as a reference audio in the `raw-dataset` folder and
 
 #### 1.2 Run Step 1: Audio Segmentation
 
-![Step-1](/assets/qwen3-tts-finetuning-en/step-1.webp)
+![Step-1](/assets/qwen3-tts-finetuning/step-1.webp)
 
 In the WebUI:
+
 - **Speaker Name**: Enter a name to identify your speaker, e.g., `my_speaker`.
 - **Raw WAVs Directory**: Enter the path to the raw audio. For Docker, default is `/workspace/raw-dataset`.
 - **Reference Audio Path**: Optional. Provide a reference audio (e.g., 5 seconds of clean voice) for timbre reference. The program will automatically resample it to 24kHz.
@@ -125,7 +129,7 @@ The program will analyze the audio, automatically remove silent segments, split 
 
 #### 1.3 Run Step 2: ASR Transcription
 
-![Step-2](/assets/qwen3-tts-finetuning-en/step-2.webp)
+![Step-2](/assets/qwen3-tts-finetuning/step-2.webp)
 
 This step uses an ASR model to automatically recognize the content of each audio clip and generate text annotations.
 
@@ -142,7 +146,7 @@ Wait for the progress bar to complete. You will get `final-dataset/my_speaker/tt
 
 #### 2.1 Select or Create a New Experiment
 
-![Step-0](/assets/qwen3-tts-finetuning-en/step-0.webp)
+![Step-0](/assets/qwen3-tts-finetuning/step-0.webp)
 
 - **Experiment Name**: Enter a name, e.g., `my_first_voice`. If you've trained before, you can select it from the dropdown, and the configuration will load automatically.
 - **Select Target Speaker Data**: Confirm it's your dataset.
@@ -152,7 +156,7 @@ Wait for the progress bar to complete. You will get `final-dataset/my_speaker/tt
 
 Switch to the **Training** tab. Hold on, we need to complete data encoding first.
 
-![Step-3](/assets/qwen3-tts-finetuning-en/step-3.webp)
+![Step-3](/assets/qwen3-tts-finetuning/step-3.webp)
 
 - **Select Target Speaker Data**: Choose your dataset `my_speaker`.
 - **GPU Device for Tokenization**: Select the GPU.
@@ -168,7 +172,7 @@ This step uses Qwen3-TTS's specialized Tokenizer to convert audio into discrete 
 
 #### 2.4 Start Training
 
-![Step-4](/assets/qwen3-tts-finetuning-en/step-4.webp)
+![Step-4](/assets/qwen3-tts-finetuning/step-4.webp)
 
 Click **Start Training**. The log area below will display real-time training progress and loss values. You can open Tensorboard anytime during training to monitor progress (click **Jump to Tensorboard**).
 
@@ -182,7 +186,7 @@ After training, model checkpoints are saved in the `output/my_first_voice/` dire
 
 #### 3.1 Load Checkpoint
 
-![Step-5](/assets/qwen3-tts-finetuning-en/step-5.webp)
+![Step-5](/assets/qwen3-tts-finetuning/step-5.webp)
 
 - **Select Checkpoint**: Choose the checkpoint folder you just trained.
 - **Speaker Name**: This will auto-fill with the dataset name, usually no need to change.

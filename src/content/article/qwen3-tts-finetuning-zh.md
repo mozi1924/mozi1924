@@ -3,7 +3,10 @@ lang: zh
 title: "Qwen3-TTS 微调完全指南：从零开始训练你自己的语音模型"
 date: "2026-02-22"
 desc: "想让 AI 用你的声音朗读小说？想为视频角色定制专属音色？本文将手把手教你使用 Qwen3-TTS Easy Finetuning 工具，通过微调打造一个稳定、自然、跨语言无口音的专属语音模型。"
-image: "/assets/qwen3-tts-finetuning-zh/cover.webp"
+image: "/assets/qwen3-tts-finetuning/cover.webp"
+translations:
+  - lang: en
+    slug: qwen3-tts-finetuning-en
 ---
 
 > 想让 AI 用你的声音朗读小说？想为视频角色定制专属音色？  
@@ -113,9 +116,10 @@ WebUI 分为三个主要标签页，我们一步步操作。
 
 #### 1.2 运行 Step 1：音频分割
 
-![Step-1](/assets/qwen3-tts-finetuning-zh/step-1.webp)  
+![Step-1](/assets/qwen3-tts-finetuning/step-1.webp)
 
 在 WebUI 中：
+
 - **Speaker Name**：输入一个名字标识你的说话人，例如 `my_speaker`。
 - **Raw WAVs Directory**：输入存放原始音频的路径，Docker 默认为 `/workspace/raw-dataset`。
 - **Reference Audio Path**：可选，提供一个参考音频（如 5 秒的干净语音），用于后续音色参考，程序会自动重采样为 24kHz。
@@ -125,7 +129,7 @@ WebUI 分为三个主要标签页，我们一步步操作。
 
 #### 1.3 运行 Step 2：ASR 转录
 
-![Step-2](/assets/qwen3-tts-finetuning-zh/step-2.webp)  
+![Step-2](/assets/qwen3-tts-finetuning/step-2.webp)
 
 这一步用 ASR 模型自动识别每个音频片段的内容，生成文本标注。
 
@@ -136,15 +140,13 @@ WebUI 分为三个主要标签页，我们一步步操作。
 
 等待进度条走完，你会得到 `final-dataset/my_speaker/tts_train.jsonl`，每一行是 `{"audio": "路径", "text": "识别出的文字"}`。
 
-
-
 ---
 
 ### 🏋️ 标签页 2：训练（Training）
 
 #### 2.1 选择或新建实验
 
-![Step-0](/assets/qwen3-tts-finetuning-zh/step-0.webp)  
+![Step-0](/assets/qwen3-tts-finetuning/step-0.webp)
 
 - **Experiment Name**：输入一个名字，例如 `my_first_voice`。如果之前训练过，可以从下拉框选择，配置会自动加载。
 - **Select Target Speaker Data**：确认是你的数据集。
@@ -154,13 +156,14 @@ WebUI 分为三个主要标签页，我们一步步操作。
 
 切换到 **Training** 标签页，先别急，我们要继续完成数据编码。
 
-![Step-3](/assets/qwen3-tts-finetuning-zh/step-3.webp)  
+![Step-3](/assets/qwen3-tts-finetuning/step-3.webp)
 
 - **Select Target Speaker Data**：选择你的数据集 `my_speaker`。
 - **GPU Device for Tokenization**：选择 GPU。
 - 点击 **Tokenize Data**。
 
 这一步会使用 Qwen3-TTS 的专用 Tokenizer 将音频转换为离散编码，输出 `tts_train_with_codes.jsonl`，这是最终用于训练的文件。
+
 #### 2.3 设置训练参数
 
 - **Training Preset**：根据模型大小选择对应预设，系统会自动填入推荐的学习率、批次大小等。你也可以展开 **Advanced Training Options** 手动调整。
@@ -169,7 +172,7 @@ WebUI 分为三个主要标签页，我们一步步操作。
 
 #### 2.4 开始训练
 
-![Step-4](/assets/qwen3-tts-finetuning-zh/step-4.webp)  
+![Step-4](/assets/qwen3-tts-finetuning/step-4.webp)
 
 点击 **Start Training**，下方日志区会实时显示训练进度和损失值。训练过程中可以随时打开 Tensorboard 监控（点击 **Jump to Tensorboard**）。
 
@@ -183,7 +186,7 @@ WebUI 分为三个主要标签页，我们一步步操作。
 
 #### 3.1 加载检查点
 
-![Step-5](/assets/qwen3-tts-finetuning-zh/step-5.webp)  
+![Step-5](/assets/qwen3-tts-finetuning/step-5.webp)
 
 - **Select Checkpoint**：选择你刚刚训练好的检查点文件夹。
 - **Speaker Name**：会自动填充为数据集名，一般不需要改。
@@ -233,8 +236,6 @@ A：检查原始音频质量，训练数据中不要有底噪。可以在 Step 1
 如果你在操作中遇到任何问题，欢迎在 GitHub 仓库提交 Issue。也欢迎你分享微调后的成果！和社区分享你的经验，共同进步。
 
 > **项目地址**：[https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning](https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning)
-
-
 
 ---
 
