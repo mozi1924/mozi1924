@@ -11,7 +11,7 @@ image: "/assets/qwen3-tts-finetuning-en/cover.webp"
 
 ---
 
-阅读本文的中文版本：[Qwen3-TTS微调完全指南：从零开始训练你的专属声音模型](/article/qwen3-tts-finetuning)
+阅读本文的中文版本：[Qwen3-TTS微调完全指南：从零开始训练你的专属声音模型](/article/qwen3-tts-finetuning-zh)
 
 ## Why You Need Fine-tuning, Not Just Zero-shot Cloning?
 
