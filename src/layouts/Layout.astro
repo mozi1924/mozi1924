@@ -68,7 +68,15 @@ const ogLocale = ogLocaleMap[lang] || "en_US";
 const formattedTitle =
   title && title !== SITE.title ? `${title} - ${SITE.title}` : SITE.title;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// Standardize canonical URL: ensure it ends with a slash to match redirects and avoid SEO split
+const canonicalPath =
+  Astro.url.pathname.endsWith("/") ||
+  Astro.url.pathname.split("/").pop()?.includes(".")
+    ? Astro.url.pathname
+    : `${Astro.url.pathname}/`;
+const canonicalURL = new URL(canonicalPath, Astro.site);
+
+const isArticle = pageType === "article" || pageType === "blog";
 ---
 
 <!doctype html>
@@ -78,21 +86,43 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href={SITE.favicon} />
     <link rel="alternate icon" href="/favicon.ico" />
+    <link
+      rel="sitemap"
+      type="application/xml"
+      title="Sitemap"
+      href="/sitemap-index.xml"
+    />
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalURL} />
-    <meta name="robots" content="max-image-preview:large" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <title>{formattedTitle}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={isArticle ? "article" : "website"} />
     <meta property="og:locale" content={ogLocale} />
-    <meta property="og:logo" content={SITE.favicon} />
+    <meta property="og:logo" content={new URL(SITE.favicon, Astro.site).href} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={formattedTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:image" content={new URL(image, Astro.site).href} />
+
+    {
+      isArticle && (
+        <>
+          <meta
+            property="article:published_time"
+            content={pubDate ? new Date(pubDate).toISOString() : ""}
+          />
+          <meta
+            property="article:modified_time"
+            content={modDate ? new Date(modDate).toISOString() : ""}
+          />
+          <meta property="article:author" content={authorUrl} />
+        </>
+      )
+    }
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
