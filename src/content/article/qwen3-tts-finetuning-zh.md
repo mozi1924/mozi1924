@@ -1,7 +1,8 @@
 ---
 lang: zh
 title: "Qwen3-TTS 微调完全指南：从零开始训练你自己的语音模型"
-date: "2026-02-24"
+date: "2026-02-22"
+modDate: "2026-2-24"
 desc: "想让 AI 用你的声音朗读小说？想为视频角色定制专属音色？本文将手把手教你使用 Qwen3-TTS Easy Finetuning 工具，通过微调打造一个稳定、自然、跨语言无口音的专属语音模型。"
 image: "/assets/qwen3-tts-finetuning/cover.webp"
 translations:

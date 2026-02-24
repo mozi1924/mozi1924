@@ -1,7 +1,8 @@
 ---
 lang: en
 title: "Qwen3-TTS Fine-tuning Complete Guide: Train Your Own Voice Model from Scratch"
-date: "2026-02-24"
+date: "2026-02-22"
+modDate: "2026-2-24"
 desc: "Want AI to narrate novels with your voice? Looking to create custom timbres for video characters? This article will guide you step-by-step through using the Qwen3-TTS Easy Finetuning tool to build a stable, natural, and accent-free multilingual voice model."
 image: "/assets/qwen3-tts-finetuning/cover.webp"
 translations:
