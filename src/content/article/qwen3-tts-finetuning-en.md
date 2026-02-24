@@ -1,74 +1,73 @@
 ---
 lang: en
 title: "Qwen3-TTS Fine-tuning Complete Guide: Train Your Own Voice Model from Scratch"
-date: "2026-02-22"
-desc: "Want AI to read novels with your voice? Need a custom voice for video characters? This article provides a step-by-step guide to using the Qwen3-TTS Easy Finetuning tool to create a stable, natural, cross-lingual, accent-free voice model."
+date: "2026-02-24"
+desc: "Want AI to narrate novels with your voice? Looking to create custom timbres for video characters? This article will guide you step-by-step through using the Qwen3-TTS Easy Finetuning tool to build a stable, natural, and accent-free multilingual voice model."
 image: "/assets/qwen3-tts-finetuning/cover.webp"
 translations:
   - lang: zh
     slug: qwen3-tts-finetuning-zh
 ---
 
-> Want AI to read novels with your voice? Need a custom voice for video characters?
-> This article provides a step-by-step guide to using the **Qwen3-TTS Easy Finetuning** tool to create a stable, natural, cross-lingual, accent-free voice model through fine-tuning.
+> Want AI to narrate novels with your voice? Looking to create custom timbres for video characters?  
+> This article will guide you step-by-step through using the **Qwen3-TTS Easy Finetuning** tool to build a stable, natural, and accent-free multilingual voice model.
 
 ---
 
-阅读本文的中文版本：[Qwen3-TTS微调完全指南：从零开始训练你的专属声音模型](/article/qwen3-tts-finetuning-zh)
+Read this article in Chinese: [Qwen3-TTS 微调完全指南：从零开始训练你自己的语音模型](/article/qwen3-tts-finetuning-zh)
 
 ## Why You Need Fine-tuning, Not Just Zero-shot Cloning?
 
-AI voice cloning has become very popular recently. You might have heard of "cloning anyone's voice with just a few seconds of audio." This technology is called **Zero-shot TTS**, and it's indeed convenient and fast. But it has a fatal flaw: **instability**. Generating the same sentence twice might result in voices that sound distant or close; when speaking different sentences, the voice might even "drift" into sounding like another person.
+AI voice cloning has become incredibly popular recently. You might have heard that you can "clone anyone's voice with just a few seconds of audio." This technology is called **Zero-shot TTS**, and it's indeed convenient and fast. But it has a critical flaw: **poor stability**. Generate the same sentence twice, and the timbre might sound distant or close; when speaking different sentences, the voice might even "drift" into sounding like another person.
 
-Although Qwen3-TTS's zero-shot cloning works quite well, avoiding many of the issues mentioned above, it still has some shortcomings, such as:
+Although Qwen3-TTS's zero-shot cloning performs quite well and avoids many of the above issues, some shortcomings still exist, such as:
 
-- Cross-lingual output carries a native accent
-- Intonation is not natural enough
-- Emotional expression lacks richness
-- Slow
+- Accents present when speaking cross-lingually
+- Less natural intonation
+- Insufficient emotional expression
 
-If you're just experimenting casually, zero-shot cloning might suffice. But if you want to:
+If you're just experimenting, zero-shot cloning might suffice. But if you aim to:
 
-- Use a fixed voice for long-term video or podcast production;
-- Ensure a character maintains consistent tone across different scenes;
-- Have a model trained on a Chinese speaker sound like a native when speaking English;
+- Produce videos or podcasts long-term with a fixed voice;
+- Maintain consistent intonation for a character across different scenes;
+- Have a Chinese speaker's model sound like a native when speaking English;
 
 Then you need **Fine-tuning**.
 
-Fine-tuning is like letting the AI deeply learn all the pronunciation details of the target speaker, ultimately resulting in a **single-speaker model** — it specializes in imitating only this one voice, but achieves **extreme stability, naturalness, and the ability to understand emotional and speed instructions in natural language** (e.g., "say this in a sad tone," "speed up").
+Fine-tuning essentially allows the AI to deeply learn all the pronunciation details of the target speaker, ultimately resulting in a **single-speaker model** – it excels at imitating only this one voice but achieves **extremely high stability, naturalness, and the ability to understand emotional and pace instructions in natural language** (e.g., "speak in a sad tone," "speed up").
 
-> ⚠️ **Important Note**: The fine-tuned model is no longer a "cloning model" but a **fixed voice model**. It cannot switch to another person instantly like zero-shot cloning. If you need multi-voice dubbing, you can fine-tune one model for each character and switch between them.
+> ⚠️ **Important Note**: A fine-tuned model is no longer a "cloning model" but a **fixed voice model**. It cannot switch to another person on the fly like zero-shot cloning can. If you need multi-role dubbing, you can fine-tune one model per character and switch between them.
 
-Please stay tuned to this project; multi-speaker fine-tuning functionality will be released later.
+Good news! This project now leads the official release by **pioneering support for multi-speaker fine-tuning simultaneously!** You can customize voice models for multiple roles more efficiently in one go.
 
 ---
 
 ## What is Qwen3-TTS Easy Finetuning?
 
-This is an out-of-the-box toolkit I developed, based on the latest open-source **Qwen3-TTS** model from Alibaba's Tongyi Lab. It saves you from code writing and environment configuration hassles, allowing you to complete the entire process from raw audio to a专属 voice model through a graphical interface (WebUI) or simple commands.
+This is an out-of-the-box toolkit I developed, based on the latest open-source **Qwen3-TTS** model from Alibaba's Tongyi Lab. It saves you the hassle of coding and environment configuration, allowing you to complete the entire process from raw audio to a dedicated voice model through a graphical interface (WebUI) or simple commands.
 
-- **One-click Process**: Audio segmentation, automatic transcription (ASR), data cleaning, encoding, training — fully automated.
-- **Modern WebUI**: Built with Gradio, intuitive operation, real-time progress display.
-- **Built-in Optimized Configurations**: Provides validated training parameters for 0.6B and 1.7B model sizes.
-- **Docker Support**: One-click launch, no manual dependency installation required.
+- **One-Click Operation**: Automates the entire pipeline: audio segmentation, automatic transcription (ASR), data cleaning, encoding, and training.
+- **Modern WebUI**: Built with Gradio, intuitive operation with real-time progress display.
+- **Built-in Optimized Configurations**: Provides validated training parameters for both the 0.6B and 1.7B model sizes.
+- **Docker Support**: Launch with one command, no need for manual dependency installation.
 
 ---
 
-## Preparation: What You Need?
+## Preparation: What Do You Need?
 
-- A computer with an **NVIDIA GPU** (Recommended VRAM ≥ 8GB, fine-tuning the 1.7B model requires ≥ 16GB)
-- **Clean recordings** of the target speaker (Recommended 10–30 minutes, wav format, minimal background noise)
-- Basic command-line skills (copy-paste is enough)
-- (Optional) Familiarity with Docker, or using a Python virtual environment
+- A computer with an **NVIDIA GPU** (Recommended VRAM ≥ 8GB; fine-tuning the 1.7B model requires ≥ 16GB. The author used a single 3080 10G for training).
+- **Clean recordings** of the target speaker(s) (Recommended 10–30 minutes, WAV format, minimal background noise).
+- Basic command-line skills (copy-paste is enough).
+- (Optional) Familiarity with Docker, or using Python virtual environment directly.
 
 ---
 
 ## Step 1: Installation and Startup
 
-### Method 1: Using Docker (Recommended, Hassle-free)
+### Method 1: Using Docker (Recommended, Fastest, Most Reliable)
 
 ```bash
-# Clone the repository (execute after it's public)
+# Clone the repository
 git clone https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning.git
 cd Qwen3-TTS-EasyFinetuning
 
@@ -76,7 +75,7 @@ cd Qwen3-TTS-EasyFinetuning
 docker compose up -d
 ```
 
-The first start will automatically download the image (~10GB). Wait a moment. Once successful, open your browser and visit `http://localhost:7860` to see the beautiful WebUI.
+The first start will automatically download the image (approx. 10GB), please wait a moment. Seeing a green `Started` indicates the program has launched successfully. However, the WebUI needs about 30 seconds to warm up. Once ready, open your browser and visit `http://localhost:7860`. If accessing from another machine on your local network, replace `localhost` with the IP address of the deployment machine.
 
 ### Method 2: Using Python Virtual Environment (Suitable for Developers)
 
@@ -85,157 +84,172 @@ The first start will automatically download the image (~10GB). Wait a moment. On
 git clone https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning.git
 cd Qwen3-TTS-EasyFinetuning
 
-# Create virtual environment
+# Create a virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # venv\Scripts\activate   # Windows
 
 # Install dependencies
 pip install -r requirements.txt
-pip install flash-attn==2.8.3 --no-build-isolation  # Optional, accelerates training
+pip install flash-attn==2.8.3 --no-build-isolation  # Optional, speeds up training
 
-# Start WebUI
+# Start the WebUI
 python src/webui.py
 ```
 
-After startup, also visit `http://localhost:7860`.
+After starting, also visit `http://localhost:7860`.
 
 ---
 
-## Step 2: Fine-tuning with the WebUI (Detailed Guide with Screenshots)
+## Step 2: Prepare Your Data
+
+This is a crucial step. Place your raw audio files (`.wav` format) into the `raw-dataset` directory under the project folder, following this structure:
+
+```
+raw-dataset
+├─ speaker_1            # Folder for speaker 1
+│   ├── 0001.wav        # Audio files, ideally one sentence per file
+│   ├── 0002.wav
+│   ├── 0003.wav
+│   └── ref.wav         # ⭐ Mandatory reference audio
+├─ speaker_2            # Folder for speaker 2 (for multi-speaker training)
+│   ├── 0001.wav
+│   ├── 0002.wav
+│   ├── 0003.wav
+│   └── ref.wav         # ⭐ Each speaker has their own reference audio
+.....
+```
+
+**Important Notes about `ref.wav`**:
+- `ref.wav` is **mandatory**. It will be embedded in the model as a stable reference for timbre, tone, and speed, ensuring consistent inference results.
+- Choose a segment you deem highest quality from that speaker's training data.
+- **Recommended duration is 3-10 seconds**, minimum not less than 3 seconds, maximum not exceeding 10 seconds.
+
+---
+
+## Step 3: Fine-tuning with the WebUI (Detailed Walkthrough)
 
 The WebUI is divided into three main tabs. Let's go through them step-by-step.
 
 ### 📁 Tab 1: Data Preparation
 
-#### 1.1 Upload Raw Audio
-
-Place your recording files (`.wav`) into a folder, e.g., `/home/me/my_voice/`. If using Docker, you need to mount the folder into the container. The current directory's `raw-dataset` folder is mounted by default; you can directly put your audio there.
-
-You can specify a `ref.wav` as a reference audio in the `raw-dataset` folder and set the Reference Audio Path to `raw-dataset/ref.wav`. This will be used as a timbre reference during subsequent training, making results more stable. The program will automatically resample it to 24kHz. Leave it blank if you don't have one.
-
-#### 1.2 Run Step 1: Audio Segmentation
+#### 1.1 Refresh Paths and Run Step 1: Audio Segmentation
 
 ![Step-1](/assets/qwen3-tts-finetuning/step-1.webp)
 
 In the WebUI:
 
-- **Speaker Name**: Enter a name to identify your speaker, e.g., `my_speaker`.
-- **Raw WAVs Directory**: Enter the path to the raw audio. For Docker, default is `/workspace/raw-dataset`.
-- **Reference Audio Path**: Optional. Provide a reference audio (e.g., 5 seconds of clean voice) for timbre reference. The program will automatically resample it to 24kHz.
+- Click the **Refresh Paths** button. The system will automatically detect folders and `ref.wav` files under `raw-dataset`.
+- Confirm that your dataset folder (e.g., `speaker_1`) appears in the **Raw WAVs Directory** dropdown.
+- **Reference Audio Path** will auto-fill with the path to `ref.wav` in the corresponding folder; no manual modification needed.
 - Click **Run Step 1**.
 
-The program will analyze the audio, automatically remove silent segments, split long audio into short sentences, and unify the sample rate to 24kHz. After completion, you'll find the processed audio clips in `final-dataset/my_speaker/audio_24k/`.
+This step is CPU-intensive. It's recommended to close other background software to avoid freezing. The program analyzes the audio, automatically removes silence, splits long audio into short segments, and unifies the sample rate to 24kHz. After completion, you'll find the processed audio clips in `final-dataset/speaker_1/audio_24k/`.
 
-#### 1.3 Run Step 2: ASR Transcription
+#### 1.2 Run Step 2: ASR Transcription & Secondary Cleaning
 
 ![Step-2](/assets/qwen3-tts-finetuning/step-2.webp)
 
-This step uses an ASR model to automatically recognize the content of each audio clip and generate text annotations.
+This step uses an ASR model to automatically recognize the content of each audio clip, generate text labels, and perform secondary cleaning.
 
-- **ASR Model**: Choose `Qwen/Qwen3-ASR-1.7B` (higher accuracy, slightly slower) or `0.6B` (faster, slightly lower accuracy).
-- **Download Source**: Choose ModelScope (faster in China) or HuggingFace (faster internationally).
+- **ASR Model**: **Highly recommended** to select `Qwen/Qwen3-ASR-1.7B` for the most accurate recognition.
+- **Download Source**: If you are in Mainland China, choose **ModelScope** for the fastest download speed; users overseas can select HuggingFace.
 - **GPU Device**: Select the GPU for ASR (e.g., `cuda:0`).
 - Click **Run Step 2**.
 
-Wait for the progress bar to complete. You will get `final-dataset/my_speaker/tts_train.jsonl`, where each line is `{"audio": "path", "text": "recognized text"}`.
+Wait for the progress bar to complete. You will obtain `final-dataset/speaker_1/tts_train.jsonl`, where each line is `{"audio": "path", "text": "recognized text"}`. The WebUI will notify you upon completion.
 
 ---
 
 ### 🏋️ Tab 2: Training
 
-#### 2.1 Select or Create a New Experiment
+#### 2.1 Create a New Experiment and Select Data (Step 0)
 
 ![Step-0](/assets/qwen3-tts-finetuning/step-0.webp)
 
-- **Experiment Name**: Enter a name, e.g., `my_first_voice`. If you've trained before, you can select it from the dropdown, and the configuration will load automatically.
-- **Select Target Speaker Data**: Confirm it's your dataset.
-- **Initial Model**: Choose the base model, `Qwen/Qwen3-TTS-12Hz-0.6B-Base` (lower VRAM requirement) or `1.7B` (better performance). Click **Check / Download Model** to pre-download if needed.
+- **Experiment Name**: Enter a name, e.g., `my_first_voice`, then click **Create New Experiment**.
+- **Select Target Speaker Data**: In the dropdown, **select the speaker(s) you want to fine-tune**. Thanks to the new feature, you can **multi-select** here to enable simultaneous multi-speaker training!
+- **Initial Model**: Choose the base model. The video author recommends the **0.6B model**, finding it sufficient. You can also choose `1.7B` if needed.
+- **Download Source**: Again, choose ModelScope or HuggingFace based on your network environment.
+- Click **Check / Download Model** to download the base model beforehand.
 
 #### 2.2 Run Step 3: Data Tokenization
 
-Switch to the **Training** tab. Hold on, we need to complete data encoding first.
-
 ![Step-3](/assets/qwen3-tts-finetuning/step-3.webp)
 
-- **Select Target Speaker Data**: Choose your dataset `my_speaker`.
-- **GPU Device for Tokenization**: Select the GPU.
+- **GPU Device for Tokenization**: Select the GPU for this step.
 - Click **Tokenize Data**.
 
-This step uses Qwen3-TTS's specialized Tokenizer to convert audio into discrete codes, outputting `tts_train_with_codes.jsonl`. This is the final file used for training.
+This step merges data from your selected speakers and uses Qwen3-TTS's specialized tokenizer to convert audio into discrete codes, outputting `tts_train_with_codes.jsonl` – the final file used for training. A progress bar will indicate completion.
 
-#### 2.3 Set Training Parameters
-
-- **Training Preset**: Select the corresponding preset based on the model size. The system will automatically fill in recommended learning rates, batch sizes, etc. You can also expand **Advanced Training Options** to adjust manually.
-- **GPU Device for Training**: Select the GPU for training.
-- **Use Experimental Training Method**: Optional. Enable multi-core CPU-assisted acceleration (experimental).
-
-#### 2.4 Start Training
+#### 2.3 Set Training Parameters and Start Training (Step 4: Final Training)
 
 ![Step-4](/assets/qwen3-tts-finetuning/step-4.webp)
 
-Click **Start Training**. The log area below will display real-time training progress and loss values. You can open Tensorboard anytime during training to monitor progress (click **Jump to Tensorboard**).
+- **Training Preset**: Select the training preset corresponding to your chosen model size (0.6B / 1.7B). These are community-verified, relatively conservative parameters.
+- **Advanced Training Options**: Expand this section to manually adjust parameters like `batch_size`, `learning_rate`, etc., if you wish to customize.
+- **GPU Device for Training**: Select the GPU for training.
+- Click the yellow **Start Training** button to begin.
 
-Training duration depends on data size and model size. Typically, for 10–30 minutes of audio, training a 0.6B model for 2–3 epochs on 10GB VRAM takes about 1–2 hours.
+You can monitor real-time training information on the progress bar below, such as `epoch`, `step`, and `loss` values. For more detailed statistics, click **Jump to Tensorboard**.
 
-After training, model checkpoints are saved in the `output/my_first_voice/` directory, e.g., `checkpoint-epoch-2`.
+Training duration depends on data volume and model size. Typically, for 10–30 minutes of audio, training a 0.6B model for 2–3 epochs on a 10GB GPU might take about 1–2 hours.
+
+After training, model checkpoints are saved in the `output/my_first_voice/` directory.
 
 ---
 
 ### 🎧 Tab 3: Inference Testing
 
-#### 3.1 Load Checkpoint
+#### 3.1 Load Checkpoint and Generate Speech
 
 ![Step-5](/assets/qwen3-tts-finetuning/step-5.webp)
 
-- **Select Checkpoint**: Choose the checkpoint folder you just trained.
-- **Speaker Name**: This will auto-fill with the dataset name, usually no need to change.
-- **Text to Synthesize**: Enter the text you want to test. Can be Chinese, English, or mixed.
+- **Select Checkpoint**: Click the refresh button, then select your newly trained checkpoint folder from the dropdown (e.g., `checkpoint-epoch-2`).
+- **Select Speaker**: Choose the speaker you want to test.
+- **Text to Synthesize**: Enter the text you want to test. It can be in Chinese, English, or mixed.
 - **GPU Device**: Select the GPU for inference.
+- Click **Synthesize Audio**. Wait a moment, and the generated speech will play below. If satisfied with the result, congratulations! Your dedicated voice model is ready!
 
-#### 3.2 Generate Audio
-
-Click **Synthesize Audio**. Wait a moment, and the generated speech will play below. If the result is satisfactory, congratulations, your专属 voice model is born!
-
-If you encounter VRAM issues, you can click **Unload Model from VRAM** to free up memory.
+Feel free to explore the working directory and WebUI interface for more advanced features and options.
 
 ---
 
 ## Advanced Tips: How to Get Better Results?
 
-- **Data Quality > Data Quantity**: 10 minutes of clean, emotionally rich recordings are far better than 1 hour of noisy recordings.
-- **Avoid Background Music**: ASR transcription can be disturbed by music, leading to text errors.
-- **Increase Epochs Appropriately**: If the voice doesn't sound like the target, try increasing to 5–10 epochs, but be cautious of overfitting (voice becoming rigid).
-- **Adjust Learning Rate**: The preset learning rate is usually suitable. If loss oscillates, consider lowering it slightly.
+- **Data Quality > Data Quantity**: 10 minutes of clean, emotionally rich recordings far outweigh 1 hour of noisy recordings.
+- **Avoid Background Music**: ASR transcription can be disturbed by music, leading to incorrect text.
+- **Increase Epochs Appropriately**: If the voice doesn't sound like the target, try increasing to 5-10 epochs, but watch out for overfitting (sounding robotic/rigid).
+- **Adjust Learning Rate**: The preset learning rates are usually suitable. If the loss oscillates, you can try lowering it slightly.
 
 ---
 
 ## Frequently Asked Questions
 
-**Q: I don't have a GPU, can I train with CPU?**  
-A: Yes, but it will be extremely slow (training a model might take days). Consider using cloud GPU instances like AutoDL, Colab, etc. (Advertisers, please contact me to place your ad here.)
+**Q: I don't have a GPU. Can I train with a CPU?**  
+A: Yes, but it will be extremely slow (potentially days for one model). It's recommended to use cloud GPU instances like AutoDL, Colab, etc.
 
 **Q: What if I run out of VRAM during training?**  
 A: Reduce `batch_size`, increase `gradient_accumulation_steps`, or switch to the 0.6B model.
 
-**Q: I only have 1 minute of audio, can I fine-tune?**  
-A: Yes, but the results might be unstable. It's recommended to collect at least 5 minutes.
+**Q: I only have 1 minute of audio. Can I fine-tune?**  
+A: You can, but the results might be unstable. It's recommended to gather at least 5 minutes or more.
 
 **Q: Can I still zero-shot clone others after fine-tuning?**  
-A: No. The fine-tuned model is dedicated to the speaker you trained it on. For multiple characters, please fine-tune separate models and wait for the official Qwen multi-speaker fine-tuning feature release; this project will also be updated accordingly.
+A: No. A fine-tuned model is dedicated to the speaker(s) you trained it on. For multiple roles, use this tool's multi-speaker fine-tuning feature or fine-tune separate models.
 
-**Q: The generated speech has buzzing/noise?**  
-A: Check the quality of your original audio. Ensure the training data has no background noise. You can use tools like UVR5 for noise reduction before Step 1.
+**Q: The generated speech has static/background noise?**  
+A: Check the quality of your original audio; ensure there's no background noise in the training data. You can use tools like UVR5 for noise reduction before Step 1.
 
 ---
 
 ## Conclusion
 
-Following this guide, you should now know how to use Qwen3-TTS Easy Finetuning to fine-tune your own voice model. This tool encapsulates the complex AI training process into a few simple steps, allowing everyone to have their own AI voice.
+With the guidance in this article, you should now master how to use Qwen3-TTS Easy Finetuning to train your own voice model. This tool encapsulates the complex AI training pipeline into simple steps, allowing everyone to possess their own AI voice.
 
-If you encounter any issues during the process, please submit an Issue on the GitHub repository. You are also welcome to share your fine-tuned results! Share your experiences with the community and progress together.
+If you encounter any issues during operation, feel free to submit an Issue on the GitHub repository. Sharing your fine-tuned results is also welcome! Share your experiences with the community and progress together.
 
-> **Project Address**: [https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning](https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning)
+> **Project Repository**: [https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning](https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning)
 
 ---
 
