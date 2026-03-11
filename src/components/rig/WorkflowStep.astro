@@ -1,0 +1,28 @@
+---
+interface Props {
+  number: number;
+  title: string;
+  description: string;
+}
+
+const { number, title, description } = Astro.props;
+---
+
+<div class="flex items-start gap-8 mb-16 group last:mb-0 relative">
+  <!-- Connecting Line -->
+  <div class="absolute left-8 top-16 bottom-[-64px] w-0.5 bg-white/5 group-last:hidden"></div>
+  
+  <div class="flex-shrink-0 z-10">
+    <div
+      class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ea7601] to-[#ff9a3c] flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-[#ea7601]/20 group-hover:scale-110 transition-transform duration-300 ring-4 ring-[#111]"
+    >
+      {number}
+    </div>
+  </div>
+  <div class="flex-1 pt-2">
+    <h4 class="text-xl font-bold text-white mb-2">{title}</h4>
+    <div class="text-gray-400 leading-relaxed font-sans prose prose-invert max-w-none">
+      <Fragment set:html={description} />
+    </div>
+  </div>
+</div>

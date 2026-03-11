@@ -1,0 +1,22 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+  delay?: string;
+}
+
+const { icon, title, description, delay = "" } = Astro.props;
+---
+
+<div
+  class={`glass-card rounded-2xl p-8 text-center group hover:border-[#ea7601]/30 transition-all duration-500 animate-pulse-glow ${delay}`}
+>
+  <div class="text-5xl mb-4">{icon}</div>
+  <h4 class="text-lg font-bold text-white mb-2">
+    {title}
+  </h4>
+  <p class="text-gray-500 text-sm leading-relaxed">
+    {description}
+  </p>
+</div>

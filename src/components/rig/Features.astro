@@ -1,0 +1,95 @@
+---
+import FeatureCard from "./FeatureCard.astro";
+
+const features = [
+  {
+    id: "01",
+    title: "多维度肢体系统",
+    description: "完美支持 Steve 与 Alex 比例，手指关节完整绑定。支持 无脚腕 / 标准脚腕 / Fancy_Feet 三种物理表现实时切换。",
+    details: [
+      "每根手指独立 IK 控制",
+      "脚部形态一键热切换",
+      "自动跟随与手动微调自由搭配"
+    ]
+  },
+  {
+    id: "02",
+    title: "AIO 超级着色器 & 高帧率",
+    description: "全身仅需一个材质球，极致优化。在 macOS 环境下，关闭视图布尔与细分预览可轻松突破 100fps+。",
+    details: [
+      "单材质球统一管理皮肤、眼睛、头发",
+      "自定义 UV 分层，贴图切换无缝",
+      "视口模式下实时预览最终效果"
+    ]
+  },
+  {
+    id: "03",
+    title: "1:1 分离式控制面板",
+    description: "拒绝杂乱。独立的 UI 布局面板，支持自定义排序与缩放。睫毛支持 6 种预设切换，IK/FK/Stretch 无缝衔接。",
+    details: [
+      "所有控制器一目了然",
+      "模块化面板，按需展示",
+      "无干扰动画工作流"
+    ]
+  },
+  {
+    id: "04",
+    title: "Body Shaping",
+    description: "内置自由形体调整系统，可微调胸部、臀部、腰部及腹部比例，打造独一无二的 OC。",
+    details: [
+      "滑块式微调，精确到毫米",
+      "预设体型一键应用",
+      "与衣物系统完美兼容"
+    ]
+  },
+  {
+    id: "05",
+    title: "From Mine-imator",
+    description: "带上你在MI中的动作，来Blender继续创作吧！",
+    details: [
+      "配合Rig/2 Ecosystem: mi2bl，支持导入.miframes格式动作（仅支持标准Steve/Alex模型）",
+      "自动转换为Blender原生关键帧",
+      "导入后仍可编辑，支持与Blender动作系统无缝衔接"
+    ]
+  },
+  {
+    id: "06",
+    title: "Tech Specs",
+    description: "",
+    details: [
+      "Blender 4.5+ Native",
+      "专为 Blender 4.5+ 架构深度优化，充分利用新版骨骼系统与 Geometry Nodes 特性。",
+      "支持 Windows / macOS / Linux",
+      "支持 Blender 4.5+",
+      "支持 .miframes 动作导入"
+    ]
+  }
+];
+---
+
+<div id="features" class="bg-[#111] py-24 px-6 text-white">
+  <div class="max-w-6xl mx-auto space-y-24">
+    <div class="text-center space-y-4 mb-16">
+      <h2
+        class="text-4xl md:text-5xl font-bold font-sans tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+      >
+        Features
+      </h2>
+      <div class="w-16 h-1 bg-[#ea7601] mx-auto rounded-full"></div>
+      <p class="text-gray-400 font-sans max-w-2xl mx-auto text-lg">
+        每一项功能都经过精心设计，只为让你的创作流程更高效、更自由
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 font-sans">
+      {
+        features.map((feature) => (
+          <FeatureCard {...feature} />
+        ))
+      }
+    </div>
+
+    <slot name="tech-specs" />
+    <slot />
+  </div>
+</div>

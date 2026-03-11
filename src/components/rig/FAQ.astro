@@ -1,0 +1,45 @@
+---
+import FAQItem from "./FAQItem.astro";
+
+const faqs = [
+  {
+    question: "Rig/2 支持哪些 Blender 版本？",
+    answer: "Rig/2 针对 Blender 4.5 及以上版本进行了深度优化。虽然可能在 3.x 中打开，但我们强烈推荐使用 4.5 及以上版本以获得最佳性能和完整功能体验。"
+  },
+  {
+    question: "我需要安装插件才能使用吗？",
+    answer: "不完全需要。Rig/2 的设计理念就是零依赖——所有功能都基于 Blender 原生系统实现，你的.blend文件在一切就全在，但是高级功能如动作映射，动捕必须要插件才能实现。"
+  },
+  {
+    question: "Free 版和 Pro 版有什么区别？",
+    answer: "Free 版包含所有核心绑定功能、AIO 着色器以及三种脚部模式。Pro 版将在此基础上增加面部捕捉集成、Motion Capture 插件支持以及 Drag & Drop 快速工作流以及商业使用许可。"
+  },
+  {
+    question: "可以用来做商业项目吗？",
+    answer: "当然可以。但是你需要购买Rig/2 Pro版本以获得商业使用授权。"
+  },
+  {
+    question: "如何导入我自己的 Minecraft 皮肤？",
+    answer: "只需将你的皮肤 PNG 文件拖入 AIO Shader 的 Image Texture 节点中。Rig/2 的 UV 布局与 Minecraft 原生皮肤格式 100% 兼容，无需额外调整。"
+  }
+];
+---
+
+<div class="pt-8">
+  <div class="text-center space-y-4 mb-16">
+    <h2
+      class="text-4xl md:text-5xl font-bold font-sans tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+    >
+      FAQ
+    </h2>
+    <div class="w-16 h-1 bg-[#ea7601] mx-auto rounded-full"></div>
+  </div>
+
+  <div class="max-w-3xl mx-auto font-sans space-y-6">
+    {
+      faqs.map((faq) => (
+        <FAQItem {...faq} />
+      ))
+    }
+  </div>
+</div>

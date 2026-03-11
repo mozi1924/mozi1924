@@ -1,0 +1,64 @@
+---
+import SpecCard from "./SpecCard.astro";
+
+const specs = [
+  {
+    icon: "⚙️",
+    title: "Blender 4.5+ Native",
+    description: "专为 Blender 4.5+ 架构深度优化，充分利用新版骨骼系统与 Geometry Nodes 特性。",
+    delay: ""
+  },
+  {
+    icon: "🎨",
+    title: "Shader Nodes 统一",
+    description: "单一 Shader Node Tree 管理所有部位材质，UV 分层逻辑清晰，换肤效率提升 300%。",
+    delay: "delay-100"
+  },
+  {
+    icon: "🦴",
+    title: "骨骼拓扑精简",
+    description: "精简冗余骨骼，保留极致控制力。每个控制器都经过人体工学映射，动画师开箱即用。",
+    delay: "delay-200"
+  },
+  {
+    icon: "🔧",
+    title: "Driver 驱动系统",
+    description: "复杂的表情与形体变换通过 Driver 自动关联，无需手动 Key 帧，表情联动自然流畅。",
+    delay: "delay-300"
+  },
+  {
+    icon: "📐",
+    title: "Pixel-Perfect 比例",
+    description: "严格遵循 Minecraft 原版比例体系，确保与各类皮肤、Overlay 贴图 100% 兼容。",
+    delay: "delay-400"
+  },
+  {
+    icon: "🚀",
+    title: "零依赖部署",
+    description: "核心功能无需安装任何插件或 Add-on，Append 进你的工程即可开始使用，真正开箱即用。",
+    delay: "delay-500"
+  }
+];
+---
+
+<div class="pt-8">
+  <div class="text-center space-y-4 mb-16">
+    <h2
+      class="text-4xl md:text-5xl font-bold font-sans tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+    >
+      Tech Specs
+    </h2>
+    <div class="w-16 h-1 bg-[#ea7601] mx-auto rounded-full"></div>
+    <p class="text-gray-400 font-sans max-w-2xl mx-auto text-lg">
+      在引擎盖下，一切都经过严格工程化
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
+    {
+      specs.map((spec) => (
+        <SpecCard {...spec} />
+      ))
+    }
+  </div>
+</div>

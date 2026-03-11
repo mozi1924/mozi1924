@@ -1,0 +1,48 @@
+---
+import WorkflowStep from "./WorkflowStep.astro";
+
+const steps = [
+    {
+    number: 1,
+    title: "Install Add-on",
+    description: "打开你的 Blender ，拖拽 <code class='text-[#ea7601] bg-[#ea7601]/10 px-2 py-0.5 rounded text-sm'>RIG2.zip</code> 到Blender视图中，然后点击安装。"
+  },
+  {
+    number: 2,
+    title: "Append Rig",
+    description: "打开你的 Blender 工程，使用 <code class='text-[#ea7601] bg-[#ea7601]/10 px-2 py-0.5 rounded text-sm'>Shift + A -> Rig/2</code> 快速添加Rig/2到场景中。"
+  },
+  {
+    number: 3,
+    title: "Apply Skin & Customize",
+    description: "将你的 Minecraft 皮肤贴图拖入 AIO Shader 的贴图插槽中。随后在控制面板中调整体型、切换脚部模式、选择睫毛预设。所有参数通过直观的滑块和开关完成——无需编写任何脚本。"
+  },
+  {
+    number: 4,
+    title: "Animate & Render",
+    description: "使用 IK/FK 无缝切换开始你的动画制作。1:1 控制面板让每个姿势的调整直观高效。配合 100fps+* 的视口表现，你将拥有流畅的实时预览体验——从关键帧到最终渲染，一气呵成。"
+  }
+];
+---
+
+<div class="pt-8">
+  <div class="text-center space-y-4 mb-16">
+    <h2
+      class="text-4xl md:text-5xl font-bold font-sans tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+    >
+      Workflow
+    </h2>
+    <div class="w-16 h-1 bg-[#ea7601] mx-auto rounded-full"></div>
+    <p class="text-gray-400 font-sans max-w-2xl mx-auto text-lg">
+      从导入到渲染，只需三步
+    </p>
+  </div>
+
+  <div class="max-w-4xl mx-auto font-sans">
+    {
+      steps.map((step) => (
+        <WorkflowStep {...step} />
+      ))
+    }
+  </div>
+</div>
