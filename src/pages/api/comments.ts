@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request, locals }) => {
     const env = (locals as any).runtime.env;
+    const ctx = (locals as any).runtime.ctx;
     const body: any = await request.json();
 
     const { name, email, content, path, parent_id, turnstileToken } = body;
@@ -34,20 +35,50 @@ export const POST: APIRoute = async ({ request, locals }) => {
             'INSERT INTO comments (id, name, email, content, path, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
         ).bind(id, name, email, content, path, parent_id || null, created_at).run();
 
-        // Send email notification (fire-and-forget, don't block response)
-        if (env.EMAIL_API_KEY && env.NOTIFY_TO && env.NOTIFY_FROM) {
-            const siteUrl = 'https://mozi1924.com';
-            const postUrl = `${siteUrl}${path}#comment-${id}`;
-            const subject = parent_id
-                ? `New reply on ${path}`
-                : `New comment on ${path}`;
-            const html = `<p><strong>${name}</strong> commented on <a href="${postUrl}">${path}</a>:</p><blockquote>${content.replace(/\n/g, '<br>')}</blockquote><p><a href="${postUrl}">View comment</a></p>`;
+        // Send email notification via waitUntil so it survives after response is returned
+        if (env.EMAIL_API_KEY && env.NOTIFY_FROM) {
+            const sendNotification = async () => {
+                const siteUrl = 'https://mozi1924.com';
+                const postUrl = `${siteUrl}${path}#comment-${id}`;
 
-            fetch('https://vercel-email-routing.vercel.app/api/send', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': env.EMAIL_API_KEY },
-                body: JSON.stringify({ to: env.NOTIFY_TO, from: env.NOTIFY_FROM, subject, html }),
-            }).catch(() => { /* ignore notification errors */ });
+                let notifyTo: string = env.NOTIFY_TO || '';
+                let subject: string;
+                let html: string;
+
+                if (parent_id) {
+                    // Reply: notify the parent comment's author (if email available and different from commenter)
+                    const parentRow: any = await env.DB.prepare(
+                        'SELECT name, email FROM comments WHERE id = ? LIMIT 1'
+                    ).bind(parent_id).first().catch(() => null);
+
+                    if (parentRow?.email && parentRow.email !== email) {
+                        notifyTo = parentRow.email;
+                        subject = `${name} replied to your comment on mozi1924.com`;
+                        html = `<p><strong>${name}</strong> replied to your comment on <a href="${postUrl}">${path}</a>:</p><blockquote>${content.replace(/\n/g, '<br>')}</blockquote><p><a href="${postUrl}">View reply</a></p>`;
+                    } else if (env.NOTIFY_TO) {
+                        // Fall back to owner notification if parent email unavailable or same person
+                        notifyTo = env.NOTIFY_TO;
+                        subject = `New reply on ${path}`;
+                        html = `<p><strong>${name}</strong> replied on <a href="${postUrl}">${path}</a>:</p><blockquote>${content.replace(/\n/g, '<br>')}</blockquote><p><a href="${postUrl}">View reply</a></p>`;
+                    } else {
+                        return; // nothing to notify
+                    }
+                } else {
+                    // New root comment: notify site owner
+                    if (!env.NOTIFY_TO) return;
+                    notifyTo = env.NOTIFY_TO;
+                    subject = `New comment on ${path}`;
+                    html = `<p><strong>${name}</strong> commented on <a href="${postUrl}">${path}</a>:</p><blockquote>${content.replace(/\n/g, '<br>')}</blockquote><p><a href="${postUrl}">View comment</a></p>`;
+                }
+
+                await fetch('https://vercel-email-routing.vercel.app/api/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': env.EMAIL_API_KEY },
+                    body: JSON.stringify({ to: notifyTo, from: env.NOTIFY_FROM, subject, html }),
+                });
+            };
+
+            ctx.waitUntil(sendNotification().catch(() => {}));
         }
 
         return new Response(JSON.stringify({ success: true, id }), { status: 201 });
