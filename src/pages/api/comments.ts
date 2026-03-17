@@ -1,26 +1,10 @@
-import type { D1Database, PagesFunction } from "@cloudflare/workers-types";
+export const prerender = false;
 
-interface Env {
-    DB: D1Database;
-    TURNSTILE_SECRET_KEY: string;
-}
+import type { APIRoute } from 'astro';
 
-interface Comment {
-    id: string;
-    name: string;
-    email: string;
-    content: string;
-    path: string;
-    parent_id: string | null;
-    created_at: number;
-    parent_comment?: {
-        name: string;
-        content: string;
-    } | null;
-}
-
-export const onRequestPost: PagesFunction<Env> = async (context): Promise<Response> => {
-    const { request, env } = context;
+export const POST: APIRoute = async ({ request, locals }) => {
+    // When using Astro API routes with Cloudflare adapter, bindings are in locals.runtime.env
+    const env = (locals as any).runtime.env;
     const body: any = await request.json();
 
     const { name, email, content, path, parent_id, turnstileToken } = body;
@@ -59,8 +43,8 @@ export const onRequestPost: PagesFunction<Env> = async (context): Promise<Respon
     }
 };
 
-export const onRequestGet: PagesFunction<Env> = async (context): Promise<Response> => {
-    const { request, env } = context;
+export const GET: APIRoute = async ({ request, locals }) => {
+    const env = (locals as any).runtime.env;
     const url = new URL(request.url);
     const path = url.searchParams.get('path');
 
@@ -69,9 +53,6 @@ export const onRequestGet: PagesFunction<Env> = async (context): Promise<Respons
     }
 
     try {
-        // We want to return all comments for a path, but also include the parent comment info for replies
-        // The requirement says: "display an overview of which comment is being replied to, click to scroll to the corresponding floor"
-        // So we should probably join to get parent info if parent_id exists
         const { results } = await env.DB.prepare(`
             SELECT 
                 c1.*,

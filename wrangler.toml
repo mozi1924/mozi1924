@@ -5,3 +5,7 @@ pages_build_output_dir = "dist"
 binding = "DB"
 database_name = "mozi1924-com"
 database_id = "64533fc2-02dc-4a34-8260-f403751b028a" # Replace with actual database_id
+
+[[kv_namespaces]]
+binding = "SESSION"
+id = "ce38259951d0496a9a8acfdd8bdfc646"
