@@ -1,177 +1,158 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { X, Reply, AlertCircle } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { formatDistanceToNow } from "date-fns";
 import { scrollLock } from "../../utils/scroll-lock";
+import { COMMENT_CONFIG } from "../../config";
 
 // Types
 interface Comment {
   id: string;
-  site_id?: string;
   parent_id: string | null;
   content: string;
   author_name: string;
-  avatar_id?: string;
   created_at: number;
   reply_count?: number;
-  admin_reply?: Comment | null;
-  is_admin?: number;
-  parent_comment?: {
-    name: string;
-    content: string;
-  } | null;
+  parent_comment?: { name: string; content: string } | null;
 }
-
-import { COMMENT_CONFIG } from "../../config";
 
 interface CommentSectionProps {
   siteId: string;
-  workerUrl?: string; // Optional, defaults to hardcoded
-  turnstileSiteKey?: string; // Optional, defaults to hardcoded/env
+  workerUrl?: string;
+  turnstileSiteKey?: string;
 }
 
 // Portal Component for SSR safety
 const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
+  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
   return mounted ? createPortal(children, document.body) : null;
 };
 
-// Modal Component for Replies
+// Avatar with fallback
+const Avatar: React.FC<{ commentId: string; name: string }> = ({ commentId, name }) => (
+  <img
+    src={`/api/avatar?id=${commentId}`}
+    alt={name}
+    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
+    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/default.webp'; }}
+  />
+);
+
+// Thread Modal
 const RepliesModal: React.FC<{
   parentComment: Comment;
+  allComments: Comment[];
   onClose: () => void;
-  workerUrl: string;
   siteId: string;
   turnstileSiteKey: string;
   highlightCommentId?: string;
-}> = ({ parentComment, onClose, workerUrl, siteId, turnstileSiteKey, highlightCommentId }) => {
+}> = ({ parentComment, allComments, onClose, siteId, turnstileSiteKey, highlightCommentId }) => {
   const [replies, setReplies] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
-  const [lastId, setLastId] = useState<string | undefined>(undefined);
-  const [hasMore, setHasMore] = useState(true);
+  const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const loadReplies = async (reset = false) => {
+  const loadReplies = async () => {
     setLoading(true);
     try {
-      const currentPath = window.location.pathname;
-      const res = await fetch(`/api/comments?path=${encodeURIComponent(currentPath)}`);
+      const res = await fetch(`/api/comments?path=${encodeURIComponent(window.location.pathname)}`);
       if (res.ok) {
         const data = await res.json();
-        // For simplicity with the new backend, we just load all comments for now
-        // since we are fetching from our internal API
-        const allComments: Comment[] = data.comments;
-        const threadReplies = allComments.filter(c => c.parent_id === parentComment.id);
-        setReplies(threadReplies);
-        setHasMore(false);
+        const all: Comment[] = data.comments || [];
+        // All descendants of parentComment (direct replies + nested)
+        setReplies(all.filter(c => c.parent_id === parentComment.id));
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    loadReplies(true);
-  }, [parentComment.id]);
+  useEffect(() => { loadReplies(); }, [parentComment.id]);
 
-  // Scroll to highlighted comment after replies load
+  // Scroll to highlighted comment after load
   useEffect(() => {
-    if (highlightCommentId && !loading && replies.length > 0) {
-      const el = document.getElementById(`comment-${highlightCommentId}`);
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.classList.add('highlight-comment');
-        }, 500);
-      }
+    if (!highlightCommentId || loading || replies.length === 0) return;
+    const el = document.getElementById(`reply-${highlightCommentId}`);
+    if (el) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('highlight-comment');
+      }, 100);
     }
   }, [loading, replies, highlightCommentId]);
+
+  const scrollToReply = (id: string) => {
+    const el = document.getElementById(`reply-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('highlight-comment');
+      setTimeout(() => el.classList.remove('highlight-comment'), 2000);
+    }
+  };
 
   return (
     <ModalPortal>
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6">
-        <div
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-          onClick={onClose}
-        ></div>
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
         <div className="bg-[#1a1a1a] w-full max-w-2xl h-[80vh] rounded-2xl shadow-2xl relative flex flex-col overflow-hidden animate-fadeIn border border-white/10">
           {/* Header */}
           <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
             <h3 className="font-bold text-lg text-white">Thread</h3>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white"
-            >
+            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white">
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {/* Pinned Parent Comment */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar">
+            {/* Pinned Parent */}
             <div className="p-4 sm:p-6 bg-white/5 border-b border-white/10">
               <CommentItem
                 comment={parentComment}
-                workerUrl={workerUrl}
-                siteId={siteId}
-                turnstileSiteKey={turnstileSiteKey}
-                onReplySuccess={() => loadReplies(true)} // Refresh replies if referenced
-                onViewReplies={() => { }} // No-op, we are already viewing
-                isPreview={true}
+                isInThread={true}
+                onReply={() => { setReplyingTo(null); }}
+                onScrollTo={scrollToReply}
               />
             </div>
 
-            {/* Replies List */}
+            {/* Replies */}
             <div className="p-4 sm:p-6 space-y-6">
               {replies.map((r) => (
-                <CommentItem
-                  key={r.id}
-                  comment={r}
-                  workerUrl={workerUrl}
-                  siteId={siteId}
-                  turnstileSiteKey={turnstileSiteKey}
-                  onReplySuccess={() => loadReplies(true)}
-                  onViewReplies={() => { }}
-                  isPreview={true}
-                />
+                <div key={r.id} id={`reply-${r.id}`} className="group">
+                  <CommentItem
+                    comment={r}
+                    isInThread={true}
+                    onReply={() => setReplyingTo(r)}
+                    onScrollTo={scrollToReply}
+                  />
+                </div>
               ))}
-
               {loading && (
                 <div className="flex justify-center py-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
                 </div>
               )}
-
-              {!loading && hasMore && (
-                <button
-                  onClick={() => loadReplies(false)}
-                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-blue-400 font-semibold rounded-xl transition-colors border border-dashed border-white/10"
-                >
-                  Load more replies
-                </button>
-              )}
-
               {!loading && replies.length === 0 && (
                 <div className="text-center text-gray-500 py-4 italic">No replies yet.</div>
               )}
             </div>
           </div>
 
-          {/* Reply Box (Footer) */}
+          {/* Reply Box */}
           <div className="p-4 border-t border-white/10 bg-[#1a1a1a] shrink-0">
+            {replyingTo && (
+              <div className="mb-2 flex items-center justify-between text-xs text-gray-400 bg-white/5 rounded-lg px-3 py-2">
+                <span>Replying to <span className="text-blue-400 font-semibold">{replyingTo.author_name}</span></span>
+                <button onClick={() => setReplyingTo(null)} className="hover:text-white ml-2"><X className="w-3 h-3" /></button>
+              </div>
+            )}
             <CommentForm
               siteId={siteId}
-              workerUrl={workerUrl}
-              parentId={parentComment.id}
-              onSuccess={() => loadReplies(true)}
+              parentId={replyingTo ? replyingTo.id : parentComment.id}
+              onSuccess={() => { setReplyingTo(null); loadReplies(); }}
               turnstileSiteKey={turnstileSiteKey}
-              placeholder={`Reply to ${parentComment.author_name}...`}
+              placeholder={replyingTo ? `Reply to ${replyingTo.author_name}...` : `Reply to ${parentComment.author_name}...`}
             />
           </div>
         </div>
@@ -180,167 +161,120 @@ const RepliesModal: React.FC<{
   );
 };
 
-
 const CommentSection: React.FC<CommentSectionProps> = ({
   siteId,
   workerUrl = COMMENT_CONFIG.workerUrl,
   turnstileSiteKey = COMMENT_CONFIG.turnstileSiteKey,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [allComments, setAllComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [activeParent, setActiveParent] = useState<Comment | null>(null);
   const [highlightedCommentId, setHighlightedCommentId] = useState<string | undefined>(undefined);
 
-  // Fetch Comments
   const fetchComments = async () => {
     setLoading(true);
     try {
-      const currentPath = window.location.pathname;
-      const res = await fetch(`/api/comments?path=${encodeURIComponent(currentPath)}`);
+      const res = await fetch(`/api/comments?path=${encodeURIComponent(window.location.pathname)}`);
       if (res.ok) {
         const data = await res.json();
-        // The API now returns top-level comments and potentially pinned admin replies
-        const allComments: Comment[] = data.comments || [];
-        // Since we fetch all comments, we might want to group them or just show top level
-        // For CommentSection, we only want to show root comments initially
-        const rootComments = allComments.filter(c => !c.parent_id);
-        
-        // Let's add reply counts
-        const commentsWithCounts = rootComments.map(root => {
-            const replyCount = allComments.filter(c => c.parent_id === root.id).length;
-            return { ...root, reply_count: replyCount };
-        });
-
-        setComments(commentsWithCounts);
+        const all: Comment[] = data.comments || [];
+        setAllComments(all);
+        const roots = all.filter(c => !c.parent_id).map(root => ({
+          ...root,
+          reply_count: all.filter(c => c.parent_id === root.id).length,
+        }));
+        setComments(roots);
       }
-    } catch (err) {
-      console.error("Failed to load comments", err);
-    } finally {
-      setLoading(false);
-      setInitialLoadDone(true);
-    }
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); setInitialLoadDone(true); }
   };
 
-  useEffect(() => {
-    fetchComments();
-  }, [siteId]);
+  useEffect(() => { fetchComments(); }, [siteId]);
 
-  // Scroll Locking
   useEffect(() => {
-    if (activeParent) {
-      scrollLock.lock();
-    } else {
-      // Use delay to prevent layout shift during modal fade-out
-      scrollLock.unlock(300);
-    }
-    return () => {
-      // Cleanup on unmount or when state changes
-      scrollLock.clear();
-    };
+    if (activeParent) scrollLock.lock();
+    else scrollLock.unlock(300);
+    return () => scrollLock.clear();
   }, [activeParent !== null]);
 
-  // Handle Deep Linking (Local & Server)
+  // Deep link handling
   useEffect(() => {
     const handleDeepLink = async () => {
-      if (!window.location.hash || !window.location.hash.startsWith("#comment-")) return;
-
-      const commentId = window.location.hash.substring(9); // remove #comment-
+      if (!window.location.hash?.startsWith("#comment-")) return;
+      const commentId = window.location.hash.substring(9);
       if (!commentId) return;
 
-      // 1. Try to find locally first (fast path)
       const el = document.getElementById(`comment-${commentId}`);
       if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "center" });
-          el.classList.add("highlight-comment");
-        }, 500);
+        setTimeout(() => { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("highlight-comment"); }, 500);
         return;
       }
 
-      // 2. If not found, and we have done initial load, try server lookup
       if (initialLoadDone) {
         try {
-          const currentPath = window.location.pathname;
-          const res = await fetch(`/api/comments?path=${encodeURIComponent(currentPath)}`);
+          const res = await fetch(`/api/comments?path=${encodeURIComponent(window.location.pathname)}`);
           if (res.ok) {
             const data = await res.json();
-            const allComments: Comment[] = data.comments || [];
-            
-            const targetComment = allComments.find(c => c.id === commentId);
-            if (targetComment) {
-              if (targetComment.parent_id) {
-                // It's a reply, open modal for the root.
-                const rootComment = allComments.find(c => c.id === targetComment.parent_id);
-                if (rootComment) {
-                  setHighlightedCommentId(commentId);
-                  setActiveParent(rootComment);
-                }
-              } else {
-                setHighlightedCommentId(commentId);
-                setActiveParent(targetComment);
-              }
+            const all: Comment[] = data.comments || [];
+            const target = all.find(c => c.id === commentId);
+            if (target?.parent_id) {
+              const root = all.find(c => c.id === target.parent_id);
+              if (root) { setHighlightedCommentId(commentId); setActiveParent(root); }
+            } else if (target) {
+              setHighlightedCommentId(commentId); setActiveParent(target);
             }
           }
-        } catch (e) {
-          console.error("Failed to fetch deep link context", e);
-        }
+        } catch (e) { console.error(e); }
       }
     };
-
     handleDeepLink();
   }, [initialLoadDone, comments]);
 
   return (
     <div className="border-t border-white/10 mt-16 pt-12">
-      <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-        Discussion
-      </h2>
+      <h2 className="text-2xl font-bold text-white mb-8">Discussion</h2>
 
-      {/* New Comment Form (Root) */}
       <CommentForm
         siteId={siteId}
-        workerUrl={workerUrl}
         parentId={null}
         onSuccess={fetchComments}
         turnstileSiteKey={turnstileSiteKey}
         placeholder="Add a comment..."
       />
 
-      {/* Comment List */}
       <div className="mt-12 space-y-8">
         {loading && !initialLoadDone ? (
           <div className="flex justify-center py-10">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
           </div>
         ) : comments.length === 0 ? (
           <div className="text-center py-12 bg-white/5 rounded-2xl border border-white/10 border-dashed">
             <p className="text-gray-400 text-lg">No comments yet.</p>
-            <p className="text-gray-500 text-sm mt-1">
-              Be the first to share your thoughts!
-            </p>
+            <p className="text-gray-500 text-sm mt-1">Be the first to share your thoughts!</p>
           </div>
         ) : (
           comments.map((c) => (
-            <CommentItem
-              key={c.id}
-              comment={c}
-              workerUrl={workerUrl}
-              siteId={siteId}
-              turnstileSiteKey={turnstileSiteKey}
-              onReplySuccess={fetchComments}
-              onViewReplies={(comment) => setActiveParent(comment)}
-            />
+            <div key={c.id} id={`comment-${c.id}`} className="group">
+              <CommentItem
+                comment={c}
+                isInThread={false}
+                onReply={() => setActiveParent(c)}
+                onScrollTo={() => {}}
+                replyCount={c.reply_count}
+                onViewThread={() => setActiveParent(c)}
+              />
+            </div>
           ))
         )}
       </div>
 
-      {/* Modal */}
       {activeParent && (
         <RepliesModal
           parentComment={activeParent}
-          onClose={() => setActiveParent(null)}
-          workerUrl={workerUrl}
+          allComments={allComments}
+          onClose={() => { setActiveParent(null); setHighlightedCommentId(undefined); }}
           siteId={siteId}
           turnstileSiteKey={turnstileSiteKey}
           highlightCommentId={highlightedCommentId}
@@ -348,244 +282,122 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       )}
 
       <style>{`
-                .highlight-comment {
-                    animation: highlight 2s ease-out;
-                }
-                @keyframes highlight {
-                    0% { background-color: rgba(59, 130, 246, 0.2); }
-                    100% { background-color: transparent; }
-                }
-                /* Custom Scrollbar for Modal */
-                .custom-scrollbar::-webkit-scrollbar {
-                  width: 8px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                  background: rgba(255, 255, 255, 0.05);
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                  background: rgba(255, 255, 255, 0.2);
-                  border-radius: 4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                  background: rgba(255, 255, 255, 0.3);
-                }
-            `}</style>
+        .highlight-comment { animation: highlight 2s ease-out; }
+        @keyframes highlight {
+          0% { background-color: rgba(59,130,246,0.2); }
+          100% { background-color: transparent; }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+      `}</style>
     </div>
   );
 };
 
-// Single Comment Item
+// Single Comment Item (display only, no form)
 const CommentItem: React.FC<{
   comment: Comment;
-  workerUrl: string;
-  siteId: string;
-  turnstileSiteKey: string;
-  onReplySuccess: () => void;
-  onViewReplies: (comment: Comment) => void;
-  isPreview?: boolean;
-}> = ({
-  comment,
-  workerUrl,
-  siteId,
-  turnstileSiteKey,
-  onReplySuccess,
-  onViewReplies,
-  isPreview,
-}) => {
-    const [replying, setReplying] = useState(false);
-    const avatarSrc = "/assets/default.webp"; // Since we don't have a separate avatar API yet
-
-    const scrollToComment = (id: string) => {
-        const el = document.getElementById(`comment-${id}`);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('highlight-comment');
-            setTimeout(() => el.classList.remove('highlight-comment'), 2000);
-        }
-    };
-
-    return (
-      <div id={`comment-${comment.id}`} className="group">
-        <div className="flex gap-3 sm:gap-4">
-          <div className="flex-shrink-0 pt-1">
-            <img
-              src={avatarSrc}
-              alt={comment.author_name}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="bg-[#1a1a1a] p-3 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition-colors">
-              <div className="flex items-center justify-between mb-2 sm:mb-3">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span className="font-bold text-gray-200 text-sm">
-                    {comment.author_name}
-                  </span>
-                  <span className="text-xs font-medium text-gray-500">
-                    {formatDistanceToNow(comment.created_at)} ago
-                  </span>
-                </div>
-                <div className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                  <a
-                    href={`#comment-${comment.id}`}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        window.history.pushState(null, '', `#comment-${comment.id}`);
-                        scrollToComment(comment.id);
-                    }}
-                    className="text-gray-500 hover:text-blue-400 text-xs transition-colors"
-                  >
-                    #{comment.id.slice(0, 8)}
-                  </a>
-                </div>
-              </div>
-
-              {/* Quoted Parent Comment */}
-              {comment.parent_comment && (
-                  <div 
-                    onClick={() => comment.parent_id && scrollToComment(comment.parent_id)}
-                    className="mb-3 p-3 bg-white/5 border-l-2 border-blue-500 rounded-r-lg cursor-pointer hover:bg-white/10 transition-colors"
-                  >
-                      <div className="text-xs font-bold text-blue-400 mb-1">
-                          Replying to {comment.parent_comment.name}
-                      </div>
-                      <div className="text-xs text-gray-400 line-clamp-2 italic">
-                          "{comment.parent_comment.content}"
-                      </div>
-                  </div>
-              )}
-
-              <div className="text-gray-300 whitespace-pre-wrap leading-relaxed text-sm">
-                {comment.content}
-              </div>
-
-              <div className="mt-3 sm:mt-4 flex items-center gap-4">
-                {!isPreview && (
-                  <button
-                    onClick={() => setReplying(!replying)}
-                    className="text-xs font-semibold text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-1.5"
-                  >
-                    <Reply className="h-3.5 w-3.5" />
-                    {replying ? "Cancel" : "Reply"}
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {replying && (
-              <div className="mt-4 animate-fadeIn px-2 sm:px-0">
-                <CommentForm
-                  siteId={siteId}
-                  workerUrl={workerUrl}
-                  parentId={comment.id}
-                  onSuccess={() => {
-                    setReplying(false);
-                    onReplySuccess();
-                  }}
-                  turnstileSiteKey={turnstileSiteKey}
-                  autoFocus
-                  placeholder={`Reply to ${comment.author_name}...`}
-                />
-              </div>
-            )}
-
-            {/* Admin Reply Preview (Deprecated - showing how we now handle all replies in a single thread) */}
-            {comment.admin_reply && (
-              <div className="mt-4 ml-4 sm:ml-8 relative">
-                <div className="absolute left-[-20px] top-0 bottom-0 w-px bg-white/10 hidden sm:block"></div>
-                <CommentItem
-                  comment={comment.admin_reply}
-                  workerUrl={workerUrl}
-                  siteId={siteId}
-                  turnstileSiteKey={turnstileSiteKey}
-                  onReplySuccess={onReplySuccess}
-                  onViewReplies={() => { }}
-                  isPreview={true}
-                />
-              </div>
-            )}
-
-            {/* View Thread Button */}
-            {comment.reply_count && comment.reply_count > 0 && !isPreview ? (
-              <div className="mt-3 ml-4 sm:ml-8 pl-4 border-l-2 border-white/10">
-                <button
-                  onClick={() => onViewReplies(comment)}
-                  className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
-                  type="button"
-                >
-                  View Thread ({comment.reply_count} replies)
-                </button>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    );
+  isInThread: boolean;
+  onReply: () => void;
+  onScrollTo: (id: string) => void;
+  replyCount?: number;
+  onViewThread?: () => void;
+}> = ({ comment, isInThread, onReply, onScrollTo, replyCount, onViewThread }) => {
+  const scrollToComment = (id: string) => {
+    if (isInThread) { onScrollTo(id); return; }
+    const el = document.getElementById(`comment-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('highlight-comment');
+      setTimeout(() => el.classList.remove('highlight-comment'), 2000);
+    }
   };
 
+  return (
+    <div className="flex gap-3 sm:gap-4">
+      <div className="flex-shrink-0 pt-1">
+        <Avatar commentId={comment.id} name={comment.author_name} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="bg-[#1a1a1a] p-3 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition-colors">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="font-bold text-gray-200 text-sm">{comment.author_name}</span>
+              <span className="text-xs font-medium text-gray-500">{formatDistanceToNow(comment.created_at)} ago</span>
+            </div>
+            <a
+              href={`#comment-${comment.id}`}
+              onClick={(e) => { e.preventDefault(); window.history.pushState(null, '', `#comment-${comment.id}`); scrollToComment(comment.id); }}
+              className="text-gray-500 hover:text-blue-400 text-xs transition-colors opacity-0 group-hover:opacity-100"
+            >
+              #{comment.id.slice(0, 8)}
+            </a>
+          </div>
+
+          {/* Quote block: only for nested replies (parent_comment set by API) */}
+          {comment.parent_comment && (
+            <div
+              onClick={() => comment.parent_id && scrollToComment(comment.parent_id)}
+              className="mb-3 p-3 bg-white/5 border-l-2 border-blue-500 rounded-r-lg cursor-pointer hover:bg-white/10 transition-colors"
+            >
+              <div className="text-xs font-bold text-blue-400 mb-1">Replying to {comment.parent_comment.name}</div>
+              <div className="text-xs text-gray-400 line-clamp-2 italic">"{comment.parent_comment.content}"</div>
+            </div>
+          )}
+
+          <div className="text-gray-300 whitespace-pre-wrap leading-relaxed text-sm">{comment.content}</div>
+
+          <div className="mt-3 sm:mt-4 flex items-center gap-4">
+            <button
+              onClick={onReply}
+              className="text-xs font-semibold text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+            >
+              <Reply className="h-3.5 w-3.5" />
+              Reply
+            </button>
+          </div>
+        </div>
+
+        {/* View Thread button (only on root list) */}
+        {!isInThread && replyCount && replyCount > 0 ? (
+          <div className="mt-3 ml-4 sm:ml-8 pl-4 border-l-2 border-white/10">
+            <button
+              onClick={onViewThread}
+              className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+              type="button"
+            >
+              View Thread ({replyCount} {replyCount === 1 ? 'reply' : 'replies'})
+            </button>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
 // Form Component
-interface CommentFormProps {
+const CommentForm: React.FC<{
   siteId: string;
-  workerUrl: string;
   parentId: string | null;
   onSuccess: () => void;
   turnstileSiteKey: string;
   autoFocus?: boolean;
   placeholder?: string;
-}
-
-const CommentForm: React.FC<CommentFormProps> = ({
-  siteId,
-  workerUrl,
-  parentId,
-  onSuccess,
-  turnstileSiteKey,
-  autoFocus,
-  placeholder = "What are your thoughts?"
-}) => {
-  // Initialize state from localStorage if available
-  const [name, setName] = useState(() => {
-    if (typeof window !== "undefined")
-      return localStorage.getItem("comment_author_name") || "";
-    return "";
-  });
-  const [email, setEmail] = useState(() => {
-    if (typeof window !== "undefined")
-      return localStorage.getItem("comment_author_email") || "";
-    return "";
-  });
-
-  // Draft persistence key
+}> = ({ siteId, parentId, onSuccess, turnstileSiteKey, autoFocus, placeholder = "What are your thoughts?" }) => {
+  const [name, setName] = useState(() => typeof window !== "undefined" ? localStorage.getItem("comment_author_name") || "" : "");
+  const [email, setEmail] = useState(() => typeof window !== "undefined" ? localStorage.getItem("comment_author_email") || "" : "");
   const draftKey = `comment_draft_${siteId}_${parentId || 'root'}`;
-
-  const [content, setContent] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(draftKey) || "";
-    }
-    return "";
-  });
+  const [content, setContent] = useState(() => typeof window !== "undefined" ? localStorage.getItem(draftKey) || "" : "");
   const [token, setToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Expand by default if autoFocus is true (usually for replies) or if there's a draft
-  const [isExpanded, setIsExpanded] = useState(!!autoFocus || (!!content && content.length > 0));
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const [isExpanded, setIsExpanded] = useState(!!autoFocus || !!content);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Sync isExpanded if autoFocus prop changes
-  useEffect(() => {
-    if (autoFocus) {
-      setIsExpanded(true);
-    }
-  }, [autoFocus]);
-
-  // Save draft to localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(draftKey, content);
-    }
-  }, [content, draftKey]);
-
-  // Save to localStorage when name/email changes
+  useEffect(() => { if (autoFocus) setIsExpanded(true); }, [autoFocus]);
+  useEffect(() => { if (typeof window !== "undefined") localStorage.setItem(draftKey, content); }, [content, draftKey]);
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("comment_author_name", name);
@@ -593,91 +405,49 @@ const CommentForm: React.FC<CommentFormProps> = ({
     }
   }, [name, email]);
 
-  // Auto-resize textarea
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
-
-    // Resize logic
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`; // Max height 200px
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
     }
-  };
-
-  const handleCancel = () => {
-    setIsExpanded(false);
-    // We do NOT clear content per user request ("save draft")
-    setError(null);
-    if (textareaRef.current) textareaRef.current.style.height = 'auto';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token) {
-      setError("Please verify you are human.");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
+    if (!token) { setError("Please verify you are human."); return; }
+    setSubmitting(true); setError(null);
     try {
-      // Use "clean" URL (origin + pathname) as per requirement
-      const currentPath = window.location.pathname;
-
       const res = await fetch(`/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          content,
-          path: currentPath,
-          parent_id: parentId,
-          turnstileToken: token,
-        }),
+        body: JSON.stringify({ name, email, content, path: window.location.pathname, parent_id: parentId, turnstileToken: token }),
       });
-
-      if (!res.ok) {
-        const errData = (await res.json()) as { error: string };
-        throw new Error(errData.error || "Failed to submit");
-      }
-
-      setContent("");
-      if (typeof window !== "undefined") {
-        localStorage.removeItem(draftKey);
-      }
-      setToken(null);
-      setIsExpanded(false);
+      if (!res.ok) { const d = await res.json() as { error: string }; throw new Error(d.error || "Failed to submit"); }
+      setContent(""); if (typeof window !== "undefined") localStorage.removeItem(draftKey);
+      setToken(null); setIsExpanded(false);
       if (textareaRef.current) textareaRef.current.style.height = 'auto';
       onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Error occurred");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err: any) { setError(err.message || "Error occurred"); }
+    finally { setSubmitting(false); }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className={`bg-[#1a1a1a] rounded-2xl border transition-all duration-200 relative overflow-hidden
-        ${isExpanded ? 'border-white/20 shadow-lg p-4' : 'border-white/10 p-2'}
-      `}
+      className={`bg-[#1a1a1a] rounded-2xl border transition-all duration-200 relative overflow-hidden ${isExpanded ? 'border-white/20 shadow-lg p-4' : 'border-white/10 p-2'}`}
     >
       <div className="relative">
         {!isExpanded ? (
           <div
             onClick={() => setIsExpanded(true)}
-            onFocus={() => setIsExpanded(true)}
             tabIndex={0}
-            className="h-[40px] px-3 py-2 text-sm flex items-center text-gray-200 cursor-text w-full transition-all outline-none"
+            className="h-[40px] px-3 py-2 text-sm flex items-center text-gray-200 cursor-text w-full outline-none"
           >
-            {content ? (
-              <span className="truncate w-full block leading-normal">{content.replace(/\n/g, ' ')}</span>
-            ) : (
-              <span className="text-gray-500 truncate w-full block leading-normal">{placeholder}</span>
-            )}
+            {content
+              ? <span className="truncate w-full block leading-normal">{content.replace(/\n/g, ' ')}</span>
+              : <span className="text-gray-500 truncate w-full block leading-normal">{placeholder}</span>
+            }
           </div>
         ) : (
           <textarea
@@ -696,70 +466,39 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
       {isExpanded && (
         <div className="animate-fadeIn mt-4 flex flex-col gap-4">
-
-          {/* Actions Bar & Inputs */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 pt-2 border-t border-white/5">
-
-            {/* Left Side: Inputs (Desktop) / Top (Mobile) */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto flex-1 sm:mr-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full animate-fadeIn">
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
-                  placeholder="Name"
-                />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
-                  placeholder="Email"
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full sm:flex-1 sm:mr-4">
+              <input
+                type="text" required value={name} onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
+                placeholder="Name"
+              />
+              <input
+                type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-white/10 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 outline-none bg-black/20 text-gray-200 text-sm"
+                placeholder="Email"
+              />
             </div>
-
-            {/* Right Side: Turnstile & Buttons (Desktop) / Bottom (Mobile) */}
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 shrink-0">
               <div className="transform origin-center sm:origin-right scale-90 sm:scale-100">
-                <Turnstile
-                  siteKey={turnstileSiteKey}
-                  onSuccess={(t) => setToken(t)}
-                  onExpire={() => setToken(null)}
-                  options={{ theme: 'dark' }}
-                />
+                <Turnstile siteKey={turnstileSiteKey} onSuccess={(t) => setToken(t)} onExpire={() => setToken(null)} options={{ theme: 'dark' }} />
               </div>
-
               <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="px-4 py-2 rounded-full font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm"
-                >
+                <button type="button" onClick={() => { setIsExpanded(false); setError(null); }} className="px-4 py-2 rounded-full font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
                   Cancel
                 </button>
                 <button
-                  type="submit"
-                  disabled={submitting || !token}
-                  className={`px-6 py-2 rounded-full font-bold text-white transition-all transform text-sm whitespace-nowrap
-                                ${submitting || !token
-                      ? "bg-white/10 cursor-not-allowed text-gray-500"
-                      : "bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20"
-                    }`}
+                  type="submit" disabled={submitting || !token}
+                  className={`px-6 py-2 rounded-full font-bold text-white transition-all text-sm whitespace-nowrap ${submitting || !token ? "bg-white/10 cursor-not-allowed text-gray-500" : "bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20"}`}
                 >
                   {submitting ? "Posting..." : "Comment"}
                 </button>
               </div>
             </div>
           </div>
-
           {error && (
             <div className="text-red-400 text-xs mt-2 flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" />
-              {error}
+              <AlertCircle className="w-3 h-3" />{error}
             </div>
           )}
         </div>

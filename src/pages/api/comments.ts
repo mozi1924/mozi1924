@@ -3,7 +3,6 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request, locals }) => {
-    // When using Astro API routes with Cloudflare adapter, bindings are in locals.runtime.env
     const env = (locals as any).runtime.env;
     const body: any = await request.json();
 
@@ -18,13 +17,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
     formData.append('secret', env.TURNSTILE_SECRET_KEY);
     formData.append('response', turnstileToken);
 
-    const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-    const result = await fetch(url, {
+    const outcome: any = await (await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         body: formData,
         method: 'POST',
-    });
+    })).json();
 
-    const outcome: any = await result.json();
     if (!outcome.success) {
         return new Response(JSON.stringify({ error: "Turnstile verification failed" }), { status: 403 });
     }
@@ -53,25 +50,29 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     try {
+        // Join to get parent info; also join grandparent to detect if parent is root
         const { results } = await env.DB.prepare(`
             SELECT 
-                c1.*,
+                c1.id, c1.name, c1.email, c1.content, c1.path, c1.parent_id, c1.created_at,
                 c2.name as parent_name,
-                c2.content as parent_content
+                c2.content as parent_content,
+                c2.parent_id as parent_parent_id
             FROM comments c1
             LEFT JOIN comments c2 ON c1.parent_id = c2.id
             WHERE c1.path = ?
-            ORDER BY c1.created_at DESC
+            ORDER BY c1.created_at ASC
         `).bind(path).all();
 
         const comments = results.map((r: any) => ({
             id: r.id,
-            name: r.name,
+            author_name: r.name,
+            // email intentionally omitted from response
             content: r.content,
             path: r.path,
-            parent_id: r.parent_id,
+            parent_id: r.parent_id || null,
             created_at: r.created_at,
-            parent_comment: r.parent_id ? {
+            // Only include parent_comment quote when parent is itself a reply (nested reply)
+            parent_comment: (r.parent_id && r.parent_parent_id) ? {
                 name: r.parent_name,
                 content: r.parent_content
             } : null
