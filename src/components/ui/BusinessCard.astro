@@ -9,12 +9,13 @@ import {
   Facebook,
   Instagram,
 } from "lucide-react";
+import { Image } from "astro:assets";
 import { AUTHORS, DEFAULT_AUTHOR_ID } from "../../config";
 
 interface Props {
   authorId?: string;
   name?: string;
-  avatar?: string;
+  avatar?: string | any; // allow image metadata or string
   motto?: string;
   socials?: {
     network: string;
@@ -65,9 +66,11 @@ const getIcon = (network: string) => {
       class="absolute inset-0 bg-blue-500 rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"
     >
     </div>
-    <img
+    <Image
       src={avatar}
       alt={`${name} Avatar`}
+      width={128}
+      height={128}
       class="relative w-full h-full rounded-full object-cover border-2 border-white/10 group-hover:border-blue-500/50 transition-colors duration-300"
       loading="lazy"
       decoding="async"

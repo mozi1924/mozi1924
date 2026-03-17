@@ -3,11 +3,15 @@ import Layout from "../layouts/Layout.astro";
 import SectionHeader from "../components/ui/SectionHeader.astro";
 import Text2Arch from "../components/tools/Text2Arch.jsx";
 import { ArrowRight } from "lucide-react";
+import { getImage } from "astro:assets";
+import ogImage from "../assets/text-to-archbase4-encryption-decryption.webp";
 
 const customTitle = "Text2Arch Tool - Mozi's Website";
 const customDescription =
   "Use the Text to ArchBase4 tool for secure text encryption and decryption using Mozi's custom format. Fast, browser-based text processing.";
-const customImage = "/assets/text-to-archbase4-encryption-decryption.webp";
+
+const optimizedOgImage = await getImage({ src: ogImage, width: 1200, format: 'webp' });
+const customImage = optimizedOgImage.src;
 ---
 
 <Layout title={customTitle} description={customDescription} image={customImage}>

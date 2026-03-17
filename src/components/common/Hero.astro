@@ -1,17 +1,20 @@
 ---
 import { ChevronDown } from "lucide-react";
 import { SITE } from "../../config";
+import { Image } from "astro:assets";
+import heroBg from "../../assets/hero-bg.webp";
 ---
 
 <section
   class="relative h-screen flex items-center justify-center overflow-hidden"
 >
-  <!-- Background Image Placeholder - using a placeholder image service for now -->
+  <!-- Background Image -->
   <div class="absolute inset-0 bg-[#1a1a1a]">
-    <img
-      src="/assets/hero-bg.webp"
+    <Image
+      src={heroBg}
       alt="Synthwave Background"
       class="w-full h-full object-cover opacity-60 mix-blend-overlay"
+      loading="eager"
     />
     <div
       class="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-[#111]/30"

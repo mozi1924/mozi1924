@@ -21,6 +21,7 @@ interface CommentSectionProps {
   siteId: string;
   workerUrl?: string;
   turnstileSiteKey?: string;
+  defaultAvatarUrl?: string;
 }
 
 // Portal Component for SSR safety
@@ -31,12 +32,16 @@ const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 // Avatar with fallback
-const Avatar: React.FC<{ commentId: string; name: string }> = ({ commentId, name }) => (
+const Avatar: React.FC<{ commentId: string; name: string; defaultAvatarUrl?: string }> = ({ commentId, name, defaultAvatarUrl }) => (
   <img
     src={`/api/avatar?id=${commentId}`}
     alt={name}
     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
-    onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/default.webp'; }}
+    onError={(e) => { 
+      if (defaultAvatarUrl) {
+        (e.currentTarget as HTMLImageElement).src = defaultAvatarUrl;
+      }
+    }}
   />
 );
 
@@ -48,7 +53,8 @@ const RepliesModal: React.FC<{
   siteId: string;
   turnstileSiteKey: string;
   highlightCommentId?: string;
-}> = ({ parentComment, allComments, onClose, siteId, turnstileSiteKey, highlightCommentId }) => {
+  defaultAvatarUrl?: string;
+}> = ({ parentComment, allComments, onClose, siteId, turnstileSiteKey, highlightCommentId, defaultAvatarUrl }) => {
   const [replies, setReplies] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
@@ -134,6 +140,7 @@ const RepliesModal: React.FC<{
                     isInThread={true}
                     onReply={() => setReplyingTo(r)}
                     onScrollTo={scrollToReply}
+                    defaultAvatarUrl={defaultAvatarUrl}
                   />
                 </div>
               ))}
@@ -174,6 +181,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   siteId,
   workerUrl = COMMENT_CONFIG.workerUrl,
   turnstileSiteKey = COMMENT_CONFIG.turnstileSiteKey,
+  defaultAvatarUrl,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [allComments, setAllComments] = useState<Comment[]>([]);
@@ -273,6 +281,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 onScrollTo={() => {}}
                 replyCount={c.reply_count}
                 onViewThread={() => setActiveParent(c)}
+                defaultAvatarUrl={defaultAvatarUrl}
               />
             </div>
           ))
@@ -287,6 +296,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           siteId={siteId}
           turnstileSiteKey={turnstileSiteKey}
           highlightCommentId={highlightedCommentId}
+          defaultAvatarUrl={defaultAvatarUrl}
         />
       )}
 
@@ -313,7 +323,8 @@ const CommentItem: React.FC<{
   onScrollTo: (id: string) => void;
   replyCount?: number;
   onViewThread?: () => void;
-}> = ({ comment, isInThread, onReply, onScrollTo, replyCount, onViewThread }) => {
+  defaultAvatarUrl?: string;
+}> = ({ comment, isInThread, onReply, onScrollTo, replyCount, onViewThread, defaultAvatarUrl }) => {
   const scrollToComment = (id: string) => {
     if (isInThread) { onScrollTo(id); return; }
     const el = document.getElementById(`comment-${id}`);
@@ -327,7 +338,7 @@ const CommentItem: React.FC<{
   return (
     <div className="flex gap-3 sm:gap-4">
       <div className="flex-shrink-0 pt-1">
-        <Avatar commentId={comment.id} name={comment.author_name} />
+        <Avatar commentId={comment.id} name={comment.author_name} defaultAvatarUrl={defaultAvatarUrl} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="bg-[#1a1a1a] p-3 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition-colors">

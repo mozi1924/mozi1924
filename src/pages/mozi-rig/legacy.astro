@@ -1,10 +1,15 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { getImage } from "astro:assets";
+import rigOneImg from "../../assets/showcase/rig-one.webp";
+import rigOneVideo from "../../assets/rig-one.mp4";
 
 const customTitle = "Mozi's Rig - Mozi's Website";
 const customDescription =
   "Create stunning Minecraft animations in Blender with fully customizable facial expressions, intuitive controls, and optimized performance.";
-const customImage = "/assets/showcase/rig-one.webp";
+
+const optimizedOgImage = await getImage({ src: rigOneImg, width: 1200, format: 'webp' });
+const customImage = optimizedOgImage.src;
 ---
 
 <Layout title={customTitle} description={customDescription} image={customImage}>
@@ -73,16 +78,17 @@ const customImage = "/assets/showcase/rig-one.webp";
         <div
           class="relative aspect-square rounded-2xl overflow-hidden border border-white/10 bg-[#222] shadow-2xl"
         >
-          <!-- Placeholder for Rig Showcase -->
+          <!-- Video Rig Showcase -->
           <div
             class="absolute inset-0 flex items-center justify-center text-gray-600 bg-[#161616]"
           >
             <video
-              src="/assets/rig-one.mp4"
+              src={rigOneVideo}
               class="w-full h-full object-cover"
               autoplay
               loop
-              muted></video>
+              muted
+              playsinline></video>
           </div>
         </div>
         <!-- Decoration -->

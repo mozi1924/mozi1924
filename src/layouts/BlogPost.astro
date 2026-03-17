@@ -41,8 +41,14 @@ type Props = {
 };
 
 import { Calendar, User, Clock } from "lucide-react";
+import { getImage } from "astro:assets";
+import defaultAvatar from "../assets/default.webp";
 
 const { frontmatter, headings, seriesList } = Astro.props;
+
+// Optimize default avatar for comments fallback
+const optimizedDefaultAvatar = await getImage({ src: defaultAvatar, width: 80, format: 'webp' });
+const defaultAvatarUrl = optimizedDefaultAvatar.src;
 
 // Resolve Author
 const authorId = frontmatter.authorId || DEFAULT_AUTHOR_ID;
@@ -218,7 +224,7 @@ const imageUrl = typeof frontmatter.image === 'string'
   {
     !hideComments && (
       <div class="max-w-5xl mx-auto px-4 md:px-6 pb-20">
-        <CommentSection client:load siteId="mozi1924.com" />
+        <CommentSection client:load siteId="mozi1924.com" defaultAvatarUrl={defaultAvatarUrl} />
       </div>
     )
   }

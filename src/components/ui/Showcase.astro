@@ -1,5 +1,71 @@
 ---
 import Lightbox from "./react/Lightbox.jsx";
+import { getImage } from "astro:assets";
+
+// Import original images
+import dbhImg from "../../assets/showcase/dbh-max.webp";
+import rig1Img from "../../assets/showcase/rig-one.webp";
+import nodusImg from "../../assets/showcase/nodus.webp";
+
+// Showcase Data
+const rawItems = [
+    {
+        title: "Become Human",
+        date: "2025-5-21",
+        description:
+            "This is a short animation that imitates the opening sequence of the game *Detroit: Become Human*, used to showcase the flexibility of my rigging and the material effects of the skin texture.",
+        button: {
+            text: "Watch Video",
+            url: "https://www.youtube.com/watch?v=XxAqKosI6ZE",
+        },
+        image: dbhImg,
+    },
+    {
+        title: "Rig/1",
+        date: "2025-8-18",
+        description:
+            "A custom rig for Minecraft that allows for easy animation and rigging.",
+        button: {
+            text: "Learn More",
+            url: "https://rig-doc.mozi1924.com/",
+        },
+        image: rig1Img,
+    },
+    {
+        title: "NOW SHUT UP AND DRIVE 2.0",
+        date: "2025-11-14",
+        description:
+            "A demonstration showcasing my powerful video keypoint tracking and synthesis capabilities, featuring captivating dance and music.",
+        button: {
+            text: "Watch Video",
+            url: "https://www.bilibili.com/video/BV1mjCuByEHR",
+        },
+        image: nodusImg,
+    },
+];
+
+// Optimize images for thumbnail and full display
+const optimizedItems = await Promise.all(
+    rawItems.map(async (item) => {
+        const thumbnail = await getImage({
+            src: item.image,
+            width: 800,
+            format: "webp",
+            quality: 80,
+        });
+        const fullSize = await getImage({
+            src: item.image,
+            width: 1600,
+            format: "webp",
+            quality: 90,
+        });
+        return {
+            ...item,
+            thumbnail: thumbnail.src,
+            fullSize: fullSize.src,
+        };
+    })
+);
 ---
 
 <section class="py-24 bg-[#161616] px-6">
@@ -9,57 +75,6 @@ import Lightbox from "./react/Lightbox.jsx";
             <div class="w-20 h-1 bg-white mx-auto rounded-full"></div>
         </div>
 
-        <!-- 
-            Showcase Data:
-            Modify the array below to add your own projects.
-            Place images in public/showcase/ and reference them like '/showcase/image.jpg'
-            -->
-        <Lightbox
-            client:load
-            items={[
-                {
-                    title: "Become Human",
-                    date: "2025-5-21",
-                    description:
-                        "This is a short animation that imitates the opening sequence of the game *Detroit: Become Human*, used to showcase the flexibility of my rigging and the material effects of the skin texture.",
-                    button: {
-                        text: "Watch Video",
-                        url: "https://www.youtube.com/watch?v=XxAqKosI6ZE",
-                    },
-                    thumbnail:
-                        "/assets/showcase/dbh-hq.webp",
-                    fullSize:
-                        "/assets/showcase/dbh-max.webp",
-                },
-                {
-                    title: "Rig/1",
-                    date: "2025-8-18",
-                    description:
-                        "A custom rig for Minecraft that allows for easy animation and rigging.",
-                    button: {
-                        text: "Learn More",
-                        url: "https://rig-doc.mozi1924.com/",
-                    },
-                    thumbnail:
-                        "/assets/showcase/rig-one.webp",
-                    fullSize:
-                        "/assets/showcase/rig-one.webp",
-                },
-                {
-                    title: "NOW SHUT UP AND DRIVE 2.0",
-                    date: "2025-11-14",
-                    description:
-                        "A demonstration showcasing my powerful video keypoint tracking and synthesis capabilities, featuring captivating dance and music.",
-                    button: {
-                        text: "Watch Video",
-                        url: "https://www.bilibili.com/video/BV1mjCuByEHR",
-                    },
-                    thumbnail:
-                        "/assets/showcase/nodus-720p.webp",
-                    fullSize:
-                        "/assets/showcase/nodus.webp",
-                },
-            ]}
-        />
+        <Lightbox client:load items={optimizedItems} />
     </div>
 </section>

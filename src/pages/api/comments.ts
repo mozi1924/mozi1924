@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { SITE } from '/@/config';
 
 export const POST: APIRoute = async ({ request, locals }) => {
     const env = (locals as any).runtime.env;
@@ -38,8 +39,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         // Send email notification via waitUntil so it survives after response is returned
         if (env.EMAIL_API_KEY && env.NOTIFY_FROM) {
             const sendNotification = async () => {
-                const siteUrl = 'https://mozi1924.com';
-                const postUrl = `${siteUrl}${path}#comment-${id}`;
+                const postUrl = `${SITE.url}${path}#comment-${id}`;
 
                 let notifyTo: string = env.NOTIFY_TO || '';
                 let subject: string;

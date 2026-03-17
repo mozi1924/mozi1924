@@ -1,11 +1,17 @@
-export const prerender = false;
-
+import { getImage } from 'astro:assets';
 import type { APIRoute } from 'astro';
+import defaultAvatar from '../../assets/default.webp';
 
 export const GET: APIRoute = async ({ request, locals }) => {
     const env = (locals as any).runtime.env;
     const url = new URL(request.url);
     const commentId = url.searchParams.get('id');
+
+    // Helper to get optimized fallback
+    const getFallbackUrl = async () => {
+        const optimized = await getImage({ src: defaultAvatar, width: 80, format: 'webp' });
+        return optimized.src;
+    };
 
     if (!commentId) {
         return new Response(null, { status: 400 });
@@ -23,7 +29,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     if (!email) {
-        return Response.redirect('/assets/default.webp', 302);
+        return Response.redirect(await getFallbackUrl(), 302);
     }
 
     // Compute MD5 hash of lowercased trimmed email
@@ -44,7 +50,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         });
 
         if (!resp.ok) {
-            return Response.redirect('/assets/default.webp', 302);
+            return Response.redirect(await getFallbackUrl(), 302);
         }
 
         const contentType = resp.headers.get('content-type') || 'image/jpeg';
@@ -57,6 +63,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
             },
         });
     } catch {
-        return Response.redirect('/assets/default.webp', 302);
+        return Response.redirect(await getFallbackUrl(), 302);
     }
 };

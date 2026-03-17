@@ -1,3 +1,5 @@
+import avatarImg from "./assets/avatar.webp";
+
 export const SITE = {
     domain: "mozi1924.com",
     url: "https://mozi1924.com",
@@ -33,7 +35,7 @@ export const AUTHORS: Record<string, Author> = {
         id: "mozi",
         name: "Mozi A.",
         url: "/about",
-        avatar: "/assets/avatar.webp",
+        avatar: avatarImg.src,
         motto: "I don't care if these bitches don't like me Cause, like, I'm pretty as fuck.",
         socialLinks: [
             { network: "GitHub", url: "https://github.com/mozi1924" },
