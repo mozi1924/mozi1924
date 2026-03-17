@@ -61,8 +61,17 @@ const RepliesModal: React.FC<{
       if (res.ok) {
         const data = await res.json();
         const all: Comment[] = data.comments || [];
-        // All descendants of parentComment (direct replies + nested)
-        setReplies(all.filter(c => c.parent_id === parentComment.id));
+        // Collect all descendants of parentComment (BFS)
+        const descendantIds = new Set<string>();
+        const queue = [parentComment.id];
+        while (queue.length) {
+          const pid = queue.shift()!;
+          for (const c of all) {
+            if (c.parent_id === pid) { descendantIds.add(c.id); queue.push(c.id); }
+          }
+        }
+        // Keep insertion order (API returns ASC)
+        setReplies(all.filter(c => descendantIds.has(c.id)));
       }
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
@@ -327,13 +336,14 @@ const CommentItem: React.FC<{
               <span className="font-bold text-gray-200 text-sm">{comment.author_name}</span>
               <span className="text-xs font-medium text-gray-500">{formatDistanceToNow(comment.created_at)} ago</span>
             </div>
-            <a
-              href={`#comment-${comment.id}`}
-              onClick={(e) => { e.preventDefault(); window.history.pushState(null, '', `#comment-${comment.id}`); scrollToComment(comment.id); }}
+            <button
+              type="button"
+              onClick={() => navigator.clipboard?.writeText(`${window.location.origin}${window.location.pathname}#comment-${comment.id}`)}
+              title="Copy link"
               className="text-gray-500 hover:text-blue-400 text-xs transition-colors opacity-0 group-hover:opacity-100"
             >
               #{comment.id.slice(0, 8)}
-            </a>
+            </button>
           </div>
 
           {/* Quote block: only for nested replies (parent_comment set by API) */}
