@@ -1,4 +1,4 @@
-name = "mozi1924-com"
+name = "mozi1924"
 pages_build_output_dir = "dist"
 
 [[d1_databases]]
