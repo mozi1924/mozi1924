@@ -34,6 +34,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
             'INSERT INTO comments (id, name, email, content, path, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
         ).bind(id, name, email, content, path, parent_id || null, created_at).run();
 
+        // Send email notification (fire-and-forget, don't block response)
+        if (env.EMAIL_API_KEY && env.NOTIFY_TO && env.NOTIFY_FROM) {
+            const siteUrl = 'https://mozi1924.com';
+            const postUrl = `${siteUrl}${path}#comment-${id}`;
+            const subject = parent_id
+                ? `New reply on ${path}`
+                : `New comment on ${path}`;
+            const html = `<p><strong>${name}</strong> commented on <a href="${postUrl}">${path}</a>:</p><blockquote>${content.replace(/\n/g, '<br>')}</blockquote><p><a href="${postUrl}">View comment</a></p>`;
+
+            fetch('https://vercel-email-routing.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': env.EMAIL_API_KEY },
+                body: JSON.stringify({ to: env.NOTIFY_TO, from: env.NOTIFY_FROM, subject, html }),
+            }).catch(() => { /* ignore notification errors */ });
+        }
+
         return new Response(JSON.stringify({ success: true, id }), { status: 201 });
     } catch (e: any) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500 });

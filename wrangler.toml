@@ -9,3 +9,9 @@ database_id = "64533fc2-02dc-4a34-8260-f403751b028a" # Replace with actual datab
 [[kv_namespaces]]
 binding = "SESSION"
 id = "ce38259951d0496a9a8acfdd8bdfc646"
+
+# Required secrets (set in Cloudflare Pages dashboard, not here):
+# TURNSTILE_SECRET_KEY  - Cloudflare Turnstile secret
+# EMAIL_API_KEY         - x-api-key for vercel-email-routing
+# NOTIFY_FROM           - sender address bound to EMAIL_API_KEY
+# NOTIFY_TO             - recipient address for comment notifications
