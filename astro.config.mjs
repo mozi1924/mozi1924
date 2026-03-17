@@ -35,7 +35,15 @@ export default defineConfig({
       rollupOptions: {
         external: ['/pagefind/pagefind.js'],
         output: {
-          assetFileNames: '_astro/style.[hash][extname]',
+          assetFileNames: (assetInfo) => {
+            if (assetInfo.name?.endsWith('.css')) {
+              return '_astro/style.[hash][extname]';
+            }
+            if (/\.(gif|jpe?g|png|svg|webp|avif|ico)$/i.test(assetInfo.name || '')) {
+              return '_astro/image.[hash][extname]';
+            }
+            return '_astro/[name].[hash][extname]';
+          },
         },
       },
     },
