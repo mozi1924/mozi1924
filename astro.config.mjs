@@ -29,25 +29,58 @@ const cleanPrerenderedFiles = {
   hooks: {
     'astro:build:done': async ({ dir }) => {
       const workerDir = path.join(fileURLToPath(dir), '_worker.js');
+      const removedFiles = [];
 
-      async function processDir(currentDir) {
+      async function findRemovedFiles(currentDir) {
         let entries;
         try {
           entries = await fs.readdir(currentDir, { withFileTypes: true });
-        } catch (e) {
-          return;
-        }
+        } catch (e) { return; }
 
         for (const entry of entries) {
           const fullPath = path.join(currentDir, entry.name);
           if (entry.isDirectory()) {
-            await processDir(fullPath);
-          } else if (entry.isFile()) {
+            await findRemovedFiles(fullPath);
+          } else if (entry.isFile() && entry.name.endsWith('.mjs')) {
             const content = await fs.readFile(fullPath, 'utf8');
             if (content.trim() === "// Contents removed by Astro as it's used for prerendering only") {
+              removedFiles.push(path.relative(workerDir, fullPath));
               await fs.unlink(fullPath);
             }
           }
+        }
+      }
+
+      await findRemovedFiles(workerDir);
+
+      if (removedFiles.length === 0) return;
+
+      // 创建一个共享的空文件来接管所有被删除的页面引用
+      const removedPlaceholder = 'pages/removed.mjs';
+      const placeholderPath = path.join(workerDir, removedPlaceholder);
+      await fs.mkdir(path.dirname(placeholderPath), { recursive: true });
+      await fs.writeFile(placeholderPath, 'export default {};', 'utf8');
+
+      async function updateReferences(filePath) {
+        try {
+          let content = await fs.readFile(filePath, 'utf8');
+          let changed = false;
+          for (const file of removedFiles) {
+            if (content.includes(file)) {
+              content = content.replaceAll(file, removedPlaceholder);
+              changed = true;
+            }
+          }
+          if (changed) await fs.writeFile(filePath, content, 'utf8');
+        } catch (e) {}
+      }
+
+      // 更新入口和清单文件中的引用
+      await updateReferences(path.join(workerDir, 'index.js'));
+      const rootEntries = await fs.readdir(workerDir);
+      for (const entry of rootEntries) {
+        if (entry.startsWith('manifest_') && entry.endsWith('.mjs')) {
+          await updateReferences(path.join(workerDir, entry));
         }
       }
 
@@ -55,25 +88,19 @@ const cleanPrerenderedFiles = {
         let entries;
         try {
           entries = await fs.readdir(currentDir, { withFileTypes: true });
-        } catch (e) {
-          return;
-        }
+        } catch (e) { return; }
 
         for (const entry of entries) {
           if (entry.isDirectory()) {
             const fullPath = path.join(currentDir, entry.name);
             await removeEmptyDirs(fullPath);
-            // 尝试删除，如果不是空的会报错，所以需要 catch
             try {
               await fs.rmdir(fullPath);
-            } catch (e) {
-              // Ignore folders that are not empty
-            }
+            } catch (e) {}
           }
         }
       }
 
-      await processDir(workerDir);
       await removeEmptyDirs(workerDir);
     }
   }

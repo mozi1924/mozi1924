@@ -1,3 +1,4 @@
+export const prerender = false;
 import { getImage } from 'astro:assets';
 import type { APIRoute } from 'astro';
 import defaultAvatar from '../../assets/default.webp';
