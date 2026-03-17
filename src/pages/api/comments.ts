@@ -89,7 +89,29 @@ export const POST: APIRoute = async ({ request, locals }) => {
             ctx.waitUntil(sendNotification().catch(() => { }));
         }
 
-        return new Response(JSON.stringify({ success: true, id }), { status: 201 });
+        const response = new Response(JSON.stringify({ success: true, id }), { status: 201 });
+
+        // Purge the edge cache for this path via waitUntil
+        if (env.CF_ZONE_ID && env.CF_API_TOKEN) {
+            const purgeCache = async () => {
+                const targetUrl = `${SITE.url}/api/comments?path=${encodeURIComponent(path)}`;
+                try {
+                    await fetch(`https://api.cloudflare.com/client/v4/zones/${env.CF_ZONE_ID}/purge_cache`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${env.CF_API_TOKEN}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ files: [targetUrl] })
+                    });
+                } catch (e) {
+                    console.error('Cache purge failed:', e);
+                }
+            };
+            ctx.waitUntil(purgeCache());
+        }
+
+        return response;
     } catch (e: any) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500 });
     }
@@ -135,7 +157,12 @@ export const GET: APIRoute = async ({ request, locals }) => {
         }));
 
         return new Response(JSON.stringify({ comments }), {
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                'Content-Type': 'application/json',
+                // Cache for 1 year in CDN, but bypassable via purge
+                // stale-while-revalidate allows serving old content while fetching new
+                'Cache-Control': 'public, s-maxage=31536000, stale-while-revalidate=60',
+            }
         });
     } catch (e: any) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500 });

@@ -15,3 +15,5 @@ id = "ce38259951d0496a9a8acfdd8bdfc646"
 # EMAIL_API_KEY         - x-api-key for vercel-email-routing
 # NOTIFY_FROM           - sender address bound to EMAIL_API_KEY
 # NOTIFY_TO             - recipient address for comment notifications
+# CF_ZONE_ID            - Cloudflare Zone ID for cache purging
+# CF_API_TOKEN          - Cloudflare API Token with cache purge permission

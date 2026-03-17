@@ -60,8 +60,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
         response = new Response(body, {
             headers: {
                 'Content-Type': contentType,
-                // Cache for 7 days in browser, 30 days in Cloudflare Edge
-                'Cache-Control': 'public, max-age=604800, s-maxage=2592000, stale-while-revalidate=86400',
+                // Cache for 1 year in Cloudflare Edge (s-maxage), 7 days in browser
+                // stale-while-revalidate allows serving stale content while fetching fresh in background
+                'Cache-Control': 'public, max-age=604800, s-maxage=31536000, stale-while-revalidate=86400',
                 'Vary': 'Accept',
             },
         });
