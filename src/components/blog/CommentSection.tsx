@@ -7,16 +7,20 @@ import { scrollLock } from "../../utils/scroll-lock";
 
 // Types
 interface Comment {
-  id: number;
-  site_id: string;
-  parent_id: number | null;
+  id: string;
+  site_id?: string;
+  parent_id: string | null;
   content: string;
   author_name: string;
-  avatar_id: string;
+  avatar_id?: string;
   created_at: number;
   reply_count?: number;
   admin_reply?: Comment | null;
   is_admin?: number;
+  parent_comment?: {
+    name: string;
+    content: string;
+  } | null;
 }
 
 import { COMMENT_CONFIG } from "../../config";
@@ -44,36 +48,26 @@ const RepliesModal: React.FC<{
   workerUrl: string;
   siteId: string;
   turnstileSiteKey: string;
-  highlightCommentId?: number;
+  highlightCommentId?: string;
 }> = ({ parentComment, onClose, workerUrl, siteId, turnstileSiteKey, highlightCommentId }) => {
   const [replies, setReplies] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
-  const [lastId, setLastId] = useState<number | undefined>(undefined);
+  const [lastId, setLastId] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
 
   const loadReplies = async (reset = false) => {
     setLoading(true);
     try {
-      const currentLastId = reset ? undefined : lastId;
-      let url = `${workerUrl}/api/comments/${parentComment.id}/replies?limit=10${currentLastId ? `&last_id=${currentLastId}` : ""
-        }`;
-
-      // If it's the first load and we have a highlight ID, pass it to the backend
-      // expecting the backend to return the page containing this comment
-      if (reset && highlightCommentId) {
-        url += `&highlight_id=${highlightCommentId}`;
-      }
-
-      const res = await fetch(url);
+      const currentPath = window.location.pathname;
+      const res = await fetch(`/api/comments?path=${encodeURIComponent(currentPath)}`);
       if (res.ok) {
         const data = await res.json();
-        if (reset) {
-          setReplies(data.replies);
-        } else {
-          setReplies((prev) => [...prev, ...data.replies]);
-        }
-        setLastId(data.lastId);
-        setHasMore(data.hasMore);
+        // For simplicity with the new backend, we just load all comments for now
+        // since we are fetching from our internal API
+        const allComments: Comment[] = data.comments;
+        const threadReplies = allComments.filter(c => c.parent_id === parentComment.id);
+        setReplies(threadReplies);
+        setHasMore(false);
       }
     } catch (e) {
       console.error(e);
@@ -196,21 +190,29 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const [loading, setLoading] = useState(false);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [activeParent, setActiveParent] = useState<Comment | null>(null);
-  const [highlightedCommentId, setHighlightedCommentId] = useState<number | undefined>(undefined);
+  const [highlightedCommentId, setHighlightedCommentId] = useState<string | undefined>(undefined);
 
   // Fetch Comments
   const fetchComments = async () => {
     setLoading(true);
     try {
-      const context_url = encodeURIComponent(window.location.origin + window.location.pathname);
-      const res = await fetch(`${workerUrl}/api/comments?site_id=${siteId}&context_url=${context_url}`);
+      const currentPath = window.location.pathname;
+      const res = await fetch(`/api/comments?path=${encodeURIComponent(currentPath)}`);
       if (res.ok) {
-        const data = (await res.json()) as {
-          comments: Comment[];
-          total: number;
-        };
+        const data = await res.json();
         // The API now returns top-level comments and potentially pinned admin replies
-        setComments(data.comments || []);
+        const allComments: Comment[] = data.comments || [];
+        // Since we fetch all comments, we might want to group them or just show top level
+        // For CommentSection, we only want to show root comments initially
+        const rootComments = allComments.filter(c => !c.parent_id);
+        
+        // Let's add reply counts
+        const commentsWithCounts = rootComments.map(root => {
+            const replyCount = allComments.filter(c => c.parent_id === root.id).length;
+            return { ...root, reply_count: replyCount };
+        });
+
+        setComments(commentsWithCounts);
       }
     } catch (err) {
       console.error("Failed to load comments", err);
@@ -243,9 +245,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     const handleDeepLink = async () => {
       if (!window.location.hash || !window.location.hash.startsWith("#comment-")) return;
 
-      const commentIdStr = window.location.hash.substring(9); // remove #comment-
-      const commentId = parseInt(commentIdStr, 10);
-      if (isNaN(commentId)) return;
+      const commentId = window.location.hash.substring(9); // remove #comment-
+      if (!commentId) return;
 
       // 1. Try to find locally first (fast path)
       const el = document.getElementById(`comment-${commentId}`);
@@ -260,19 +261,25 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       // 2. If not found, and we have done initial load, try server lookup
       if (initialLoadDone) {
         try {
-          // Fetch context
-          const res = await fetch(`${workerUrl}/api/comments/${commentId}?site_id=${siteId}`);
+          const currentPath = window.location.pathname;
+          const res = await fetch(`/api/comments?path=${encodeURIComponent(currentPath)}`);
           if (res.ok) {
             const data = await res.json();
-            if (data.root_comment) {
-              // It's a reply or a root comment we don't have.
-              // Open modal for the root.
-              setHighlightedCommentId(commentId);
-              setActiveParent(data.root_comment);
-            } else if (data.comment) {
-              // Fallback if structure is different
-              setHighlightedCommentId(commentId);
-              setActiveParent(data.comment); // Assume it's a root
+            const allComments: Comment[] = data.comments || [];
+            
+            const targetComment = allComments.find(c => c.id === commentId);
+            if (targetComment) {
+              if (targetComment.parent_id) {
+                // It's a reply, open modal for the root.
+                const rootComment = allComments.find(c => c.id === targetComment.parent_id);
+                if (rootComment) {
+                  setHighlightedCommentId(commentId);
+                  setActiveParent(rootComment);
+                }
+              } else {
+                setHighlightedCommentId(commentId);
+                setActiveParent(targetComment);
+              }
             }
           }
         } catch (e) {
@@ -282,7 +289,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     };
 
     handleDeepLink();
-  }, [initialLoadDone, comments, workerUrl, siteId]);
+  }, [initialLoadDone, comments]);
 
   return (
     <div className="border-t border-white/10 mt-16 pt-12">
@@ -386,9 +393,16 @@ const CommentItem: React.FC<{
   isPreview,
 }) => {
     const [replying, setReplying] = useState(false);
-    const avatarSrc = comment.avatar_id
-      ? `${workerUrl}/api/avatar/${comment.avatar_id}`
-      : "/assets/default.webp";
+    const avatarSrc = "/assets/default.webp"; // Since we don't have a separate avatar API yet
+
+    const scrollToComment = (id: string) => {
+        const el = document.getElementById(`comment-${id}`);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('highlight-comment');
+            setTimeout(() => el.classList.remove('highlight-comment'), 2000);
+        }
+    };
 
     return (
       <div id={`comment-${comment.id}`} className="group">
@@ -396,9 +410,6 @@ const CommentItem: React.FC<{
           <div className="flex-shrink-0 pt-1">
             <img
               src={avatarSrc}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/assets/default.webp";
-              }}
               alt={comment.author_name}
               className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
             />
@@ -417,12 +428,32 @@ const CommentItem: React.FC<{
                 <div className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                   <a
                     href={`#comment-${comment.id}`}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.history.pushState(null, '', `#comment-${comment.id}`);
+                        scrollToComment(comment.id);
+                    }}
                     className="text-gray-500 hover:text-blue-400 text-xs transition-colors"
                   >
-                    #{comment.id}
+                    #{comment.id.slice(0, 8)}
                   </a>
                 </div>
               </div>
+
+              {/* Quoted Parent Comment */}
+              {comment.parent_comment && (
+                  <div 
+                    onClick={() => comment.parent_id && scrollToComment(comment.parent_id)}
+                    className="mb-3 p-3 bg-white/5 border-l-2 border-blue-500 rounded-r-lg cursor-pointer hover:bg-white/10 transition-colors"
+                  >
+                      <div className="text-xs font-bold text-blue-400 mb-1">
+                          Replying to {comment.parent_comment.name}
+                      </div>
+                      <div className="text-xs text-gray-400 line-clamp-2 italic">
+                          "{comment.parent_comment.content}"
+                      </div>
+                  </div>
+              )}
 
               <div className="text-gray-300 whitespace-pre-wrap leading-relaxed text-sm">
                 {comment.content}
@@ -458,7 +489,7 @@ const CommentItem: React.FC<{
               </div>
             )}
 
-            {/* Admin Reply Preview */}
+            {/* Admin Reply Preview (Deprecated - showing how we now handle all replies in a single thread) */}
             {comment.admin_reply && (
               <div className="mt-4 ml-4 sm:ml-8 relative">
                 <div className="absolute left-[-20px] top-0 bottom-0 w-px bg-white/10 hidden sm:block"></div>
@@ -474,18 +505,15 @@ const CommentItem: React.FC<{
               </div>
             )}
 
-            {/* View Remaining Replies Button */}
-            {comment.reply_count &&
-              comment.reply_count > (comment.admin_reply ? 1 : 0) &&
-              !isPreview ? (
+            {/* View Thread Button */}
+            {comment.reply_count && comment.reply_count > 0 && !isPreview ? (
               <div className="mt-3 ml-4 sm:ml-8 pl-4 border-l-2 border-white/10">
                 <button
                   onClick={() => onViewReplies(comment)}
                   className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
                   type="button"
                 >
-                  View {comment.reply_count - (comment.admin_reply ? 1 : 0)} more
-                  replies
+                  View Thread ({comment.reply_count} replies)
                 </button>
               </div>
             ) : null}
@@ -499,7 +527,7 @@ const CommentItem: React.FC<{
 interface CommentFormProps {
   siteId: string;
   workerUrl: string;
-  parentId: number | null;
+  parentId: string | null;
   onSuccess: () => void;
   turnstileSiteKey: string;
   autoFocus?: boolean;
@@ -595,19 +623,18 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
     try {
       // Use "clean" URL (origin + pathname) as per requirement
-      const context_url = window.location.origin + window.location.pathname;
+      const currentPath = window.location.pathname;
 
-      const res = await fetch(`${workerUrl}/api/comments`, {
+      const res = await fetch(`/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          site_id: siteId,
-          parent_id: parentId,
-          author_name: name,
+          name,
           email,
           content,
-          turnstile_token: token,
-          context_url,
+          path: currentPath,
+          parent_id: parentId,
+          turnstileToken: token,
         }),
       });
 

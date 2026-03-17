@@ -9,9 +9,11 @@ export const SITE = {
 };
 
 export const COMMENT_CONFIG = {
-    workerUrl: "https://serverless-comment-backend.arasaka.ltd",
-    // Use environment variable or fallback to hardcoded
-    turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACMtIrpVNiBgyN4Y",
+    // The workerUrl is no longer needed since we use internal API routes (/api/comments)
+    // but kept here for backwards compatibility if needed.
+    workerUrl: "",
+    // You should replace this with your new Turnstile site key
+    turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACMtIrpVNiBgyN4Y", // Example placeholder, will need the user to set their actual key
 };
 
 export interface Author {
