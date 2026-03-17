@@ -193,7 +193,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         const roots = all.filter(c => !c.parent_id).map(root => ({
           ...root,
           reply_count: all.filter(c => c.parent_id === root.id).length,
-        }));
+        })).reverse();
         setComments(roots);
       }
     } catch (err) { console.error(err); }
