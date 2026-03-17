@@ -4,11 +4,13 @@ import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
 import { Calendar, User, Layers } from "lucide-react";
 import ArticleList from "../components/blog/ArticleList.astro";
 import LicenseCard from "../components/blog/LicenseCard.astro";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 interface Props {
   title: string;
   date: string;
-  image?: string;
+  image?: ImageMetadata | string;
   lang?: string;
   desc?: string;
   authorId?: string;
@@ -34,6 +36,7 @@ const {
 } = Astro.props;
 
 const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
+const imageUrl = image ? (typeof image === 'string' ? image : image.src) : undefined;
 
 import { SITE } from "../config";
 
@@ -48,7 +51,7 @@ const listItems = chapters.map((chapter) => ({
 <Layout
   title={title}
   description={desc}
-  image={image}
+  image={imageUrl}
   lang={lang}
   pageType="article"
   pubDate={date}
@@ -113,13 +116,25 @@ const listItems = chapters.map((chapter) => ({
         >
           {
             image ? (
-              <img
-                src={image}
-                alt={title}
-                class="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+              typeof image === 'string' ? (
+                <img
+                  src={image}
+                  alt={title}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <Image
+                  src={image}
+                  alt={title}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  widths={[600, 1000]}
+                  sizes="(max-width: 768px) 100vw, 600px"
+                />
+              )
             ) : (
               <div class="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
                 <Layers className="w-20 h-20 text-gray-800" />

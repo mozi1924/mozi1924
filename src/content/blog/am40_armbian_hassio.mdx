@@ -4,7 +4,7 @@ categories: ["tutorial"]
 title: "Smart AM40 使用tf卡刷机和安装hassio"
 date: "2024-06-08"
 desc: "最近，我对arm64小主机很感兴趣，在网上浏览了很多，但大多都不符合我的要求，但是，我在某鱼上面发现了一款工控小主机，型号是SMART Technologies AM40  这个型号的主机很小众，在b站上只能找到两个有关的刷机教学视频，但是，额，怎么说，录的很随意，没有过多的介绍，不过在..."
-image: "/assets/am40/SMART-UGK-AM40-EDU.webp"
+image: "../../assets/am40/SMART-UGK-AM40-EDU.webp"
 ---
 
 ## 开始
@@ -53,25 +53,25 @@ xxx则代表版本号
 
 首先选择镜像
 
-![Etcher图1](/assets/am40/截图-2024-06-07-20-29-37-768x506.webp)
+![Etcher图1](../../assets/am40/截图-2024-06-07-20-29-37-768x506.webp)
 
 Etcher图1
 
 然后选择要烧录的tf卡，**注意不要选错不然数据丢失**
 
-![Etcher图2](/assets/am40/截图-2024-06-07-20-29-47-768x506.webp)
+![Etcher图2](../../assets/am40/截图-2024-06-07-20-29-47-768x506.webp)
 
 Etcher图2
 
 然后点击 Select，回到主界面，点击Flash!，出现这个页面就表示开始写入了
 
-![Etcher图3](/assets/am40/截图-2024-06-07-20-30-07-768x506.webp)
+![Etcher图3](../../assets/am40/截图-2024-06-07-20-30-07-768x506.webp)
 
 Etcher图3
 
 然后等待，直到出现以下页面，速度取决于你的读卡器和sd卡写入速度
 
-![Etcher图4](/assets/am40/截图-2024-06-07-20-29-11-768x506.webp)
+![Etcher图4](../../assets/am40/截图-2024-06-07-20-29-11-768x506.webp)
 
 接下来，就可以取出你的tf卡了
 
@@ -81,7 +81,7 @@ Etcher图3
 
 然后将你的tf卡插入标注着service only的tf卡插槽里，芯片面朝下
 
-![SMART Technologies AM40](/assets/am40/IMG_20240607_203121-2.webp)
+![SMART Technologies AM40](../../assets/am40/IMG_20240607_203121-2.webp)
 
 **记得断电**
 
@@ -89,11 +89,11 @@ Etcher图3
 
 然后登录你的路由器后台，查看小主机的ip
 
-![图片](/assets/am40/图片.webp)
+![图片](../../assets/am40/图片.webp)
 
 使用 `ssh root@armbian` 连接主机，密码输入1234
 
-![图片-1](/assets/am40/图片-1-768x646.webp)
+![图片-1](../../assets/am40/图片-1-768x646.webp)
 
 根据自己的喜好设置root密码，shell，创建新用户，如果不想创建则Ctrl+C
 
@@ -103,7 +103,7 @@ Etcher图3
 
 输入 `lsblk` 查看磁盘命名
 
-![图片-2](/assets/am40/图片-2-768x646.webp)
+![图片-2](../../assets/am40/图片-2-768x646.webp)
 
 然后上传Armbian\_x.x.x\_rockchip\_smart-am40\_bullseye\_x.x.x\_server\_xxxx.xx.xx.img.gz  
 上传至 ~/ 目录(/root或者/home/username)  
@@ -137,7 +137,7 @@ curl -fsSL get.docker.com | sh
 
 过程请保持科学上网，直到出现下图则安装成功
 
-![图片-3](/assets/am40/图片-3-768x646.webp)
+![图片-3](../../assets/am40/图片-3-768x646.webp)
 
 ### 安装os-gent
 
@@ -145,7 +145,7 @@ curl -fsSL get.docker.com | sh
 
 使用你喜欢的方式下载比如wget ，然后 `apt install ./os-agent_x.x.x_linux_aarch64.deb -y` 进行安装
 
-![图片-4](/assets/am40/图片-4-768x646.webp)
+![图片-4](../../assets/am40/图片-4-768x646.webp)
 
 ### 安装Home Assistant Supervised Debian Package
 
@@ -153,11 +153,11 @@ curl -fsSL get.docker.com | sh
 
 然后 `apt install ./homeassistant-supervised.deb -y` 进行安装
 
-![图片-5](/assets/am40/图片-5-768x646.webp)
+![图片-5](../../assets/am40/图片-5-768x646.webp)
 
 选择qemuarm-64，回车
 
-![图片-7](/assets/am40/图片-7-768x646.webp)
+![图片-7](../../assets/am40/图片-7-768x646.webp)
 
 这样，就算是安装成功了，程序会自动下载docker镜像
 
@@ -179,17 +179,17 @@ nano jobs.json
 
 等待一会，打开[http://armbian:8123/](http://armbian:8123/)
 
-![Preparing Home Assistant Page](/assets/am40/图片-8-768x633.webp)
+![Preparing Home Assistant Page](../../assets/am40/图片-8-768x633.webp)
 
 然后耐心等待，记得保持科学上网
 
 直到出现如下界面就可以进行配置了
 
-![homeassistant welcome page](/assets/am40/图片-10-768x633.webp)
+![homeassistant welcome page](../../assets/am40/图片-10-768x633.webp)
 
-![homeassistant Create user page](/assets/am40/图片-12-768x633.webp)
+![homeassistant Create user page](../../assets/am40/图片-12-768x633.webp)
 
-![homeassistant home page](/assets/am40/图片-14-768x633.webp)
+![homeassistant home page](../../assets/am40/图片-14-768x633.webp)
 
 ## 安装HACS
 
@@ -209,4 +209,4 @@ wget -O - https://get.hacs.xyz | bash -
 
 然后按照步骤使用github登录就可以了
 
-![图片-15](/assets/am40/图片-15-768x633.webp)
+![图片-15](../../assets/am40/图片-15-768x633.webp)

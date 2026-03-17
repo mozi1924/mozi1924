@@ -1,5 +1,6 @@
 ---
 import { FileText, ArrowRight, Layers, Calendar } from "lucide-react";
+import { Image } from "astro:assets";
 import type { ArticleItem } from "../../utils/article";
 import { format } from "date-fns";
 
@@ -42,12 +43,14 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
                                 ${mode === "grid" ? "hidden md:block w-full aspect-video" : "hidden md:block w-64 aspect-video"}`}
               >
                 {item.metadata.data.image ? (
-                  <img
+                  <Image
                     src={item.metadata.data.image}
                     alt={item.metadata.data.title}
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
+                    widths={[400, 800]}
+                    sizes="(max-width: 768px) 400px, 800px"
                   />
                 ) : (
                   <div class="w-full h-full flex items-center justify-center text-gray-700">
@@ -98,12 +101,14 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
 
               <div class="md:hidden w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 rounded-xl overflow-hidden border border-white/10 ml-4 self-center relative">
                 {item.metadata.data.image ? (
-                  <img
+                  <Image
                     src={item.metadata.data.image}
                     alt={item.metadata.data.title}
                     class="w-full h-full object-cover"
                     loading="lazy"
                     decoding="async"
+                    width={128}
+                    height={128}
                   />
                 ) : (
                   <div class="w-full h-full bg-[#222] flex items-center justify-center text-gray-800">
@@ -151,12 +156,14 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
                         `}
             >
               {data.image ? (
-                <img
+                <Image
                   src={data.image}
                   alt={data.title}
                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                   decoding="async"
+                  widths={[400, 800]}
+                  sizes="(max-width: 768px) 400px, 800px"
                 />
               ) : (
                 <div class="w-full h-full flex items-center justify-center text-gray-700">
@@ -200,12 +207,14 @@ const { items, mode = "grid", showIndex = false } = Astro.props;
             {/* Mobile Image (Right Side) */}
             <div class="md:hidden w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 rounded-xl overflow-hidden border border-white/10 ml-4 self-center">
               {data.image ? (
-                <img
+                <Image
                   src={data.image}
                   alt={data.title}
                   class="w-full h-full object-cover"
                   loading="lazy"
                   decoding="async"
+                  width={128}
+                  height={128}
                 />
               ) : (
                 <div class="w-full h-full bg-[#222] flex items-center justify-center text-gray-800">

@@ -45,7 +45,7 @@ const { posts } = Astro.props;
 const listItems = posts.map((post) => ({
   name: post.data.title,
   url: new URL(`/blogs/${post.slug}`, SITE.url).href,
-  image: post.data.image,
+  image: post.data.image ? (typeof post.data.image === 'string' ? post.data.image : post.data.image.src) : undefined,
   description: post.data.desc,
 }));
 

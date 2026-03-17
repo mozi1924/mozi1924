@@ -4,7 +4,7 @@ categories: ["Blender"]
 title: "Understanding Blender Drivers"
 date: "2026-01-14"
 desc: "A deep dive into how drivers work in Blender and how to use them for rigging."
-image: "/assets/understanding-blender-drivers/Screenshot%202026-01-14%20at%208.52.00%E2%80%AFPM.webp"
+image: "../../assets/understanding-blender-drivers/screenshot-2026-01-14.webp"
 ---
 
 ## What are Drivers?

@@ -5,7 +5,7 @@ title: "玩客云刷hassio教程"
 date: "2023-05-03"
 modDate: "2026-02-11"
 desc: "刷Armbain,建议https://github.com/hzyitc/armbian-onecloud/releases  刷好后登入玩客云ssh  执行cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 修正时间  执行nano..."
-image: "/assets/onething_box_flash_hassio_tutorial/onecloud.webp"
+image: "../../assets/onething_box_flash_hassio_tutorial/onecloud.webp"
 ---
 
 ## 刷机
@@ -54,7 +54,7 @@ dpkg -i 下载的文件名字
 
 随后可能会提示
 
-![](/assets/onething_box_flash_hassio_tutorial/image.webp)
+![](../../assets/onething_box_flash_hassio_tutorial/image.webp)
 
 不用慌，执行apt --fix-broken install 然后按y回车
 
@@ -62,7 +62,7 @@ dpkg -i 下载的文件名字
 
 你就会发现安装上了
 
-![](/assets/onething_box_flash_hassio_tutorial/image-1.webp)
+![](../../assets/onething_box_flash_hassio_tutorial/image-1.webp)
 
 ## 安装Home Assistant Supervised Debian Package
 
@@ -74,17 +74,17 @@ dpkg -i homeassistant-supervised.deb
 
 这个时候会报错
 
-![](/assets/onething_box_flash_hassio_tutorial/image-2.webp)
+![](../../assets/onething_box_flash_hassio_tutorial/image-2.webp)
 
 执行apt --fix-broken install后按Y
 
 选择raspberrypi3回车
 
-![](/assets/onething_box_flash_hassio_tutorial/image-3.webp)
+![](../../assets/onething_box_flash_hassio_tutorial/image-3.webp)
 
 出现下图就表示安装成功了
 
-![](/assets/onething_box_flash_hassio_tutorial/image-4.webp)
+![](../../assets/onething_box_flash_hassio_tutorial/image-4.webp)
 
 如果没有出现就再执行dpkg -i homeassistant-supervised.deb选择raspberrypi3回车
 
@@ -126,7 +126,7 @@ rm hacs.zip
 
 等一会访问http://玩客云ip:8123就可以看见
 
-![](/assets/onething_box_flash_hassio_tutorial/image-5.webp)
+![](../../assets/onething_box_flash_hassio_tutorial/image-5.webp)
 
 ## 结束
 

@@ -4,7 +4,7 @@ title: "Qwen3-TTS Fine-tuning Complete Guide: Train Your Own Voice Model from Sc
 date: "2026-02-22"
 modDate: "2026-2-24"
 desc: "Want AI to narrate novels with your voice? Looking to create custom timbres for video characters? This article will guide you step-by-step through using the Qwen3-TTS Easy Finetuning tool to build a stable, natural, and accent-free multilingual voice model."
-image: "/assets/qwen3-tts-finetuning/cover.webp"
+image: "../../assets/qwen3-tts-finetuning/cover.webp"
 translations:
   - lang: zh
     slug: qwen3-tts-finetuning-zh
@@ -136,7 +136,7 @@ The WebUI is divided into three main tabs. Let's go through them step-by-step.
 
 #### 1.1 Refresh Paths and Run Step 1: Audio Segmentation
 
-![Step-1](/assets/qwen3-tts-finetuning/step-1.webp)
+![Step-1](../../assets/qwen3-tts-finetuning/step-1.webp)
 
 In the WebUI:
 
@@ -149,7 +149,7 @@ This step is CPU-intensive. It's recommended to close other background software 
 
 #### 1.2 Run Step 2: ASR Transcription & Secondary Cleaning
 
-![Step-2](/assets/qwen3-tts-finetuning/step-2.webp)
+![Step-2](../../assets/qwen3-tts-finetuning/step-2.webp)
 
 This step uses an ASR model to automatically recognize the content of each audio clip, generate text labels, and perform secondary cleaning.
 
@@ -166,7 +166,7 @@ Wait for the progress bar to complete. You will obtain `final-dataset/speaker_1/
 
 #### 2.1 Create a New Experiment and Select Data (Step 0)
 
-![Step-0](/assets/qwen3-tts-finetuning/step-0.webp)
+![Step-0](../../assets/qwen3-tts-finetuning/step-0.webp)
 
 - **Experiment Name**: Enter a name, e.g., `my_first_voice`, then click **Create New Experiment**.
 - **Select Target Speaker Data**: In the dropdown, **select the speaker(s) you want to fine-tune**. Thanks to the new feature, you can **multi-select** here to enable simultaneous multi-speaker training!
@@ -176,7 +176,7 @@ Wait for the progress bar to complete. You will obtain `final-dataset/speaker_1/
 
 #### 2.2 Run Step 3: Data Tokenization
 
-![Step-3](/assets/qwen3-tts-finetuning/step-3.webp)
+![Step-3](../../assets/qwen3-tts-finetuning/step-3.webp)
 
 - **GPU Device for Tokenization**: Select the GPU for this step.
 - Click **Tokenize Data**.
@@ -185,7 +185,7 @@ This step merges data from your selected speakers and uses Qwen3-TTS's specializ
 
 #### 2.3 Set Training Parameters and Start Training (Step 4: Final Training)
 
-![Step-4](/assets/qwen3-tts-finetuning/step-4.webp)
+![Step-4](../../assets/qwen3-tts-finetuning/step-4.webp)
 
 - **Training Preset**: Select the training preset corresponding to your chosen model size (0.6B / 1.7B). These are community-verified, relatively conservative parameters.
 - **Advanced Training Options**: Expand this section to manually adjust parameters like `batch_size`, `learning_rate`, etc., if you wish to customize.
@@ -204,7 +204,7 @@ After training, model checkpoints are saved in the `output/my_first_voice/` dire
 
 #### 3.1 Load Checkpoint and Generate Speech
 
-![Step-5](/assets/qwen3-tts-finetuning/step-5.webp)
+![Step-5](../../assets/qwen3-tts-finetuning/step-5.webp)
 
 - **Select Checkpoint**: Click the refresh button, then select your newly trained checkpoint folder from the dropdown (e.g., `checkpoint-epoch-2`).
 - **Select Speaker**: Choose the speaker you want to test.

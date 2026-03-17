@@ -285,7 +285,9 @@ export function getNormalizedPostData(post: CollectionEntry<"blog"> | Collection
     return {
         title: post.data.title,
         date: post.data.date,
-        image: post.data.image,
+        image: post.data.image
+            ? (typeof post.data.image === 'string' ? post.data.image : post.data.image.src)
+            : undefined,
         desc: post.data.desc,
         modDate: post.data.modDate,
         authorId: post.data.authorId || "mozi",

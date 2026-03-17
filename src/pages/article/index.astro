@@ -13,7 +13,7 @@ const listItems = articles.map((item) => {
     return {
       name: data.title,
       url: new URL(`/article/${item.slug}`, SITE.url).href,
-      image: data.image,
+      image: data.image ? (typeof data.image === 'string' ? data.image : data.image.src) : undefined,
       description: data.desc,
     };
   } else {
@@ -25,7 +25,7 @@ const listItems = articles.map((item) => {
     return {
       name: data.title,
       url: new URL(slug, SITE.url).href,
-      image: data.image,
+      image: data.image ? (typeof data.image === 'string' ? data.image : data.image.src) : undefined,
       description: data.desc,
     };
   }
