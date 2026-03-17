@@ -102,6 +102,13 @@ const currentPath = normalizePath(pathname);
     </div>
   </div>
 
+  <!-- Page Load Progress Bar (inside persisted header to survive navigation) -->
+  <div
+    id="page-load-progress-bar"
+    class="absolute top-0 left-0 h-1 bg-white z-[100] transition-all duration-200 ease-out opacity-0 w-0 pointer-events-none shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+  >
+  </div>
+
   <!-- Reading Progress Bar -->
   <div
     id="reading-progress-container"
@@ -154,15 +161,6 @@ const currentPath = normalizePath(pathname);
     </nav>
   </div>
 </header>
-
-<!-- Page Load Progress Bar -->
-<div
-  id="page-load-progress-bar"
-  class="fixed top-0 left-0 h-1 bg-white z-[100] transition-all duration-200 ease-out opacity-0 w-0 pointer-events-none shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-  transition:name="page-progress"
-  transition:persist="page-progress"
->
-</div>
 
 <style>
   /* Transition definitions */

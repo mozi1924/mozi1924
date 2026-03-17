@@ -18,7 +18,7 @@ interface Props {
   modDate?: string | Date;
   authorName?: string;
   authorUrl?: string;
-  authorAvatar?: string;
+  authorAvatar?: string | any;
   authorMotto?: string;
   socialLinks?: { network: string; url: string; icon?: string }[];
   enableReadingProgress?: boolean;
@@ -148,7 +148,7 @@ const isArticle = pageType === "article" || pageType === "blog";
       {modDate}
       {authorName}
       {authorUrl}
-      {authorAvatar}
+      authorAvatar={typeof authorAvatar === 'string' ? authorAvatar : authorAvatar?.src}
       {authorMotto}
       {socialLinks}
       {canonicalURL}

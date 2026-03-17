@@ -1,5 +1,6 @@
 ---
 import { User, Calendar, Shield, Share2 } from "lucide-react";
+import { Image } from "astro:assets";
 import { AUTHORS, DEFAULT_AUTHOR_ID, SITE } from "../../config";
 
 interface Props {
@@ -66,13 +67,25 @@ const i18n = (lang?.startsWith("zh") ? t.zh : t.en) as typeof t.zh;
       <div
         class="relative w-24 h-24 rounded-xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center p-2"
       >
-        <img
-          src={author.avatar}
-          alt={author.name}
-          class="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
-          loading="lazy"
-          decoding="async"
-        />
+        {typeof author.avatar === 'string' ? (
+          <img
+            src={author.avatar}
+            alt={author.name}
+            class="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <Image
+            src={author.avatar}
+            alt={author.name}
+            width={96}
+            height={96}
+            class="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+            loading="lazy"
+            decoding="async"
+          />
+        )}
         <div
           class="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent"
         >

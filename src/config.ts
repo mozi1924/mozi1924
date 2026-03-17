@@ -1,4 +1,5 @@
-import avatarImg from "./assets/avatar.webp";
+import avatarImg from "/@/assets/avatar.webp";
+import type { ImageMetadata } from "astro";
 
 export const SITE = {
     domain: "mozi1924.com",
@@ -22,7 +23,7 @@ export interface Author {
     id: string;
     name: string;
     url: string;
-    avatar: string;
+    avatar: ImageMetadata | string;
     motto: string;
     socialLinks: {
         network: string;
@@ -35,7 +36,7 @@ export const AUTHORS: Record<string, Author> = {
         id: "mozi",
         name: "Mozi A.",
         url: "/about",
-        avatar: avatarImg.src,
+        avatar: avatarImg,
         motto: "I don't care if these bitches don't like me Cause, like, I'm pretty as fuck.",
         socialLinks: [
             { network: "GitHub", url: "https://github.com/mozi1924" },
