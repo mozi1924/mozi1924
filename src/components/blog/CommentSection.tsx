@@ -12,6 +12,7 @@ interface Comment {
   parent_id: string | null;
   content: string;
   author_name: string;
+  author_hash?: string; // Stable hash for avatar proxy
   created_at: number;
   reply_count?: number;
   parent_comment?: { name: string; content: string } | null;
@@ -31,10 +32,10 @@ const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return mounted ? createPortal(children, document.body) : null;
 };
 
-// Avatar with fallback
-const Avatar: React.FC<{ commentId: string; name: string; defaultAvatarUrl?: string }> = ({ commentId, name, defaultAvatarUrl }) => (
+// Avatar with stable hashing and fallback
+const Avatar: React.FC<{ hash?: string; name: string; defaultAvatarUrl?: string }> = ({ hash, name, defaultAvatarUrl }) => (
   <img
-    src={`/api/avatar?id=${commentId}`}
+    src={hash ? `/api/avatar?hash=${hash}` : defaultAvatarUrl}
     alt={name}
     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
     onError={(e) => { 
@@ -338,7 +339,7 @@ const CommentItem: React.FC<{
   return (
     <div className="flex gap-3 sm:gap-4">
       <div className="flex-shrink-0 pt-1">
-        <Avatar commentId={comment.id} name={comment.author_name} defaultAvatarUrl={defaultAvatarUrl} />
+        <Avatar hash={comment.author_hash} name={comment.author_name} defaultAvatarUrl={defaultAvatarUrl} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="bg-[#1a1a1a] p-3 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition-colors">

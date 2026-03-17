@@ -31,10 +31,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const id = crypto.randomUUID();
     const created_at = Date.now();
 
+    // Compute MD5 hash for avatar lookup
+    const normalized = email.trim().toLowerCase();
+    const msgBuffer = new TextEncoder().encode(normalized);
+    const hashBuffer = await crypto.subtle.digest('MD5', msgBuffer);
+    const emailHash = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
     try {
         await env.DB.prepare(
-            'INSERT INTO comments (id, name, email, content, path, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-        ).bind(id, name, email, content, path, parent_id || null, created_at).run();
+            'INSERT INTO comments (id, name, email, email_hash, content, path, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        ).bind(id, name, email, emailHash, content, path, parent_id || null, created_at).run();
 
         // Send email notification via waitUntil so it survives after response is returned
         if (env.EMAIL_API_KEY && env.NOTIFY_FROM) {
@@ -78,7 +86,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 });
             };
 
-            ctx.waitUntil(sendNotification().catch(() => {}));
+            ctx.waitUntil(sendNotification().catch(() => { }));
         }
 
         return new Response(JSON.stringify({ success: true, id }), { status: 201 });
@@ -100,7 +108,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         // Join to get parent info; also join grandparent to detect if parent is root
         const { results } = await env.DB.prepare(`
             SELECT 
-                c1.id, c1.name, c1.email, c1.content, c1.path, c1.parent_id, c1.created_at,
+                c1.id, c1.name, c1.email, c1.email_hash, c1.content, c1.path, c1.parent_id, c1.created_at,
                 c2.name as parent_name,
                 c2.content as parent_content,
                 c2.parent_id as parent_parent_id
@@ -113,6 +121,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         const comments = results.map((r: any) => ({
             id: r.id,
             author_name: r.name,
+            author_hash: r.email_hash, // Stable hash for avatar proxy caching
             // email intentionally omitted from response
             content: r.content,
             path: r.path,

@@ -6,7 +6,8 @@ import defaultAvatar from '../../assets/default.webp';
 export const GET: APIRoute = async ({ request, locals }) => {
     const env = (locals as any).runtime.env;
     const url = new URL(request.url);
-    const commentId = url.searchParams.get('id');
+    const hash = url.searchParams.get('hash');
+    const cache = (caches as any).default;
 
     // Helper to get optimized fallback
     const getFallbackUrl = async () => {
@@ -14,39 +15,38 @@ export const GET: APIRoute = async ({ request, locals }) => {
         return optimized.src;
     };
 
-    if (!commentId) {
+    if (!hash || !/^[a-f0-9]{32}$/i.test(hash)) {
         return new Response(null, { status: 400 });
     }
 
-    // Look up email by comment id (never expose email to client)
+    // 1. Try Cache API first to avoid DB lookup and Gravatar fetch
+    const cacheKey = new Request(url.toString(), request);
+    let response = await cache.match(cacheKey);
+    if (response) {
+        return response;
+    }
+
+    // 2. Abuse prevention: only proxy avatars for users who have commented on this site.
     let email: string | null = null;
     try {
         const row: any = await env.DB.prepare(
-            'SELECT email FROM comments WHERE id = ? LIMIT 1'
-        ).bind(commentId).first();
+            'SELECT email FROM comments WHERE email_hash = ? LIMIT 1'
+        ).bind(hash).first();
         email = row?.email ?? null;
-    } catch {
-        // fall through to default
+    } catch (e) {
+        console.error(e);
     }
 
     if (!email) {
         return Response.redirect(await getFallbackUrl(), 302);
     }
 
-    // Compute MD5 hash of lowercased trimmed email
-    const normalized = email.trim().toLowerCase();
-    const msgBuffer = new TextEncoder().encode(normalized);
-    const hashBuffer = await crypto.subtle.digest('MD5', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-    // rating=g (all-ages only), d=404 so we can fall back to default
+    // 3. Fetch from Gravatar
     const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?s=80&r=g&d=404`;
 
     try {
         const resp = await fetch(gravatarUrl, {
             headers: { 'User-Agent': 'mozi1924.com-avatar-proxy/1.0' },
-            // 5s timeout via signal
             signal: AbortSignal.timeout(5000),
         });
 
@@ -57,12 +57,19 @@ export const GET: APIRoute = async ({ request, locals }) => {
         const contentType = resp.headers.get('content-type') || 'image/jpeg';
         const body = await resp.arrayBuffer();
 
-        return new Response(body, {
+        response = new Response(body, {
             headers: {
                 'Content-Type': contentType,
-                'Cache-Control': 'public, max-age=86400',
+                // Cache for 7 days in browser, 30 days in Cloudflare Edge
+                'Cache-Control': 'public, max-age=604800, s-maxage=2592000, stale-while-revalidate=86400',
+                'Vary': 'Accept',
             },
         });
+
+        // 4. Store in Cache API before returning
+        (locals as any).runtime.ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+        return response;
     } catch {
         return Response.redirect(await getFallbackUrl(), 302);
     }
