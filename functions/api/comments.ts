@@ -1,3 +1,5 @@
+import type { D1Database, PagesFunction } from "@cloudflare/workers-types";
+
 interface Env {
     DB: D1Database;
     TURNSTILE_SECRET_KEY: string;
@@ -17,7 +19,7 @@ interface Comment {
     } | null;
 }
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
+export const onRequestPost: PagesFunction<Env> = async (context): Promise<Response> => {
     const { request, env } = context;
     const body: any = await request.json();
 
@@ -57,7 +59,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 };
 
-export const onRequestGet: PagesFunction<Env> = async (context) => {
+export const onRequestGet: PagesFunction<Env> = async (context): Promise<Response> => {
     const { request, env } = context;
     const url = new URL(request.url);
     const path = url.searchParams.get('path');

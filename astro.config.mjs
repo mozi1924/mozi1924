@@ -29,5 +29,12 @@ export default defineConfig({
 
   adapter: cloudflare({
     imageService: 'compile',
+    platformProxy: {
+        enabled: true
+    },
+    runtime: {
+        mode: 'advanced',
+        type: 'pages'
+    }
   }),
 });
