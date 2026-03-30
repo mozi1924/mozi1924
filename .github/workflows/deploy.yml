@@ -38,10 +38,10 @@ jobs:
 
       - name: Verify build output
         run: |
-          test -f dist/server/wrangler.json
-          test -f dist/server/entry.mjs
-          test -d dist/client
-          test -f dist/client/pagefind/pagefind.js
+          test -f dist/_worker.js
+          test -f dist/pagefind/pagefind.js
+          test -d dist/_astro
+          test -d dist/blogs
 
       - name: Publish to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name mozi1924

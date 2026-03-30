@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev --host",
-    "build": "astro build && npx pagefind --site dist/client",
-    "preview": "wrangler dev --config dist/server/wrangler.json",
+    "build": "astro build && npx pagefind --site dist/client && node scripts/prepare-pages-build.mjs",
+    "preview": "rm -rf .wrangler/deploy && wrangler pages dev dist",
     "astra": "astro",
     "new": "node scripts/new-post.mjs"
   },
