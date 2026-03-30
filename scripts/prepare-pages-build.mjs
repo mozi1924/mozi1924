@@ -1,4 +1,4 @@
-import { cp, mkdir, rm } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { access } from 'node:fs/promises';
 import path from 'node:path';
 import { build } from 'esbuild';
@@ -9,6 +9,7 @@ const clientDir = path.join(distDir, 'client');
 const serverDir = path.join(distDir, 'server');
 const serverEntry = path.join(serverDir, 'entry.mjs');
 const workerOutput = path.join(distDir, '_worker.js');
+const routesOutput = path.join(distDir, '_routes.json');
 
 async function exists(target) {
   try {
@@ -46,6 +47,32 @@ async function main() {
     minify: false,
     logLevel: 'info',
   });
+
+  await writeFile(
+    routesOutput,
+    JSON.stringify(
+      {
+        version: 1,
+        include: ['/api/*', '/_image', '/_server-islands/*'],
+        exclude: [
+          '/_astro/*',
+          '/fonts/*',
+          '/pagefind/*',
+          '/favicon.ico',
+          '/favicon.svg',
+          '/robots.txt',
+          '/ads.txt',
+          '/rss.xml',
+          '/rss-articles.xml',
+          '/rss-blogs.xml',
+          '/sitemap-0.xml',
+          '/sitemap-index.xml',
+        ],
+      },
+      null,
+      2,
+    ),
+  );
 
   await rm(clientDir, { recursive: true, force: true });
   await rm(serverDir, { recursive: true, force: true });
