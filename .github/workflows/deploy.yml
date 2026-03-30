@@ -36,6 +36,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Clean Wrangler redirected deploy config
+        run: rm -rf .wrangler/deploy
+
       - name: Verify build output
         run: |
           test -f dist/_worker.js
