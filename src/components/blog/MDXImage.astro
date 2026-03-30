@@ -5,30 +5,44 @@ import type { ImageMetadata } from "astro";
 interface Props {
   src: ImageMetadata | string;
   alt?: string;
-  width?: number | string;
-  height?: number | string;
+  width?: number | `${number}`;
+  height?: number | `${number}`;
   class?: string;
   style?: string;
   [key: string]: unknown;
 }
 
-const { src, alt = "", ...rest } = Astro.props;
+const {
+  src,
+  alt = "",
+  width,
+  height,
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const sharedProps = {
+  loading: "lazy" as const,
+  decoding: "async" as const,
+  ...(width !== undefined ? { width } : {}),
+  ...(height !== undefined ? { height } : {}),
+  ...(className !== undefined ? { class: className } : {}),
+  ...(style !== undefined ? { style } : {}),
+  ...rest,
+};
 ---
 
 {typeof src === "object" && src !== null ? (
   <Image
-    src={src as ImageMetadata}
+    src={src}
     alt={alt}
-    loading="lazy"
-    decoding="async"
-    {...rest}
+    {...sharedProps}
   />
 ) : (
   <img
-    src={src as string}
+    src={src}
     alt={alt}
-    loading="lazy"
-    decoding="async"
-    {...rest}
+    {...sharedProps}
   />
 )}

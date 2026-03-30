@@ -1,5 +1,9 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 
+export function getEntrySlug(entry: Pick<CollectionEntry<"article"> | CollectionEntry<"blog">, "id">) {
+    return entry.id.replace(/\/index$/, '');
+}
+
 export type ArticleEntry = CollectionEntry<"article"> | CollectionEntry<"blog">;
 
 export interface SeriesGroup {
@@ -31,7 +35,7 @@ export async function getArticleList(collection: "article" | "blog" = "article")
     const groups = new Map<string, ArticleEntry[]>();
 
     for (const article of allArticles) {
-        const root = article.slug.split('/')[0];
+        const root = getEntrySlug(article).split('/')[0];
         if (!groups.has(root)) {
             groups.set(root, []);
         }
@@ -43,7 +47,7 @@ export async function getArticleList(collection: "article" | "blog" = "article")
         // Criteria: More than 1 post AND has an index post
         // Index post is one where slug === folder (or folder/index if not stripped)
 
-        const indexPost = posts.find(p => p.slug === folder || p.slug === `${folder}/index`);
+        const indexPost = posts.find(p => p.id === folder || p.id === `${folder}/index`);
 
         if (posts.length > 1 && indexPost) {
             // It's a series
@@ -92,10 +96,10 @@ export async function getSeriesNavigation(currentSlug: string) {
     const folder = currentSlug.split('/')[0];
 
     // Find all posts in this folder
-    const groupPosts = allArticles.filter(a => a.slug.startsWith(folder + '/') || a.slug === folder);
+    const groupPosts = allArticles.filter(a => a.id.startsWith(folder + '/') || a.id === folder);
 
     // Check if it's actually a series (has index)
-    const indexPost = groupPosts.find(p => p.slug === folder || p.slug === `${folder}/index`);
+    const indexPost = groupPosts.find(p => p.id === folder || p.id === `${folder}/index`);
 
     if (!indexPost || groupPosts.length <= 1) {
         return null;
@@ -107,7 +111,7 @@ export async function getSeriesNavigation(currentSlug: string) {
     // Let's exclude index from the "navigation flow" generally, OR include it as "Part 0"?
     // The previous logic excluded index. Let's keep excluding index from "Prev/Next" flow between chapters.
 
-    const isIndex = currentSlug === indexPost.slug || currentSlug === indexPost.slug.replace(/\/index$/, "");
+    const isIndex = currentSlug === getEntrySlug(indexPost);
 
     if (isIndex) {
         // We are at index.
@@ -123,7 +127,7 @@ export async function getSeriesNavigation(currentSlug: string) {
         return (idxA || 999) - (idxB || 999);
     });
 
-    const currentIndex = sorted.findIndex((a: ArticleEntry) => a.slug === currentSlug);
+    const currentIndex = sorted.findIndex((a: ArticleEntry) => getEntrySlug(a) === currentSlug);
     if (currentIndex === -1) return null;
 
     const currentPost = sorted[currentIndex];
@@ -141,15 +145,15 @@ export async function getSeriesContent(currentSlug: string) {
     const allArticles = await getCollection("article");
     const folder = currentSlug.split('/')[0];
 
-    const groupPosts = allArticles.filter(a => a.slug.startsWith(folder + '/') || a.slug === folder);
-    const indexPost = groupPosts.find(p => p.slug === folder || p.slug === `${folder}/index`);
+    const groupPosts = allArticles.filter(a => a.id.startsWith(folder + '/') || a.id === folder);
+    const indexPost = groupPosts.find(p => p.id === folder || p.id === `${folder}/index`);
 
     if (!indexPost || groupPosts.length <= 1) {
         return null;
     }
 
     // If current slug matches index post slug, then we are on the landing page
-    const isIndex = currentSlug === indexPost.slug || currentSlug === indexPost.slug.replace(/\/index$/, "");
+    const isIndex = currentSlug === getEntrySlug(indexPost);
     if (isIndex) {
         const chapters = groupPosts.filter(p => p.id !== indexPost.id);
         return {
@@ -170,10 +174,10 @@ export async function getSeriesList(currentSlug: string) {
     const folder = currentSlug.split('/')[0];
 
     // Find all posts in this folder
-    const groupPosts = allArticles.filter(a => a.slug.startsWith(folder + '/') || a.slug === folder);
+    const groupPosts = allArticles.filter(a => a.id.startsWith(folder + '/') || a.id === folder);
 
     // Check if it's actually a series (has index)
-    const indexPost = groupPosts.find(p => p.slug === folder || p.slug === `${folder}/index`);
+    const indexPost = groupPosts.find(p => p.id === folder || p.id === `${folder}/index`);
 
     if (!indexPost || groupPosts.length <= 1) {
         return null;
@@ -244,7 +248,7 @@ export function countWords(text: string) {
 export interface NormalizedPost {
     title: string;
     date: string;
-    image?: string;
+    image?: CollectionEntry<"blog">["data"]["image"] | CollectionEntry<"article">["data"]["image"];
     desc?: string;
     modDate?: string;
     authorId: string;
@@ -265,9 +269,10 @@ export interface NormalizedPost {
  * into a unified format for layouts.
  */
 export function getNormalizedPostData(post: CollectionEntry<"blog"> | CollectionEntry<"article">, type: "blog" | "article"): NormalizedPost {
-    const bodyImages = extractImagesFromBody(post.body);
-    const bodyVideos = extractVideosFromBody(post.body);
-    const wordCount = countWords(post.body);
+    const body = post.body || '';
+    const bodyImages = extractImagesFromBody(body);
+    const bodyVideos = extractVideosFromBody(body);
+    const wordCount = countWords(body);
     
     // Default language handling: if 'zh' is used, refine to 'zh-CN' for better SEO
     const lang = post.data.lang === 'zh' ? 'zh-CN' : (post.data.lang || 'en');
@@ -275,7 +280,7 @@ export function getNormalizedPostData(post: CollectionEntry<"blog"> | Collection
     // Handle translations
     const alternates = (post.data as any).translations || [];
     const translations = [
-        { lang, url: `/${type}/${post.slug}` },
+        { lang, url: `/${type}/${getEntrySlug(post)}` },
         ...alternates.map((t: any) => ({
             lang: t.lang === 'zh' ? 'zh-CN' : t.lang,
             url: `/${type}/${t.slug}`
@@ -285,15 +290,13 @@ export function getNormalizedPostData(post: CollectionEntry<"blog"> | Collection
     return {
         title: post.data.title,
         date: post.data.date,
-        image: post.data.image
-            ? (typeof post.data.image === 'string' ? post.data.image : post.data.image.src)
-            : undefined,
+        image: post.data.image,
         desc: post.data.desc,
         modDate: post.data.modDate,
         authorId: post.data.authorId || "mozi",
         disable_comments: (post.collection === 'blog' ? post.data.disable_comments : (post.data as any).hideComment) || false,
         pageType: type,
-        slug: post.slug,
+        slug: getEntrySlug(post),
         id: post.id,
         images: bodyImages,
         videos: bodyVideos,

@@ -1,5 +1,5 @@
 ---
-import { Menu, X } from "lucide-react";
+import Icon from "../ui/Icon.astro";
 import { NAV_LINKS } from "../../menu";
 import { SITE } from "../../config";
 import Search from "../search/Search.astro";
@@ -89,13 +89,13 @@ const currentPath = normalizePath(pathname);
             id="menu-icon-open"
             class="absolute inset-0 flex items-center justify-center origin-center"
           >
-            <Menu className="w-6 h-6" />
+            <Icon name="menu" className="w-6 h-6" />
           </div>
           <div
             id="menu-icon-close"
             class="absolute inset-0 flex items-center justify-center origin-center"
           >
-            <X className="w-6 h-6" />
+            <Icon name="x" className="w-6 h-6" />
           </div>
         </div>
       </button>

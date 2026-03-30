@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Rss as RssIcon, BookText, Newspaper } from "lucide-react";
+import Icon from "../components/ui/Icon.astro";
 ---
 
 <Layout
@@ -39,7 +39,7 @@ import { Rss as RssIcon, BookText, Newspaper } from "lucide-react";
         <div
           class="relative w-20 h-20 bg-orange-500/10 rounded-[1.5rem] flex items-center justify-center group-hover:scale-110 transition-transform duration-500"
         >
-          <RssIcon className="w-10 h-10 text-orange-400" />
+          <Icon name="rss" className="w-10 h-10 text-orange-400" />
         </div>
 
         <div class="relative space-y-3">
@@ -72,7 +72,7 @@ import { Rss as RssIcon, BookText, Newspaper } from "lucide-react";
         <div
           class="relative w-20 h-20 bg-blue-500/10 rounded-[1.5rem] flex items-center justify-center group-hover:scale-110 transition-transform duration-500"
         >
-          <Newspaper className="w-10 h-10 text-blue-400" />
+          <Icon name="newspaper" className="w-10 h-10 text-blue-400" />
         </div>
 
         <div class="relative space-y-3">
@@ -105,7 +105,7 @@ import { Rss as RssIcon, BookText, Newspaper } from "lucide-react";
         <div
           class="relative w-20 h-20 bg-purple-500/10 rounded-[1.5rem] flex items-center justify-center group-hover:scale-110 transition-transform duration-500"
         >
-          <BookText className="w-10 h-10 text-purple-400" />
+          <Icon name="book-text" className="w-10 h-10 text-purple-400" />
         </div>
 
         <div class="relative space-y-3">

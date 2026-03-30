@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { SITE } from '../config';
+import { getEntrySlug } from '../utils/article';
 
 export async function GET(context) {
     const articles = await getCollection('article');
@@ -15,8 +16,7 @@ export async function GET(context) {
         description: "Articles from Mozi1924",
         site: context.site,
         items: sortedArticles.map((post) => {
-            // Normalize slug: remove /index for articles
-            const slug = post.slug.replace(/\/index$/, "");
+            const slug = getEntrySlug(post);
 
             return {
                 title: post.data.title,

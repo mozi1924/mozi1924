@@ -1,24 +1,21 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
-import { getNormalizedPostData } from "../../utils/article";
+import { getEntrySlug, getNormalizedPostData } from "../../utils/article";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: getEntrySlug(post) },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content, headings } = await post.render();
+const { Content, headings } = await render(post);
 const normalizedPost = getNormalizedPostData(post, "blog");
-
-import MDXImage from "../../components/blog/MDXImage.astro";
-const components = { img: MDXImage };
 ---
 
 <BlogPost frontmatter={normalizedPost} headings={headings}>
-  <Content components={components} />
+  <Content />
 </BlogPost>

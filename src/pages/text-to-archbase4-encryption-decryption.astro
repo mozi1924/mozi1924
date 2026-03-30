@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import SectionHeader from "../components/ui/SectionHeader.astro";
 import Text2Arch from "../components/tools/Text2Arch.jsx";
-import { ArrowRight } from "lucide-react";
+import Icon from "../components/ui/Icon.astro";
 import { getImage } from "astro:assets";
 import ogImage from "../assets/text-to-archbase4-encryption-decryption.webp";
 
@@ -45,7 +45,7 @@ const customImage = optimizedOgImage.src;
         class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium transition-all transform hover:scale-105"
       >
         Experience the professional version
-        <ArrowRight className="w-5 h-5" />
+        <Icon name="arrow-right" className="w-5 h-5" />
       </a>
     </div>
   </div>

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import type { MarkdownHeading } from "astro";
+import { getEntrySlug } from "../../utils/article";
 
 interface Props {
   seriesList: {
@@ -65,12 +66,13 @@ const { seriesList, headings } = Astro.props;
     <nav class="space-y-2">
       {
         seriesList.chapters.map((chapter) => {
+          const chapterSlug = getEntrySlug(chapter);
           const isCurrent =
             Astro.url.pathname.replace(/\/$/, "") ===
-            `/article/${chapter.slug}`;
+            `/article/${chapterSlug}`;
           return (
             <a
-              href={`/article/${chapter.slug}`}
+              href={`/article/${chapterSlug}`}
               class={`block text-sm transition-colors leading-snug
                 ${
                   isCurrent

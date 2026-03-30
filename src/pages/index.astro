@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/common/Hero.astro";
 import Showcase from "../components/ui/Showcase.astro";
-import { ArrowRight } from "lucide-react";
+import Icon from "../components/ui/Icon.astro";
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -79,9 +79,8 @@ import { ArrowRight } from "lucide-react";
                 class="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all hover:scale-105 active:scale-95 group"
               >
                 Read Full Bio
-                <ArrowRight
-                  className="w-5 h-5 transition-transform group-hover:translate-x-1"
-                />
+                <Icon name="arrow-right"
+                  className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </a>
             </div>
           </div>

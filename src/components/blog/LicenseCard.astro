@@ -1,5 +1,5 @@
 ---
-import { User, Calendar, Shield, Share2 } from "lucide-react";
+import Icon from "../ui/Icon.astro";
 import { Image } from "astro:assets";
 import { AUTHORS, DEFAULT_AUTHOR_ID, SITE } from "../../config";
 
@@ -102,7 +102,7 @@ const i18n = (lang?.startsWith("zh") ? t.zh : t.en) as typeof t.zh;
           {title}
         </h3>
         <p class="text-sm text-gray-500 flex items-start sm:items-center gap-2">
-          <Share2 className="w-4 h-4 shrink-0 mt-0.5 sm:mt-0" />
+          <Icon name="share-2" className="w-4 h-4 shrink-0 mt-0.5 sm:mt-0" />
           <span class="shrink-0">{i18n.link}</span>
           <a
             href={fullUrl}
@@ -117,7 +117,7 @@ const i18n = (lang?.startsWith("zh") ? t.zh : t.en) as typeof t.zh;
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex items-center gap-3 text-gray-400">
           <div class="p-2 rounded-lg bg-white/5">
-            <User className="w-4 h-4" />
+            <Icon name="user" className="w-4 h-4" />
           </div>
           <div class="flex flex-col">
             <span
@@ -135,7 +135,7 @@ const i18n = (lang?.startsWith("zh") ? t.zh : t.en) as typeof t.zh;
 
         <div class="flex items-center gap-3 text-gray-400">
           <div class="p-2 rounded-lg bg-white/5">
-            <Calendar className="w-4 h-4" />
+            <Icon name="calendar" className="w-4 h-4" />
           </div>
           <div class="flex flex-col">
             <span
@@ -152,7 +152,7 @@ const i18n = (lang?.startsWith("zh") ? t.zh : t.en) as typeof t.zh;
         <div
           class="flex items-start gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 group-hover:border-blue-500/20 transition-all"
         >
-          <Shield className="w-5 h-5 text-blue-400 shrink-0 mt-1" />
+          <Icon name="shield" className="w-5 h-5 text-blue-400 shrink-0 mt-1" />
           <div class="flex flex-col gap-1">
             <span class="text-sm font-semibold text-blue-400"
               >{i18n.license}</span

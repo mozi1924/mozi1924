@@ -40,7 +40,7 @@ type Props = {
   } | null;
 };
 
-import { Calendar, User, Clock } from "lucide-react";
+import Icon from "../components/ui/Icon.astro";
 import { getImage } from "astro:assets";
 import defaultAvatar from "../assets/default.webp";
 
@@ -49,6 +49,23 @@ const { frontmatter, headings, seriesList } = Astro.props;
 // Optimize default avatar for comments fallback
 const optimizedDefaultAvatar = await getImage({ src: defaultAvatar, width: 80, format: 'webp' });
 const defaultAvatarUrl = optimizedDefaultAvatar.src;
+const coverImage = frontmatter.image;
+const isRemoteCoverImage =
+  typeof coverImage === "string" && /^https?:\/\//.test(coverImage);
+const localCoverImage =
+  coverImage && typeof coverImage !== "string" ? coverImage : undefined;
+const remoteCoverImage = isRemoteCoverImage ? coverImage : undefined;
+const imageUrl = remoteCoverImage
+  ? remoteCoverImage
+  : localCoverImage
+    ? (
+        await getImage({
+          src: localCoverImage,
+          width: 1200,
+          format: "webp",
+        })
+      ).src
+    : undefined;
 
 // Resolve Author
 const authorId = frontmatter.authorId || DEFAULT_AUTHOR_ID;
@@ -59,10 +76,6 @@ const showModDate =
 
 const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
 
-// Get image URL string for OG/meta tags (Layout expects string)
-const imageUrl = typeof frontmatter.image === 'string'
-  ? frontmatter.image
-  : frontmatter.image?.src;
 ---
 
 <Layout
@@ -97,7 +110,7 @@ const imageUrl = typeof frontmatter.image === 'string'
         <div
           class="flex items-center gap-1.5 px-3 py-1 text-blue-400 bg-blue-500/10 rounded-full"
         >
-          <Calendar className="w-4 h-4" />
+          <Icon name="calendar" className="w-4 h-4" />
           <span>{frontmatter.date}</span>
         </div>
         {
@@ -106,7 +119,7 @@ const imageUrl = typeof frontmatter.image === 'string'
               class="flex items-center gap-1.5 px-3 py-1 text-emerald-400 bg-emerald-500/10 rounded-full"
               title="Last modified"
             >
-              <Clock className="w-4 h-4" />
+              <Icon name="clock" className="w-4 h-4" />
               <span>Updated: {frontmatter.modDate}</span>
             </div>
           )
@@ -115,7 +128,7 @@ const imageUrl = typeof frontmatter.image === 'string'
           href={author.url}
           class="flex items-center gap-1.5 px-3 py-1 text-purple-400 bg-purple-500/10 rounded-full hover:bg-purple-500/20 transition-colors"
         >
-          <User className="w-4 h-4" />
+          <Icon name="user" className="w-4 h-4" />
           <span>{author.name}</span>
         </a>
       </div>
@@ -130,19 +143,19 @@ const imageUrl = typeof frontmatter.image === 'string'
         )
       }
       {
-      frontmatter.image && !frontmatter.enableBusinessCard && (
+      coverImage && !frontmatter.enableBusinessCard && (
           <div class="relative aspect-video rounded-2xl overflow-hidden shadow-2xl mt-8 border border-white/10">
-            {typeof frontmatter.image === 'string' ? (
+            {remoteCoverImage ? (
               <img
-                src={frontmatter.image}
+                src={remoteCoverImage}
                 alt={frontmatter.title}
                 class="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
-            ) : (
+            ) : localCoverImage ? (
               <Image
-                src={frontmatter.image}
+                src={localCoverImage}
                 alt={frontmatter.title}
                 class="w-full h-full object-cover"
                 loading="lazy"
@@ -150,7 +163,7 @@ const imageUrl = typeof frontmatter.image === 'string'
                 widths={[800, 1200]}
                 sizes="(max-width: 768px) 100vw, 800px"
               />
-            )}
+            ) : null}
           </div>
         )
       }

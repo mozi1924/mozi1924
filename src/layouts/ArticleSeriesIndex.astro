@@ -1,7 +1,7 @@
 ---
 import Layout from "./Layout.astro";
 import { AUTHORS, DEFAULT_AUTHOR_ID } from "../config";
-import { Calendar, User, Layers } from "lucide-react";
+import Icon from "../components/ui/Icon.astro";
 import ArticleList from "../components/blog/ArticleList.astro";
 import LicenseCard from "../components/blog/LicenseCard.astro";
 import { Image } from "astro:assets";
@@ -77,20 +77,20 @@ const listItems = chapters.map((chapter) => ({
         <div
           class="flex items-center gap-1.5 px-3 py-1 text-blue-400 bg-blue-500/10 rounded-full"
         >
-          <Calendar className="w-4 h-4" />
+          <Icon name="calendar" className="w-4 h-4" />
           <span>{date}</span>
         </div>
         <div
           class="flex items-center gap-1.5 px-3 py-1 text-emerald-400 bg-emerald-500/10 rounded-full"
         >
-          <Layers className="w-4 h-4" />
+          <Icon name="layers" className="w-4 h-4" />
           <span>{chapters.length} Parts Series</span>
         </div>
         <a
           href={author.url}
           class="flex items-center gap-1.5 px-3 py-1 text-purple-400 bg-purple-500/10 rounded-full hover:bg-purple-500/20 transition-colors"
         >
-          <User className="w-4 h-4" />
+          <Icon name="user" className="w-4 h-4" />
           <span>{author.name}</span>
         </a>
       </div>
@@ -137,7 +137,7 @@ const listItems = chapters.map((chapter) => ({
               )
             ) : (
               <div class="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
-                <Layers className="w-20 h-20 text-gray-800" />
+                <Icon name="layers" className="w-20 h-20 text-gray-800" />
               </div>
             )
           }

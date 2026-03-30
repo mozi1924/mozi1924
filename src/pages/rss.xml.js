@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { SITE } from '../config';
+import { getEntrySlug } from '../utils/article';
 
 export async function GET(context) {
     const blogs = await getCollection('blog');
@@ -18,8 +19,7 @@ export async function GET(context) {
         items: allPosts.map((post) => {
             const isBlog = post.collection === 'blog';
             const base = isBlog ? '/blogs/' : '/article/';
-            // Normalize slug: remove /index for articles
-            const slug = post.slug.replace(/\/index$/, "");
+            const slug = getEntrySlug(post);
 
             return {
                 title: post.data.title,

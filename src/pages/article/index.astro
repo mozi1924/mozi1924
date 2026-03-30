@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import ArticleList from "../../components/blog/ArticleList.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
-import { getArticleList } from "../../utils/article";
+import { getArticleList, getEntrySlug } from "../../utils/article";
 import { SITE } from "../../config";
 
 const articles = await getArticleList();
@@ -18,10 +18,11 @@ const listItems = articles.map((item) => {
     };
   } else {
     const data = item.article.data;
+    const entrySlug = getEntrySlug(item.article);
     const slug =
       item.article.collection === "blog"
-        ? `/blogs/${item.article.slug}`
-        : `/article/${item.article.slug}`;
+        ? `/blogs/${entrySlug}`
+        : `/article/${entrySlug}`;
     return {
       name: data.title,
       url: new URL(slug, SITE.url).href,

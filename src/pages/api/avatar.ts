@@ -1,10 +1,11 @@
 export const prerender = false;
 import { getImage } from 'astro:assets';
 import type { APIRoute } from 'astro';
+// @ts-ignore Cloudflare workers runtime module is provided by the adapter at runtime
+import { env, waitUntil } from 'cloudflare:workers';
 import defaultAvatar from '../../assets/default.webp';
 
-export const GET: APIRoute = async ({ request, locals }) => {
-    const env = (locals as any).runtime.env;
+export const GET: APIRoute = async ({ request }) => {
     const url = new URL(request.url);
     const hash = url.searchParams.get('hash');
     const cache = (caches as any).default;
@@ -26,6 +27,10 @@ export const GET: APIRoute = async ({ request, locals }) => {
         return response;
     }
 
+    if (!env.DB) {
+        return Response.redirect(await getFallbackUrl(), 302);
+    }
+
     // 2. Abuse prevention: only proxy avatars for users who have commented on this site.
     let email: string | null = null;
     try {
@@ -33,8 +38,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
             'SELECT email FROM comments WHERE email_hash = ? LIMIT 1'
         ).bind(hash).first();
         email = row?.email ?? null;
-    } catch (e) {
-        console.error(e);
+    } catch (e: any) {
+        const message = String(e?.message || e);
+        if (!message.includes('no such column: email_hash')) {
+            console.error(e);
+        }
     }
 
     if (!email) {
@@ -68,7 +76,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         });
 
         // 4. Store in Cache API before returning
-        (locals as any).runtime.ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        waitUntil(cache.put(cacheKey, response.clone()));
 
         return response;
     } catch {

@@ -1,17 +1,25 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+// @ts-ignore Cloudflare workers runtime module is provided by the adapter at runtime
+import { env, waitUntil } from 'cloudflare:workers';
 import { SITE } from '/@/config';
 
-export const POST: APIRoute = async ({ request, locals }) => {
-    const env = (locals as any).runtime.env;
-    const ctx = (locals as any).runtime.ctx;
+export const POST: APIRoute = async ({ request }) => {
     const body: any = await request.json();
+
+    if (!env.DB) {
+        return new Response(JSON.stringify({ error: "Comments database is not configured" }), { status: 503 });
+    }
 
     const { name, email, content, path, parent_id, turnstileToken } = body;
 
     if (!name || !email || !content || !path || !turnstileToken) {
         return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
+    }
+
+    if (!env.TURNSTILE_SECRET_KEY) {
+        return new Response(JSON.stringify({ error: "Turnstile is not configured" }), { status: 503 });
     }
 
     // Verify Turnstile
@@ -86,7 +94,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 });
             };
 
-            ctx.waitUntil(sendNotification().catch(() => { }));
+            waitUntil(sendNotification().catch(() => { }));
         }
 
         const response = new Response(JSON.stringify({ success: true, id }), { status: 201 });
@@ -108,7 +116,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     console.error('Cache purge failed:', e);
                 }
             };
-            ctx.waitUntil(purgeCache());
+            waitUntil(purgeCache());
         }
 
         return response;
@@ -117,8 +125,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 };
 
-export const GET: APIRoute = async ({ request, locals }) => {
-    const env = (locals as any).runtime.env;
+export const GET: APIRoute = async ({ request }) => {
     const url = new URL(request.url);
     const path = url.searchParams.get('path');
 
@@ -126,19 +133,47 @@ export const GET: APIRoute = async ({ request, locals }) => {
         return new Response(JSON.stringify({ error: "Path is required" }), { status: 400 });
     }
 
+    if (!env.DB) {
+        return new Response(JSON.stringify({ comments: [] }), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     try {
         // Join to get parent info; also join grandparent to detect if parent is root
-        const { results } = await env.DB.prepare(`
-            SELECT 
-                c1.id, c1.name, c1.email, c1.email_hash, c1.content, c1.path, c1.parent_id, c1.created_at,
-                c2.name as parent_name,
-                c2.content as parent_content,
-                c2.parent_id as parent_parent_id
-            FROM comments c1
-            LEFT JOIN comments c2 ON c1.parent_id = c2.id
-            WHERE c1.path = ?
-            ORDER BY c1.created_at ASC
-        `).bind(path).all();
+        let results: any[] = [];
+        try {
+            const query = await env.DB.prepare(`
+                SELECT
+                    c1.id, c1.name, c1.email, c1.email_hash, c1.content, c1.path, c1.parent_id, c1.created_at,
+                    c2.name as parent_name,
+                    c2.content as parent_content,
+                    c2.parent_id as parent_parent_id
+                FROM comments c1
+                LEFT JOIN comments c2 ON c1.parent_id = c2.id
+                WHERE c1.path = ?
+                ORDER BY c1.created_at ASC
+            `).bind(path).all();
+            results = query.results;
+        } catch (e: any) {
+            const message = String(e?.message || e);
+            if (message.includes('no such column: c1.email_hash')) {
+                const legacyQuery = await env.DB.prepare(`
+                    SELECT
+                        c1.id, c1.name, c1.email, c1.content, c1.path, c1.parent_id, c1.created_at,
+                        c2.name as parent_name,
+                        c2.content as parent_content,
+                        c2.parent_id as parent_parent_id
+                    FROM comments c1
+                    LEFT JOIN comments c2 ON c1.parent_id = c2.id
+                    WHERE c1.path = ?
+                    ORDER BY c1.created_at ASC
+                `).bind(path).all();
+                results = legacyQuery.results.map((r: any) => ({ ...r, email_hash: null }));
+            } else {
+                throw e;
+            }
+        }
 
         const comments = results.map((r: any) => ({
             id: r.id,

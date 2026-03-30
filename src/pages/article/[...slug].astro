@@ -1,19 +1,20 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 import ArticleSeriesIndex from "../../layouts/ArticleSeriesIndex.astro";
 import {
+  getEntrySlug,
   getSeriesNavigation,
   getSeriesContent,
   getSeriesList,
   getNormalizedPostData,
 } from "../../utils/article";
-import { ChevronRight, ChevronLeft, Map } from "lucide-react";
+import Icon from "../../components/ui/Icon.astro";
 
 export async function getStaticPaths() {
   const articles = await getCollection("article");
   return articles.map((article) => {
-    const slug = article.slug.replace(/\/index$/, "");
+    const slug = getEntrySlug(article);
     return {
       params: { slug },
       props: { article },
@@ -22,17 +23,15 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const { Content, headings } = await article.render();
+const { Content, headings } = await render(article);
 
-const navigation = await getSeriesNavigation(article.slug);
-const seriesData = await getSeriesContent(article.slug);
-const seriesList = await getSeriesList(article.slug);
+const articleSlug = getEntrySlug(article);
+const navigation = await getSeriesNavigation(articleSlug);
+const seriesData = await getSeriesContent(articleSlug);
+const seriesList = await getSeriesList(articleSlug);
 
 const normalizedPost = getNormalizedPostData(article, "article");
 const isSeriesIndex = seriesData && seriesData.isSeriesIndex;
-
-import MDXImage from "../../components/blog/MDXImage.astro";
-const components = { img: MDXImage };
 ---
 
 {
@@ -49,7 +48,7 @@ const components = { img: MDXImage };
       wordCount={normalizedPost.wordCount}
       keywords={normalizedPost.keywords}
     >
-      <Content components={components} />
+      <Content />
     </ArticleSeriesIndex>
   ) : (
     <BlogPost
@@ -57,16 +56,16 @@ const components = { img: MDXImage };
       headings={headings}
       seriesList={seriesList}
     >
-      <Content components={components} />
+      <Content />
 
       {navigation && (
         <nav class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-4">
           {navigation.prev ? (
             <a
-              href={`/article/${navigation.prev.slug}`}
+              href={`/article/${getEntrySlug(navigation.prev)}`}
               class="group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all text-left max-w-[48%]"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+              <Icon name="chevron-left" className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
               <div>
                 <div class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">
                   Previous
@@ -82,7 +81,7 @@ const components = { img: MDXImage };
 
           {navigation.seriesIndex !== undefined && (
             <div class="hidden sm:flex flex-col items-center justify-center text-sm text-gray-500">
-              <Map className="w-4 h-4 mb-1" />
+              <Icon name="map" className="w-4 h-4 mb-1" />
               <span>
                 Part {navigation.seriesIndex} of {navigation.total}
               </span>
@@ -91,7 +90,7 @@ const components = { img: MDXImage };
 
           {navigation.next ? (
             <a
-              href={`/article/${navigation.next.slug}`}
+              href={`/article/${getEntrySlug(navigation.next)}`}
               class="group flex items-center justify-end gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all text-right max-w-[48%]"
             >
               <div>
@@ -102,7 +101,7 @@ const components = { img: MDXImage };
                   {navigation.next.data.title}
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+              <Icon name="chevron-right" className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors flex-shrink-0" />
             </a>
           ) : (
             <div />
