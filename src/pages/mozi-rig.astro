@@ -1,14 +1,38 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import RigStyles from "../components/rig/RigStyles.astro";
-import Rig2Landing from "../components/rig2/Rig2Landing.astro";
+import Hero from "../components/rig/Hero.astro";
+import Stats from "../components/rig/Stats.astro";
+import Features from "../components/rig/Features.astro";
+import TechSpecs from "../components/rig/TechSpecs.astro";
+import Workflow from "../components/rig/Workflow.astro";
+import WhyRig from "../components/rig/WhyRig.astro";
+import FAQ from "../components/rig/FAQ.astro";
+import Pricing from "../components/rig/Pricing.astro";
+import CTA from "../components/rig/CTA.astro";
 
-const customTitle = "Rig/2 - A Cleaner Character Rig";
+const customTitle = "Rig/2 - Define the New Standard";
 const customDescription =
-  "Rig/2 is a Blender-ready Minecraft character system with a cleaner shader workflow, three feet styles, face capture direction, and a wider animation ecosystem.";
+  "The ultimate configurable Minecraft rig. With an AIO shader, 1:1 controller interface, and multi-dimensional shaping system.";
 ---
 
 <Layout title={customTitle} description={customDescription}>
   <RigStyles />
-  <Rig2Landing />
+
+  <Hero />
+
+  <Stats />
+
+  <Features>
+    
+    <Workflow />
+
+    <WhyRig />
+
+    <FAQ />
+
+    <Pricing />
+
+    <CTA />
+  </Features>
 </Layout>
