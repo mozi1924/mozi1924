@@ -1,4 +1,5 @@
 ---
+import { Download, ShoppingCart } from "lucide-react";
 
 const editions = [
   {
@@ -10,32 +11,31 @@ const editions = [
       "AIO 着色器",
       "三种脚部模式",
       "Steve & Alex 双比例支持",
-      "支持导入 .miframes 动作",
       "仅限个人/非商业项目使用"
     ],
-    buttonText: "前往 Github",
+    buttonText: "免费下载",
     isPro: false,
     badge: null,
-    href: "https://github.com/mozi1924/rig2_addons"
+    href: "https://assets.mozi1924.com/rig2/latest.zip"
   },
   {
     name: "Pro Edition",
-    price: "Coming Soon",
+    price: "Pro",
     period: "",
     features: [
       "包含 Free 版所有功能",
       "包含商业使用授权 (Commercial License)",
       "面部捕捉 (Face Mocap) 集成",
-      "动作捕捉 (Motion Capture) 插件集成",
-      "拖动即走 (Drag & Drop) 工作流",
       "高级表情系统 (52 Blendshapes)",
       "优先技术支持 & 更新通道",
+      "支持导入 .miframes 动作",
+      "R2bb geckolib导出",
       "Rig/2 Ecosystem 完整访问权限"
     ],
-    buttonText: "Coming Soon",
+    buttonText: "立即购买",
     isPro: true,
     badge: "Ultimate",
-    href: null
+    href: "https://store.mozi1924.com/l/rig2"
   }
 ];
 ---
@@ -49,7 +49,7 @@ const editions = [
     </h2>
     <div class="w-16 h-1 bg-[#ea7601] mx-auto rounded-full"></div>
     <p class="text-gray-400 max-w-2xl mx-auto text-lg">
-      选择适合你的版本，从免费社区版到即将推出的专业版
+      选择适合你的版本，从免费社区版到完整专业版
     </p>
   </div>
 
@@ -103,13 +103,6 @@ const editions = [
           )}
 
           <div class="relative z-10 flex flex-col h-full">
-            {edition.isPro && (
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ea7601]/10 text-[#ea7601] text-sm font-medium mb-4 w-fit">
-                <span class="w-2 h-2 rounded-full bg-[#ea7601] animate-pulse" />
-                In Development
-              </div>
-            )}
-
             <h3 class="text-3xl font-bold mb-2 uppercase text-white">{edition.name}</h3>
             <div class="text-4xl font-bold text-[#ea7601] mb-8">
               {edition.price} <span class="text-sm text-gray-400 font-normal">{edition.period}</span>
@@ -134,28 +127,23 @@ const editions = [
             </ul>
 
             <div class="pt-4 mt-auto">
-              {edition.href ? (
-                <a
-                  href={edition.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class={`w-full py-4 flex items-center justify-center gap-2 text-white font-bold rounded-full uppercase tracking-widest transition-all duration-300 shadow-lg ${
-                    edition.isPro 
-                      ? "bg-[#ea7601] hover:bg-[#ff9a3c] shadow-[#ea7601]/40 hover:-translate-y-1 hover:shadow-xl" 
-                      : "bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 hover:border-white/20 hover:-translate-y-1"
-                  } group`}
-                >
-                  <span class="text-base font-black leading-none transition-transform group-hover:scale-110">GH</span>
-                  {edition.buttonText}
-                </a>
-              ) : (
-                <button
-                  disabled
-                  class="w-full py-4 bg-[#ea7601]/50 text-white font-semibold rounded-full cursor-not-allowed uppercase tracking-wider backdrop-blur-sm border border-[#ea7601]/30 transition-all"
-                >
-                  {edition.buttonText}
-                </button>
-              )}
+              <a
+                href={edition.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={`w-full py-4 flex items-center justify-center gap-3 text-white font-bold rounded-full uppercase tracking-widest transition-all duration-300 shadow-lg ${
+                  edition.isPro 
+                    ? "bg-[#ea7601] hover:bg-[#ff9a3c] shadow-[#ea7601]/40 hover:-translate-y-1 hover:shadow-xl" 
+                    : "bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 hover:border-white/20 hover:-translate-y-1"
+                } group`}
+              >
+                {edition.isPro ? (
+                  <ShoppingCart className="w-5 h-5 transition-transform group-hover:scale-110" />
+                ) : (
+                  <Download className="w-5 h-5 transition-transform group-hover:scale-110" />
+                )}
+                {edition.buttonText}
+              </a>
             </div>
           </div>
         </div>
