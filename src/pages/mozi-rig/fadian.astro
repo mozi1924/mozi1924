@@ -1,0 +1,66 @@
+---
+import "../../styles/global.css";
+import fadianImage from "../../assets/rig2/fadian.webp";
+---
+
+<!doctype html>
+<html lang="zh-CN" class="bg-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mozi.su报道 - Rig2</title>
+  </head>
+  <body class="m-0 flex justify-center bg-white p-5 text-[#333]">
+    <div class="w-full max-w-[600px]">
+      <div class="mb-[15px] text-[26px] leading-[1.4] font-bold">
+        Mozi首次体验Rig2！被吓到眩晕瘫坐，那一刻就像看到原子弹爆炸
+      </div>
+
+      <div class="mb-5 flex items-center gap-[10px] text-sm text-[#888]">
+        <span class="font-medium text-[#576b95]">mozi.su</span>
+        <span>2026年05月03日 12:00</span>
+        <span>洛杉矶</span>
+      </div>
+
+      <div
+        class="relative mb-2.5 w-full overflow-hidden rounded aspect-video @container"
+      >
+        <div
+          class="absolute top-0 right-0 z-10 flex items-center bg-[#444] px-3 py-1 text-sm text-white"
+        >
+          <span class="font-bold">独家</span>
+        </div>
+        <img
+          src={fadianImage.src}
+          alt="Mozi with Rig2"
+          class="absolute inset-0 w-full h-full object-cover bg-[#eee]"
+        />
+        <div
+          class="absolute top-[20%] left-[5%] text-[15cqw] font-black italic text-[#ccff00] [text-shadow:0.66cqw_0.66cqw_0px_rgba(0,0,0,0.8)]"
+        >
+          RIG-2
+        </div>
+      </div>
+
+      <div
+        class="relative my-5 text-center text-sm text-[#888] before:mb-[5px] before:mx-auto before:block before:w-fit before:bg-[#888] before:px-[10px] before:py-[2px] before:text-xs before:text-white before:content-['mozi.su报道']"
+      >
+        编辑：Gemini
+      </div>
+
+      <div
+        class="border-l-[3px] border-[#d1d1d1] bg-[#f7f7f7] p-[15px] text-base leading-[1.6]"
+      >
+        刚刚，Mozi曝光了Rig2的使用初体验。
+        <span
+          class="bg-[linear-gradient(to_bottom,transparent_60%,#fff100_60%)]"
+          >骨骼的精准耦合让他瘫坐在人体工学椅上</span
+        >，那一刻，自己身为3D艺术家毫无用处的想法，从未如此强烈。
+        此外，他宣布要为全球所有Blender用户免费分发Rig2底层逻辑，另外还有一个乌托邦设想——未来的<span
+          class="bg-[linear-gradient(to_bottom,transparent_60%,#fff100_60%)]"
+          >800万兆Geometry Nodes节点</span
+        >，会平分给全部80亿地球人。
+      </div>
+    </div>
+  </body>
+</html>
