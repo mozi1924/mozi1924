@@ -2,11 +2,18 @@
   "name": "mozi1924.com",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0 <23",
+    "npm": ">=10"
+  },
   "scripts": {
-    "dev": "astro dev --host",
-    "build": "astro build && npx pagefind --site dist/client && node scripts/prepare-pages-build.mjs",
-    "preview": "rm -rf .wrangler/deploy && wrangler pages dev dist",
-    "astra": "astro",
+    "check:runtime": "node scripts/check-runtime.mjs",
+    "check": "npm run check:runtime && astro check",
+    "dev": "npm run check:runtime && astro dev --host",
+    "build": "npm run check:runtime && astro build && pagefind --site dist/client && node scripts/prepare-pages-build.mjs",
+    "preview": "npm run check:runtime && rm -rf .wrangler/deploy && wrangler pages dev dist",
+    "astro": "astro",
+    "astra": "npm run astro --",
     "new": "node scripts/new-post.mjs"
   },
   "dependencies": {
@@ -22,6 +29,7 @@
     "astro": "^6.1.2",
     "date-fns": "^4.1.0",
     "lucide-react": "^1.7.0",
+    "mermaid": "^11.14.0",
     "overlayscrollbars": "^2.14.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -30,6 +38,7 @@
     "typescript": "^6.0.2"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.4",
     "@cloudflare/workers-types": "^4.20260329.1",
     "@tailwindcss/typography": "^0.5.19",
     "pagefind": "^1.4.0",

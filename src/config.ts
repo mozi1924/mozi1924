@@ -1,4 +1,4 @@
-import avatarImg from "/@/assets/avatar.webp";
+import avatarImg from "@/assets/avatar.webp";
 import type { ImageMetadata } from "astro";
 
 export const SITE = {

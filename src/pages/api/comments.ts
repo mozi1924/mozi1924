@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 // @ts-ignore Cloudflare workers runtime module is provided by the adapter at runtime
 import { env, waitUntil } from 'cloudflare:workers';
-import { SITE } from '/@/config';
+import { SITE } from '@/config';
 
 export const POST: APIRoute = async ({ request }) => {
     const body: any = await request.json();

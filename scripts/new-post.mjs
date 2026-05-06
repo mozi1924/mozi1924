@@ -16,6 +16,7 @@ const question = (query) => new Promise((resolve) => rl.question(query, resolve)
 
 async function main() {
     console.log('\x1b[36m%s\x1b[0m', '🚀 Creating a new post...');
+    const date = new Date().toISOString().split('T')[0];
 
     // 1. Choose collection
     const typeChoice = await question('Collection type (1: blog, 2: article) [1]: ') || '1';
@@ -46,7 +47,6 @@ async function main() {
     // 5. Language
     const lang = await question('Language (zh/en) [zh]: ') || 'zh';
 
-    const date = new Date().toISOString().split('T')[0];
     const filePath = path.join(rootDir, 'src/content', collection, `${slug}.mdx`);
     const assetsDir = path.join(rootDir, 'public/assets', slug);
 
