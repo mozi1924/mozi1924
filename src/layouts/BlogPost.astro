@@ -246,82 +246,7 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
 <script>
   import { initTOC } from "../scripts/toc";
   import { initScrollPersistence } from "../scripts/scroll-persistence";
-
-  let mermaidInstancePromise: Promise<any> | null = null;
-
-  const getMermaid = async () => {
-    if (!mermaidInstancePromise) {
-      mermaidInstancePromise = import("mermaid").then(({ default: mermaid }) => {
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: "dark",
-          securityLevel: "loose",
-          fontFamily: "inherit",
-          deterministicIds: true,
-        });
-        return mermaid;
-      });
-    }
-    return mermaidInstancePromise;
-  };
-
-  const collectMermaidPreBlocks = (): HTMLPreElement[] => {
-    const candidates: HTMLPreElement[] = [];
-
-    const pushCandidate = (pre: HTMLPreElement | null) => {
-      if (!pre) return;
-      if (pre.getAttribute("data-mermaid-processed")) return;
-      if (candidates.includes(pre)) return;
-      candidates.push(pre);
-    };
-
-    for (const pre of document.querySelectorAll("pre[data-language='mermaid'], pre.mermaid")) {
-      pushCandidate(pre instanceof HTMLPreElement ? pre : null);
-    }
-
-    for (const code of document.querySelectorAll("pre > code.language-mermaid")) {
-      const parentPre = code.closest("pre");
-      pushCandidate(parentPre instanceof HTMLPreElement ? parentPre : null);
-    }
-
-    return candidates;
-  };
-
-  const renderMermaid = async () => {
-    const mermaidBlocks = collectMermaidPreBlocks();
-    if (mermaidBlocks.length === 0) return;
-
-    const mermaid = await getMermaid();
-
-    for (const block of mermaidBlocks) {
-      block.setAttribute("data-mermaid-processed", "processing");
-
-      const codeNode = block.querySelector("code");
-      const code = codeNode?.textContent?.trim() || block.textContent?.trim() || "";
-      if (!code) {
-        block.setAttribute("data-mermaid-processed", "empty");
-        continue;
-      }
-
-      const uuid =
-        typeof crypto !== "undefined" && "randomUUID" in crypto
-          ? crypto.randomUUID()
-          : Math.random().toString(36).slice(2, 11);
-      const id = `mermaid-${uuid}`;
-
-      try {
-        const { svg } = await mermaid.render(id, code);
-        const container = document.createElement('div');
-        container.className = 'mermaid-render-container my-8 flex justify-center rounded-xl border border-white/10 bg-black/20 p-4 md:p-6 overflow-x-auto';
-        container.setAttribute('data-mermaid-processed', 'true');
-        container.innerHTML = svg;
-        block.replaceWith(container);
-      } catch (error) {
-        console.error('Mermaid rendering failed:', error);
-        block.setAttribute('data-mermaid-processed', 'error');
-      }
-    }
-  };
+  import { renderMermaid } from "../scripts/mermaid";
 
   document.addEventListener("astro:page-load", () => {
     initTOC();
@@ -331,8 +256,34 @@ const hideComments = frontmatter.disable_comments || frontmatter.hideComment;
 </script>
 
 <style is:global>
-  .mermaid-render-container svg {
-    max-width: 100%;
-    height: auto;
+  .mermaid-viewer-wrapper:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: #111;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+  }
+  
+  .mermaid-viewer-wrapper:fullscreen .mermaid-viewport {
+    flex: 1;
+    height: 100%;
+    padding: 2rem;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Fix for dark theme text in mermaid diagrams */
+  .mermaid-svg-container svg {
+    color-scheme: dark;
   }
 </style>
