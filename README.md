@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @mozi1924
-- 👀 I’m interested in ML, Computer Vision 
-- 🌱 I’m currently Developing FaceCap For blender
+- 👀 I’m interested in ML, Computer Vision and Blender 3D
+- 🌱 I’m currently Developing Gen2Rig (Generative Character Rigging Language)
 - 📫 How to reach me ¿
 - 📮 mozi1924@arasaka.ltd
 - 🌐 https://mozi1924.com
