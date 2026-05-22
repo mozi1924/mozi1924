@@ -2,10 +2,6 @@
   "name": "mozi1924.com",
   "type": "module",
   "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0 <23",
-    "npm": ">=10"
-  },
   "scripts": {
     "check:runtime": "node scripts/check-runtime.mjs",
     "check": "npm run check:runtime && astro check",
