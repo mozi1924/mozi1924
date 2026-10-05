@@ -49,15 +49,15 @@ const optimizedItems = await Promise.all(
     rawItems.map(async (item) => {
         const thumbnail = await getImage({
             src: item.image,
-            width: 800,
+            width: Math.min(item.image.width, 1000),
             format: "webp",
-            quality: 80,
+            quality: 85,
         });
         const fullSize = await getImage({
             src: item.image,
-            width: 1600,
+            width: Math.min(item.image.width, 2560),
             format: "webp",
-            quality: 90,
+            quality: 92,
         });
         return {
             ...item,

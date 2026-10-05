@@ -32,19 +32,34 @@ const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return mounted ? createPortal(children, document.body) : null;
 };
 
+// SVG fallback avatar data URI in case no avatar is available
+const DEFAULT_FALLBACK_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
 // Avatar with stable hashing and fallback
-const Avatar: React.FC<{ hash?: string; name: string; defaultAvatarUrl?: string }> = ({ hash, name, defaultAvatarUrl }) => (
-  <img
-    src={hash ? `/api/avatar?hash=${hash}` : defaultAvatarUrl}
-    alt={name}
-    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
-    onError={(e) => { 
-      if (defaultAvatarUrl) {
-        (e.currentTarget as HTMLImageElement).src = defaultAvatarUrl;
-      }
-    }}
-  />
-);
+const Avatar: React.FC<{ hash?: string; name: string; defaultAvatarUrl?: string }> = ({ hash, name, defaultAvatarUrl }) => {
+  const fallback = defaultAvatarUrl || DEFAULT_FALLBACK_AVATAR;
+  const initialSrc = hash ? `/api/avatar?hash=${hash}` : fallback;
+  const [src, setSrc] = useState(initialSrc);
+
+  useEffect(() => {
+    setSrc(hash ? `/api/avatar?hash=${hash}` : fallback);
+  }, [hash, fallback]);
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full ring-2 ring-white/10 shadow-lg object-cover bg-gray-800"
+      onError={() => {
+        if (src !== fallback) {
+          setSrc(fallback);
+        } else if (src !== DEFAULT_FALLBACK_AVATAR) {
+          setSrc(DEFAULT_FALLBACK_AVATAR);
+        }
+      }}
+    />
+  );
+};
 
 // Thread Modal
 const RepliesModal: React.FC<{
@@ -129,6 +144,7 @@ const RepliesModal: React.FC<{
                 isInThread={true}
                 onReply={() => { setReplyingTo(null); }}
                 onScrollTo={scrollToReply}
+                defaultAvatarUrl={defaultAvatarUrl}
               />
             </div>
 
