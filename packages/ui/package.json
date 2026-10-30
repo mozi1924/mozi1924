@@ -6,6 +6,10 @@
     "./Icon.astro": "./src/Icon.astro",
     "./Footer.astro": "./src/Footer.astro",
     "./ProjectCard.astro": "./src/ProjectCard.astro",
+    "./Analytics.astro": "./src/Analytics.astro",
+    "./StructuredData.astro": "./src/StructuredData.astro",
+    "./siteConfig": "./src/siteConfig.ts",
+    "./styles/*": "./src/styles/*",
     "./types": "./src/types.ts",
     "./pinnedProjects": "./src/data/pinnedProjects.ts",
     "./*": "./src/*"

@@ -23,20 +23,12 @@ const formattedDate = p.pushedAt
     })
   : "";
 
-const schemaData = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareSourceCode",
-  "name": p.name,
-  "description": p.description || `${p.name} open-source project by Mozi Arasaka`,
-  "codeRepository": p.repoUrl,
-  "programmingLanguage": p.language || "Other",
-  "license": p.license ? `https://spdx.org/licenses/${p.license}` : undefined,
-  "author": {
-    "@type": "Person",
-    "name": "Mozi Arasaka",
-    "alternateName": "mozi1924",
-    "url": "https://mozi1924.com",
-  },
+const software = {
+  name: p.name,
+  description: p.description || `${p.name} open-source project by Mozi Arasaka`,
+  codeRepository: p.repoUrl,
+  programmingLanguage: p.language || "Other",
+  license: p.license,
 };
 ---
 
@@ -44,7 +36,8 @@ const schemaData = {
   title={`${p.name} - Open Source Project by Mozi Arasaka`}
   description={p.description || `Documentation and README for ${p.name} by Mozi Arasaka.`}
   type="article"
-  schemaData={schemaData}
+  schemaType="software"
+  software={software}
 >
   <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-20 md:pb-28">
     <!-- Breadcrumb -->

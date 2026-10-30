@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @source "../../../../packages/ui/src";
 @plugin "@tailwindcss/typography";
+@import "@mozi/ui/styles/base.css";
 
 @import "overlayscrollbars/styles/overlayscrollbars.css";
 
@@ -20,32 +21,4 @@
 .os-scrollbar {
     z-index: 90;
     /* Below Search (100) */
-}
-
-/* Restore custom scrollbar for nested elements */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-
-/* Pagefind Highlight */
-mark {
-    background-color: rgba(63, 137, 252, 0.3);
-    color: inherit;
-    border-radius: 2px;
-    padding: 0 2px;
 }

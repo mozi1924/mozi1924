@@ -19,31 +19,12 @@ const initialProjects = [...projects].sort((a, b) => {
 });
 
 const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
-
-const schemaData = {
-  "@context": "https://schema.org",
-  "@type": "ProfilePage",
-  "name": "Mozi Arasaka's Open Source Hub",
-  "url": "https://hub.mozi1924.com",
-  "description": "Showcase of open-source projects, Blender plugins, Rust engines, and AI utilities by Mozi Arasaka.",
-  "mainEntity": {
-    "@type": "Person",
-    "name": "Mozi Arasaka",
-    "alternateName": "mozi1924",
-    "url": "https://mozi1924.com",
-    "sameAs": [
-      "https://github.com/mozi1924",
-      "https://twitter.com/CyberMozi",
-      "https://www.youtube.com/@moziarasaka"
-    ]
-  }
-};
 ---
 
 <Layout
   title="Mozi's Open Source Hub | GitHub Projects & Repositories"
   description="Explore public GitHub repositories and open-source projects by Mozi Arasaka: Blender tools, Rust engines, AI models, and web applications."
-  schemaData={schemaData}
+  schemaType="profile"
 >
   <!-- Hero Section Aligned with Web Design Language -->
   <section class="relative overflow-hidden pt-12 pb-10 md:pt-16 md:pb-14 bg-[#111]">

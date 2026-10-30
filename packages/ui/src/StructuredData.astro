@@ -1,0 +1,253 @@
+---
+import { MOZI_IDENTITY } from "./siteConfig";
+
+interface BreadcrumbItem {
+  name: string;
+  item: string;
+}
+
+interface ListItem {
+  name: string;
+  url: string;
+  image?: string;
+  description?: string;
+}
+
+interface SoftwareProps {
+  name: string;
+  description?: string;
+  codeRepository?: string;
+  programmingLanguage?: string;
+  license?: string;
+}
+
+interface Props {
+  type?: "website" | "webpage" | "article" | "blog" | "profile" | "software";
+  title?: string;
+  description?: string;
+  canonicalURL?: URL | string;
+  image?: string;
+  pubDate?: string | Date;
+  modDate?: string | Date;
+  authorName?: string;
+  authorUrl?: string;
+  authorAvatar?: string;
+  authorMotto?: string;
+  socialLinks?: { network: string; url: string; icon?: string }[];
+  sameAs?: string[];
+  inLanguage?: string;
+  wordCount?: number;
+  keywords?: string;
+  items?: ListItem[];
+  articleImages?: { url: string; alt?: string }[];
+  articleVideos?: { url: string }[];
+  breadcrumbs?: BreadcrumbItem[];
+  software?: SoftwareProps;
+  customSchema?: Record<string, any>;
+}
+
+const {
+  type = "website",
+  title = "Mozi1924",
+  description = "Mozi's personal ecosystem and open source projects.",
+  canonicalURL = Astro.url,
+  image = MOZI_IDENTITY.avatarUrl,
+  pubDate,
+  modDate,
+  authorName = MOZI_IDENTITY.name,
+  authorUrl = MOZI_IDENTITY.primaryUrl,
+  authorAvatar = MOZI_IDENTITY.avatarUrl,
+  authorMotto,
+  sameAs = MOZI_IDENTITY.sameAs,
+  inLanguage = "en",
+  wordCount,
+  keywords,
+  items,
+  articleImages,
+  articleVideos,
+  breadcrumbs: customBreadcrumbs,
+  software,
+  customSchema,
+} = Astro.props;
+
+const canonicalHref =
+  typeof canonicalURL === "string" ? canonicalURL : canonicalURL.href;
+
+const resolvedImage = image.startsWith("http")
+  ? image
+  : new URL(image, Astro.site || MOZI_IDENTITY.primaryUrl).href;
+
+const resolvedAuthorAvatar = authorAvatar
+  ? authorAvatar.startsWith("http")
+    ? authorAvatar
+    : new URL(authorAvatar, Astro.site || MOZI_IDENTITY.primaryUrl).href
+  : undefined;
+
+// Auto-generate breadcrumbs if not explicitly provided
+const { pathname } = Astro.url;
+const segments = pathname.split("/").filter(Boolean);
+const breadcrumbs =
+  customBreadcrumbs ||
+  [
+    {
+      name: "Home",
+      item: Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl,
+    },
+    ...segments.map((segment, index) => {
+      const path = segments.slice(0, index + 1).join("/");
+      return {
+        name: decodeURIComponent(segment)
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase()),
+        item: new URL(`${path}/`, Astro.site || MOZI_IDENTITY.primaryUrl).href,
+      };
+    }),
+  ];
+
+const personEntity = {
+  "@type": "Person",
+  name: authorName,
+  alternateName: MOZI_IDENTITY.handle,
+  url: authorUrl,
+  image: resolvedAuthorAvatar || resolvedImage,
+  description: authorMotto,
+  sameAs: sameAs,
+};
+
+const graph: any[] = [
+  {
+    "@type": "WebSite",
+    "@id": `${Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl}#website`,
+    url: Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl,
+    name: MOZI_IDENTITY.name,
+    inLanguage,
+    publisher: personEntity,
+  },
+];
+
+// Add Breadcrumbs
+if (breadcrumbs.length > 0) {
+  graph.push({
+    "@type": "BreadcrumbList",
+    "@id": `${canonicalHref}#breadcrumb`,
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: crumb.item,
+    })),
+  });
+}
+
+// Handle specific page types
+if (type === "profile") {
+  graph.push({
+    "@type": "ProfilePage",
+    "@id": `${canonicalHref}#profile`,
+    url: canonicalHref,
+    name: title,
+    description: description,
+    dateCreated: pubDate ? new Date(pubDate).toISOString() : undefined,
+    dateModified: modDate || pubDate ? new Date((modDate || pubDate)!).toISOString() : undefined,
+    mainEntity: personEntity,
+    isPartOf: { "@id": `${Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl}#website` },
+    breadcrumb: { "@id": `${canonicalHref}#breadcrumb` },
+  });
+} else if (type === "software" && software) {
+  graph.push({
+    "@type": "SoftwareSourceCode",
+    "@id": `${canonicalHref}#software`,
+    url: canonicalHref,
+    name: software.name,
+    description: software.description || description,
+    codeRepository: software.codeRepository,
+    programmingLanguage: software.programmingLanguage || "Other",
+    license: software.license ? `https://spdx.org/licenses/${software.license}` : undefined,
+    author: personEntity,
+    isPartOf: { "@id": `${Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl}#website` },
+    breadcrumb: { "@id": `${canonicalHref}#breadcrumb` },
+  });
+} else if (type === "article" || type === "blog") {
+  const articleImageObjects =
+    articleImages?.map((img) => ({
+      "@type": "ImageObject",
+      url: new URL(img.url, Astro.site || MOZI_IDENTITY.primaryUrl).href,
+      caption: img.alt,
+    })) || [];
+
+  graph.push({
+    "@type": "BlogPosting",
+    "@id": `${canonicalHref}#${type}`,
+    url: canonicalHref,
+    headline: title,
+    description: description,
+    inLanguage: inLanguage,
+    wordCount: wordCount,
+    keywords: keywords,
+    image: [
+      {
+        "@type": "ImageObject",
+        url: resolvedImage,
+      },
+      ...articleImageObjects,
+    ],
+    video: articleVideos?.map((vid) => ({
+      "@type": "VideoObject",
+      name: title,
+      description: description,
+      thumbnailUrl: resolvedImage,
+      uploadDate: pubDate ? new Date(pubDate).toISOString() : undefined,
+      contentUrl: new URL(vid.url, Astro.site || MOZI_IDENTITY.primaryUrl).href,
+    })),
+    datePublished: pubDate ? new Date(pubDate).toISOString() : undefined,
+    dateModified: modDate || pubDate ? new Date((modDate || pubDate)!).toISOString() : undefined,
+    author: personEntity,
+    isPartOf: { "@id": `${Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl}#website` },
+    mainEntityOfPage: { "@id": canonicalHref },
+    breadcrumb: { "@id": `${canonicalHref}#breadcrumb` },
+  });
+} else {
+  graph.push({
+    "@type": "WebPage",
+    "@id": `${canonicalHref}#webpage`,
+    url: canonicalHref,
+    name: title,
+    description: description,
+    isPartOf: { "@id": `${Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl}#website` },
+    breadcrumb: { "@id": `${canonicalHref}#breadcrumb` },
+  });
+}
+
+// Add ItemList if provided
+if (items && items.length > 0) {
+  graph.push({
+    "@type": "ItemList",
+    "@id": `${canonicalHref}#itemlist`,
+    name: title,
+    description: description,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: item.url,
+      name: item.name,
+      image: item.image ? new URL(item.image, Astro.site || MOZI_IDENTITY.primaryUrl).href : undefined,
+    })),
+  });
+}
+
+// Merge custom schema if provided
+if (customSchema) {
+  if (customSchema["@graph"]) {
+    graph.push(...customSchema["@graph"]);
+  } else {
+    graph.push(customSchema);
+  }
+}
+
+const finalSchema = {
+  "@context": "https://schema.org",
+  "@graph": graph,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(finalSchema)} />

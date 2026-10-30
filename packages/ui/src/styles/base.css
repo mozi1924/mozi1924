@@ -1,0 +1,61 @@
+/* Shared design tokens and base styles for the mozi1924.com ecosystem */
+
+:root {
+  --color-brand: #3F89FC;
+  --color-brand-glow: rgba(63, 137, 252, 0.25);
+  --color-bg-base: #111111;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+/* Audiowide Brand Font */
+@font-face {
+  font-family: 'Audiowide';
+  src: url('/fonts/audiowide-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Audiowide';
+  src: url('/fonts/audiowide-latin-ext.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-audiowide {
+  font-family: 'Audiowide', sans-serif;
+}
+
+/* Common Scrollbars */
+::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Search Highlights */
+mark {
+  background-color: rgba(63, 137, 252, 0.3);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}

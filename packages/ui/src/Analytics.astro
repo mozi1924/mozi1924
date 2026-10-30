@@ -1,0 +1,50 @@
+---
+// Analytics.astro - SSOT analytics component for the mozi1924.com ecosystem
+import { MOZI_IDENTITY } from "./siteConfig";
+
+interface Props {
+  gaMeasurementId?: string;
+  clarityProjectId?: string;
+}
+
+const {
+  gaMeasurementId = MOZI_IDENTITY.analytics.gaMeasurementId,
+  clarityProjectId = MOZI_IDENTITY.analytics.clarityProjectId,
+} = Astro.props;
+---
+
+<!-- Google Tag Manager (gtag.js) -->
+{gaMeasurementId && (
+  <>
+    <script
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+    ></script>
+    <script define:vars={{ gaMeasurementId }} is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", gaMeasurementId);
+    </script>
+  </>
+)}
+
+<!-- Microsoft Clarity -->
+{clarityProjectId && (
+  <script define:vars={{ clarityProjectId }} is:inline>
+    (function (c, l, a, r, i, t, y) {
+      c[a] =
+        c[a] ||
+        function () {
+          (c[a].q = c[a].q || []).push(arguments);
+        };
+      t = l.createElement(r);
+      t.async = 1;
+      t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0];
+      y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", clarityProjectId);
+  </script>
+)}

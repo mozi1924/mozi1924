@@ -2,12 +2,23 @@
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Analytics from "@mozi/ui/Analytics.astro";
+import StructuredData from "@mozi/ui/StructuredData.astro";
+import { MOZI_IDENTITY } from "@mozi/ui/siteConfig";
 
 interface Props {
   title?: string;
   description?: string;
   image?: string;
   type?: "website" | "article";
+  schemaType?: "website" | "webpage" | "article" | "blog" | "profile" | "software";
+  software?: {
+    name: string;
+    description?: string;
+    codeRepository?: string;
+    programmingLanguage?: string;
+    license?: string;
+  };
   schemaData?: Record<string, any>;
 }
 
@@ -16,12 +27,14 @@ const {
   description = "Explore open-source repositories by Mozi Arasaka: high-performance Rust engines, Blender DCC extensions, Minecraft tooling, and machine learning utilities.",
   image = "/avatar.webp",
   type = "website",
+  schemaType,
+  software,
   schemaData,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://hub.mozi1924.com");
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || MOZI_IDENTITY.hubUrl);
 const formattedTitle = title.includes("Mozi") ? title : `${title} | Mozi's Open Source Hub`;
-const ogImageUrl = new URL(image, Astro.site || "https://hub.mozi1924.com").href;
+const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
 ---
 
 <!doctype html>
@@ -54,9 +67,30 @@ const ogImageUrl = new URL(image, Astro.site || "https://hub.mozi1924.com").href
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={ogImageUrl} />
 
-    <!-- Schema.org JSON-LD -->
-    {schemaData && (
+    <!-- SSOT Analytics (GA4 + Clarity) -->
+    <Analytics />
+
+    <!-- SSOT Schema.org JSON-LD -->
+    {schemaType ? (
+      <StructuredData
+        type={schemaType}
+        title={formattedTitle}
+        description={description}
+        canonicalURL={canonicalURL}
+        image={ogImageUrl}
+        software={software}
+        customSchema={schemaData}
+      />
+    ) : schemaData ? (
       <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+    ) : (
+      <StructuredData
+        type="website"
+        title={formattedTitle}
+        description={description}
+        canonicalURL={canonicalURL}
+        image={ogImageUrl}
+      />
     )}
   </head>
   <body class="bg-[#111] min-h-[100dvh] flex flex-col selection:bg-blue-500/30 selection:text-white font-sans">
