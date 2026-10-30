@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import Icon from "@mozi/ui/Icon.astro";
 import projects from "../data/projects.json";
 import stats from "../data/stats.json";
 
@@ -54,10 +55,10 @@ const schemaData = {
         <!-- Logo and Pill -->
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#3F89FC]/30 bg-[#3F89FC]/10 text-xs font-mono text-[#3F89FC] mb-6 shadow-[0_0_15px_rgba(63,137,252,0.15)]">
           <span class="inline-block w-2 h-2 rounded-full bg-[#3F89FC] animate-pulse"></span>
-          <span>AUTOMATED GITHUB PAGES SYNC</span>
+          <span>AUTOMATED REPOSITORY HUB</span>
         </div>
 
-        <h1 class="font-audiowide text-3xl sm:text-5xl md:text-6xl tracking-wider text-white uppercase drop-shadow-md">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white uppercase drop-shadow-md">
           OPEN SOURCE <span class="text-[#3F89FC]">HUB</span>
         </h1>
 
@@ -68,18 +69,18 @@ const schemaData = {
         <!-- Stats Counter Ribbon -->
         <div class="mt-8 grid grid-cols-3 gap-3 sm:gap-6 w-full max-w-lg">
           <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center">
-            <div class="font-audiowide text-2xl sm:text-3xl font-bold text-white">{stats.totalProjects}</div>
+            <div class="text-2xl sm:text-3xl font-bold text-white font-mono">{stats.totalProjects}</div>
             <div class="text-[11px] uppercase tracking-wider text-gray-400 font-mono mt-1">Public Repos</div>
           </div>
           <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center">
-            <div class="font-audiowide text-2xl sm:text-3xl font-bold text-yellow-400 flex items-center justify-center gap-1">
+            <div class="text-2xl sm:text-3xl font-bold text-yellow-400 font-mono flex items-center justify-center gap-1.5">
               <span>{stats.totalStars}</span>
-              <span class="text-sm">★</span>
+              <Icon name="star" className="w-4 h-4 fill-current inline-block" />
             </div>
             <div class="text-[11px] uppercase tracking-wider text-gray-400 font-mono mt-1">Total Stars</div>
           </div>
           <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center">
-            <div class="font-audiowide text-2xl sm:text-3xl font-bold text-cyan-400">{stats.totalForks}</div>
+            <div class="text-2xl sm:text-3xl font-bold text-cyan-400 font-mono">{stats.totalForks}</div>
             <div class="text-[11px] uppercase tracking-wider text-gray-400 font-mono mt-1">Forks</div>
           </div>
         </div>
@@ -96,8 +97,8 @@ const schemaData = {
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3F89FC] opacity-75"></span>
             <span class="relative inline-flex rounded-full h-3 w-3 bg-[#3F89FC]"></span>
           </span>
-          <h2 class="font-audiowide text-xl sm:text-2xl text-white tracking-wider flex items-center gap-2">
-            <span>FEATURED PROJECTS</span>
+          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            <span>Featured Projects</span>
             <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#3F89FC]/15 text-[#3F89FC] border border-[#3F89FC]/30">PINNED</span>
           </h2>
         </div>
@@ -123,8 +124,8 @@ const schemaData = {
   <!-- Filter & Search Controls for All Repositories -->
   <section class="max-w-7xl mx-auto px-6 pt-8 pb-4">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="font-audiowide text-lg sm:text-xl text-white tracking-wider flex items-center gap-2">
-        <span>ALL REPOSITORIES</span>
+      <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+        <span>All Repositories</span>
         <span class="text-xs font-mono text-gray-500 font-normal">({projects.length})</span>
       </h2>
     </div>

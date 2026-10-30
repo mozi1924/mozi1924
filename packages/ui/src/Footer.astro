@@ -1,0 +1,64 @@
+---
+export interface FooterLink {
+  name: string;
+  href: string;
+  external?: boolean;
+}
+
+export interface Props {
+  siteTitle?: string;
+  favicon?: string;
+  links?: FooterLink[];
+  copyrightYears?: string;
+}
+
+const currentYear = new Date().getFullYear();
+
+const {
+  siteTitle = "Mozi1924",
+  favicon = "/favicon.svg",
+  copyrightYears = `2020 - ${currentYear}`,
+  links = [
+    { name: "GitHub", href: "https://github.com/mozi1924", external: true },
+    { name: "Open Source Hub", href: "https://hub.mozi1924.com", external: true },
+    { name: "Mozi Store", href: "https://store.mozi1924.com/", external: true },
+    { name: "YouTube", href: "https://www.youtube.com/@moziarasaka", external: true },
+    { name: "Bilibili", href: "https://space.bilibili.com/434156493", external: true },
+    { name: "RSS", href: "https://mozi1924.com/rss", external: true },
+  ],
+} = Astro.props;
+---
+
+<footer class="bg-[#0a0a0a] border-t border-white/5 py-12 mt-auto">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-6">
+    <a href="/" class="flex items-center gap-2 group/logo hover:opacity-90 transition-opacity">
+      <img
+        src={favicon}
+        alt={`${siteTitle} Logo`}
+        class="w-8 h-8 group-hover/logo:scale-110 transition-transform duration-300"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="text-gray-300 font-medium tracking-tight text-base">{siteTitle}</span>
+    </a>
+
+    <div class="text-gray-500 text-sm text-center">
+      &copy; {copyrightYears} {siteTitle}. All rights reserved.
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            target={link.external || link.href.startsWith("http") ? "_blank" : undefined}
+            rel={link.external || link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+            class="text-gray-400 hover:text-white transition-colors"
+          >
+            {link.name}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>

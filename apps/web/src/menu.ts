@@ -15,8 +15,6 @@ export const NAV_LINKS: NavLink[] = [
     { name: "Blogs", href: "/blogs" },
     { name: "Articles", href: "/article" },
     { name: "Hub", href: "https://hub.mozi1924.com", external: true },
-    { name: "Mozi's Rig", href: "/mozi-rig" },
-    { name: "Text2Arch Tool", href: "/text-to-archbase4-encryption-decryption" },
 ];
 
 export const FOOTER_LINKS: FooterLink[] = [

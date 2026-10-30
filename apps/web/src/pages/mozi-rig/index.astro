@@ -1,0 +1,37 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import RigStyles from "./_components/RigStyles.astro";
+import Hero from "./_components/Hero.astro";
+import Stats from "./_components/Stats.astro";
+import Features from "./_components/Features.astro";
+import Workflow from "./_components/Workflow.astro";
+import WhyRig from "./_components/WhyRig.astro";
+import FAQ from "./_components/FAQ.astro";
+import Pricing from "./_components/Pricing.astro";
+import CTA from "./_components/CTA.astro";
+
+const customTitle = "Rig/2 - Define the New Standard";
+const customDescription =
+  "The ultimate configurable Minecraft rig. With an AIO shader, 1:1 controller interface, and multi-dimensional shaping system.";
+---
+
+<Layout title={customTitle} description={customDescription}>
+  <RigStyles />
+
+  <Hero />
+
+  <Stats />
+
+  <Features>
+    
+    <Workflow />
+
+    <WhyRig />
+
+    <FAQ />
+
+    <Pricing />
+
+    <CTA />
+  </Features>
+</Layout>

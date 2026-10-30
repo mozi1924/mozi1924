@@ -1,61 +1,268 @@
 ---
+import Icon from "@mozi/ui/Icon.astro";
+
 const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { name: "Projects", href: "/", external: false },
+  { name: "Main Site", href: "https://mozi1924.com", external: true },
+  { name: "Blogs", href: "https://mozi1924.com/blogs", external: true },
+  { name: "Articles", href: "https://mozi1924.com/article", external: true },
+  { name: "About", href: "https://mozi1924.com/about", external: true },
+];
 ---
 
-<header class="sticky top-0 z-50 w-full bg-[#111]/85 backdrop-blur-md border-b border-white/10 transition-colors duration-300">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-    <!-- Left: Logo & Title -->
-    <a href="/" class="flex items-center gap-3 group">
-      <div class="relative w-8 h-8 flex items-center justify-center">
-        <img
-          src="/favicon.svg"
-          alt="Mozi Logo"
-          class="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
-        />
-      </div>
-      <div class="flex flex-col">
-        <span class="font-audiowide text-base tracking-wider text-white group-hover:text-[#3F89FC] transition-colors">
-          MOZI ARASAKA
+<header
+  id="main-header"
+  class="fixed top-0 w-full z-50 bg-[#111]/80 backdrop-blur-md border-b border-white/10 transition-[border-color] duration-500 h-16"
+>
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-30">
+    <!-- Left: Logo & Hub Tag -->
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 group/logo text-white">
+        <div class="relative w-8 h-8 flex items-center justify-center">
+          <img
+            src="/favicon.svg"
+            alt="Mozi Logo"
+            class="w-8 h-8 group-hover/logo:scale-110 transition-transform duration-300"
+          />
+        </div>
+        <span class="font-bold text-lg tracking-tight text-white group-hover/logo:text-[#3F89FC] transition-colors">
+          Mozi1924
         </span>
-        <span class="text-[10px] uppercase tracking-widest text-gray-400 font-mono -mt-1">
-          Open Source Hub
-        </span>
-      </div>
-    </a>
+      </a>
+      <span class="hidden sm:inline-flex items-center px-2 py-0.5 text-[11px] font-mono rounded-full bg-white/5 border border-white/10 text-gray-400">
+        Hub
+      </span>
+    </div>
 
-    <!-- Navigation Links -->
-    <nav class="flex items-center gap-2 sm:gap-4 text-sm font-medium">
-      <a
-        href="/"
-        class={`px-3 py-1.5 rounded-lg transition-colors ${
-          currentPath === "/" ? "text-[#3F89FC] bg-white/[0.05]" : "text-gray-300 hover:text-white hover:bg-white/[0.03]"
-        }`}
+    <!-- Center: Desktop Navigation Links -->
+    <nav
+      id="desktop-nav"
+      class="hidden md:flex items-center gap-1 relative px-1 py-1 bg-white/[0.03] rounded-xl border border-white/5"
+    >
+      <div
+        id="nav-indicator"
+        class="absolute bg-white/10 rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
       >
-        Projects
-      </a>
-      <a
-        href="https://mozi1924.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-gray-300 hover:text-white hover:bg-white/[0.03] px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
-      >
-        <span>Main Site</span>
-        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-        </svg>
-      </a>
+      </div>
+      {
+        navLinks.map((link) => {
+          const isExternal = link.external;
+          const isActive =
+            !isExternal &&
+            (link.href === "/"
+              ? currentPath === "/" || currentPath.startsWith("/projects")
+              : currentPath.startsWith(link.href));
+          return (
+            <a
+              href={link.href}
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              data-nav-link
+              data-href={link.href}
+              class={`relative z-10 text-sm font-medium transition-colors px-4 py-2 rounded-lg group/link flex items-center gap-1.5 ${
+                isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
+              }`}
+            >
+              <div class="absolute inset-0 bg-white/[0.04] rounded-lg opacity-0 group-hover/link:opacity-100 transition-opacity duration-200 -z-10 pointer-events-none" />
+              <span>{link.name}</span>
+              {isExternal && (
+                <Icon name="external" className="w-3 h-3 text-gray-400 group-hover/link:text-white transition-colors" strokeWidth={2} />
+              )}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <!-- Right: Actions & Mobile Hamburger -->
+    <div class="flex items-center gap-2">
       <a
         href="https://github.com/mozi1924"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-gray-300 hover:text-white hover:bg-white/[0.03] p-1.5 sm:px-3 sm:py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+        class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.03] text-xs font-medium text-gray-300 hover:text-white hover:bg-white/[0.07] hover:border-white/20 transition-all"
         title="GitHub Profile"
       >
-        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-        </svg>
-        <span class="hidden sm:inline">GitHub</span>
+        <Icon name="github" className="w-4 h-4" strokeWidth={2} />
+        <span>GitHub</span>
       </a>
+
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all focus:outline-none relative w-10 h-10 flex items-center justify-center"
+        aria-label="Toggle menu"
+      >
+        <div class="relative w-6 h-6">
+          <div
+            id="menu-icon-open"
+            class="absolute inset-0 flex items-center justify-center transition-all duration-300"
+          >
+            <Icon name="menu" className="w-6 h-6" />
+          </div>
+          <div
+            id="menu-icon-close"
+            class="absolute inset-0 flex items-center justify-center opacity-0 scale-50 transition-all duration-300"
+          >
+            <Icon name="x" className="w-6 h-6" />
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div id="mobile-menu" class="md:hidden menu-transition">
+    <nav
+      id="mobile-menu-content"
+      class="h-full flex flex-col items-center pt-24 pb-8 px-6 opacity-0 content-transition overflow-y-auto"
+    >
+      <div class="flex flex-col items-center space-y-4 w-full max-w-[280px]">
+        {
+          navLinks.map((link) => {
+            const isExternal = link.external;
+            const isActive =
+              !isExternal &&
+              (link.href === "/"
+                ? currentPath === "/" || currentPath.startsWith("/projects")
+                : currentPath.startsWith(link.href));
+            return (
+              <a
+                href={link.href}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+                class={`mobile-link relative z-10 text-2xl font-medium transition-colors px-6 py-3 rounded-lg group/mobile-link w-full text-center flex items-center justify-center gap-2 ${
+                  isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
+                }`}
+              >
+                <div class="absolute inset-0 bg-white/[0.04] rounded-lg opacity-0 group-hover/mobile-link:opacity-100 transition-opacity duration-200 -z-10 pointer-events-none" />
+                <span>{link.name}</span>
+                {isExternal && (
+                  <Icon name="external" className="w-4 h-4 text-gray-400" strokeWidth={2} />
+                )}
+              </a>
+            );
+          })
+        }
+        <div class="w-full pt-4 border-t border-white/10 flex justify-center">
+          <a
+            href="https://github.com/mozi1924"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/[0.05] text-sm font-medium text-white hover:bg-white/10 transition-colors"
+          >
+            <Icon name="github" className="w-4 h-4" strokeWidth={2} />
+            <span>GitHub Profile</span>
+          </a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
+
+<style>
+  .menu-transition {
+    position: fixed;
+    inset: 0;
+    height: 100vh;
+    background-color: #111;
+    z-index: 20;
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+    transition:
+      clip-path 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 0.3s ease;
+    will-change: clip-path, opacity;
+    pointer-events: none;
+  }
+
+  .content-transition {
+    transition: opacity 0.3s ease;
+    transition-delay: 0.1s;
+  }
+
+  #mobile-menu.is-open {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #mobile-menu.is-open #mobile-menu-content {
+    opacity: 1;
+  }
+
+  header.is-menu-open {
+    border-color: transparent;
+  }
+
+  header.is-menu-open #menu-icon-open {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  header.is-menu-open #menu-icon-close {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+</style>
+
+<script>
+  function setupHeader() {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const header = document.getElementById("main-header");
+    let isOpen = false;
+
+    if (btn && menu && header) {
+      btn.onclick = () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+          menu.classList.add("is-open");
+          header.classList.add("is-menu-open");
+          document.body.style.overflow = "hidden";
+        } else {
+          menu.classList.remove("is-open");
+          header.classList.remove("is-menu-open");
+          document.body.style.overflow = "";
+        }
+      };
+
+      menu.querySelectorAll("a").forEach((a) => {
+        a.onclick = () => {
+          isOpen = false;
+          menu.classList.remove("is-open");
+          header.classList.remove("is-menu-open");
+          document.body.style.overflow = "";
+        };
+      });
+    }
+
+    // Desktop indicator
+    const nav = document.getElementById("desktop-nav");
+    const indicator = document.getElementById("nav-indicator");
+    const links = document.querySelectorAll("[data-nav-link]");
+
+    if (nav && indicator) {
+      const activeLink = Array.from(links).find((l) => {
+        const href = l.getAttribute("data-href");
+        return href === "/"
+          ? window.location.pathname === "/" || window.location.pathname.startsWith("/projects")
+          : href && window.location.pathname.startsWith(href);
+      });
+
+      if (activeLink) {
+        const rect = activeLink.getBoundingClientRect();
+        const navRect = nav.getBoundingClientRect();
+        indicator.style.width = `${rect.width}px`;
+        indicator.style.height = `${rect.height}px`;
+        indicator.style.left = `${rect.left - navRect.left}px`;
+        indicator.style.top = `${rect.top - navRect.top}px`;
+        indicator.style.opacity = "1";
+      }
+    }
+  }
+
+  setupHeader();
+  document.addEventListener("astro:page-load", setupHeader);
+</script>

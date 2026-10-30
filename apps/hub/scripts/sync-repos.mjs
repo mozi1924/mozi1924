@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, '..');
 const USERNAME = 'mozi1924';
 const TOKEN = process.env.GITHUB_TOKEN || '';
 const HEADERS = {
-  'User-Agent': 'mozi1924-github-pages-builder',
+  'User-Agent': 'mozi1924-hub-sync',
   'Accept': 'application/vnd.github.v3+json',
   ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
 };

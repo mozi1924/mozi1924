@@ -1,0 +1,10 @@
+{
+  "name": "@mozi/ui",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    "./Icon.astro": "./src/Icon.astro",
+    "./Footer.astro": "./src/Footer.astro",
+    "./*": "./src/*"
+  }
+}
