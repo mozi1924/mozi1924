@@ -46,7 +46,7 @@ const schemaData = {
   schemaData={schemaData}
 >
   <!-- Hero Section Aligned with Web Design Language -->
-  <section class="relative overflow-hidden pt-12 pb-10 md:pt-16 md:pb-14 border-b border-white/5 bg-[#111]">
+  <section class="relative overflow-hidden pt-12 pb-10 md:pt-16 md:pb-14 bg-[#111]">
     <!-- Subtle Ambient Glow -->
     <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-blue-500/5 blur-[100px] rounded-full"></div>
 
@@ -92,7 +92,7 @@ const schemaData = {
   <!-- Featured / Pinned Projects Showcase -->
   {pinnedProjects.length > 0 && (
     <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-6">
-      <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+      <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-2.5">
           <span class="w-2 h-2 rounded-full bg-blue-400"></span>
           <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
@@ -113,7 +113,7 @@ const schemaData = {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {pinnedProjects.map((project) => (
-          <ProjectCard project={project} variant="showcase" highlightPinned={true} showPinnedBadge={true} />
+          <ProjectCard project={project} showPinnedBadge={true} />
         ))}
       </div>
     </section>
@@ -190,7 +190,7 @@ const schemaData = {
   </section>
 
   <!-- Projects Grid -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 md:pb-28">
     <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {initialProjects.map((project) => (
         <ProjectCard project={project} />
@@ -242,10 +242,10 @@ const schemaData = {
           selectedLang === "all" || lang === selectedLang;
 
         if (matchesSearch && matchesLang) {
-          card.style.display = "flex";
+          card.classList.remove("hidden");
           visibleCount++;
         } else {
-          card.style.display = "none";
+          card.classList.add("hidden");
         }
       });
 
