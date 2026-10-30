@@ -20,6 +20,14 @@ const BLACKLIST = new Set([
   'mtk-ci-assets',      // Temporary CI assets
 ]);
 
+// Curated project images
+const PROJECT_IMAGES = {
+  'MoziToolKit': '/images/projects/mozitoolkit.webp',
+  'rig2_addons': '/images/projects/rig2.webp',
+  'Qwen3-TTS-EasyFinetuning': '/images/projects/qwen3-tts.webp',
+  'openblive': '/images/projects/openblive.webp',
+};
+
 // Helper to create a clean URL slug
 function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9_-]/g, '');
@@ -252,6 +260,7 @@ async function main() {
       createdAt: repo.created_at,
       pushedAt: repo.pushed_at,
       archived: repo.archived,
+      ...(PROJECT_IMAGES[repo.name] ? { image: PROJECT_IMAGES[repo.name] } : {}),
     });
   }
 

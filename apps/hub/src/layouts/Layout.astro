@@ -59,7 +59,7 @@ const ogImageUrl = new URL(image, Astro.site || "https://hub.mozi1924.com").href
       <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
     )}
   </head>
-  <body class="bg-[#111] min-h-screen flex flex-col selection:bg-[#3F89FC]/30 selection:text-white font-sans">
+  <body class="bg-[#111] min-h-[100dvh] flex flex-col selection:bg-blue-500/30 selection:text-white font-sans">
     <Header />
     <main class="flex-grow pt-16">
       <slot />

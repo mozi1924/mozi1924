@@ -14,4 +14,5 @@ export interface Project {
   createdAt?: string;
   pushedAt?: string;
   archived?: boolean;
+  image?: string;
 }
