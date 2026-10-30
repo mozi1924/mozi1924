@@ -28,7 +28,7 @@ const software = {
   description: p.description || `${p.name} open-source project by Mozi Arasaka`,
   codeRepository: p.repoUrl,
   programmingLanguage: p.language || "Other",
-  license: p.license,
+  license: p.license || undefined,
 };
 ---
 

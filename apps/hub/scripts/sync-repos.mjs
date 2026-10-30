@@ -48,7 +48,7 @@ function fixRelativeLinks(content, owner, repo, defaultBranch) {
   // 1. Fix Markdown images: ![alt](relative_path "optional title")
   let fixed = content.replace(
     /!\[([^\]]*)\]\((?!https?:\/\/|data:|#|\/)([^)\s]+)(?:\s+["']([^"']*)["'])?\)/g,
-    (match, alt, relPath, title) => {
+    (_match, alt, relPath, title) => {
       const cleanPath = relPath.replace(/^\.?\//, '');
       const fullUrl = `${rawBase}/${cleanPath}`;
       return title ? `![${alt}](${fullUrl} "${title}")` : `![${alt}](${fullUrl})`;
@@ -58,7 +58,7 @@ function fixRelativeLinks(content, owner, repo, defaultBranch) {
   // 2. Fix HTML <img> tags with relative src: <img ... src="path" ...>
   fixed = fixed.replace(
     /(<img\b[^>]*?\bsrc=["'])(?!https?:\/\/|data:|\/)([^"']+)(["'][^>]*>)/gi,
-    (match, prefix, relPath, suffix) => {
+    (_match, prefix, relPath, suffix) => {
       const cleanPath = relPath.replace(/^\.?\//, '');
       return `${prefix}${rawBase}/${cleanPath}${suffix}`;
     }
@@ -68,7 +68,7 @@ function fixRelativeLinks(content, owner, repo, defaultBranch) {
   // Handles both [text](path) and [![badge](img)](path)
   fixed = fixed.replace(
     /\[((?:!\[[^\]]*\]\([^)]*\)|[^\]])+)\]\((?!https?:\/\/|mailto:|data:|#|\/)([^)\s]+)(?:\s+["']([^"']*)["'])?\)/g,
-    (match, text, relPath, title) => {
+    (_match, text, relPath, title) => {
       const cleanPath = relPath.replace(/^\.?\//, '');
       const fullUrl = `${blobBase}/${cleanPath}`;
       return title ? `[${text}](${fullUrl} "${title}")` : `[${text}](${fullUrl})`;

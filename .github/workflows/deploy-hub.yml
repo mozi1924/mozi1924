@@ -50,6 +50,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node apps/hub/scripts/sync-repos.mjs
 
+      - name: Type and Astro checks
+        run: pnpm --filter @mozi/hub check
+
       - name: Build static site with Astro
         run: pnpm --filter @mozi/hub build
 

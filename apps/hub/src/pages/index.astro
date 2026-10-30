@@ -198,13 +198,14 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
     const grid = document.getElementById("projects-grid");
     const noResults = document.getElementById("no-results");
     if (!grid) return;
+    const projectGrid = grid;
 
     let selectedLang = "all";
     let searchQuery = "";
     let sortMode = "pinned";
 
     function update() {
-      const cards = Array.from(grid.querySelectorAll("[data-name]")) as HTMLElement[];
+      const cards = Array.from(projectGrid.querySelectorAll("[data-name]")) as HTMLElement[];
       let visibleCount = 0;
 
       cards.forEach((card) => {
@@ -250,7 +251,7 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
         return 0;
       });
 
-      cards.forEach((card) => grid.appendChild(card));
+      cards.forEach((card) => projectGrid.appendChild(card));
 
       if (noResults) {
         if (visibleCount === 0) {
