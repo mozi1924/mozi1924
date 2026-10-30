@@ -1,0 +1,65 @@
+name: Sync Repos & Deploy Hub to Cloudflare Pages
+
+on:
+  schedule:
+    # Run every midnight UTC (08:00 AM Beijing Time)
+    - cron: '0 0 * * *'
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/hub/**"
+      - ".github/workflows/deploy-hub.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: "pages-hub"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Open Source Hub
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync public repositories & READMEs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node apps/hub/scripts/sync-repos.mjs
+
+      - name: Build static site with Astro
+        run: pnpm --filter @mozi/hub build
+
+      - name: Verify build output
+        run: |
+          test -f apps/hub/dist/index.html
+          test -f apps/hub/dist/sitemap-index.xml
+
+      - name: Publish to Cloudflare Pages
+        run: npx wrangler pages deploy apps/hub/dist --project-name hub-mozi1924-com
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

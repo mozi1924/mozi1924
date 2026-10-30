@@ -1,0 +1,295 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import projects from "../data/projects.json";
+import stats from "../data/stats.json";
+
+// Pinned projects sorted by their GitHub profile pinnedOrder
+const pinnedProjects = projects
+  .filter((p) => p.pinned)
+  .sort((a, b) => (a.pinnedOrder ?? 99) - (b.pinnedOrder ?? 99));
+
+// Initial sort: Pinned first, then by stars
+const initialProjects = [...projects].sort((a, b) => {
+  if (a.pinned && !b.pinned) return -1;
+  if (!a.pinned && b.pinned) return 1;
+  if (a.pinned && b.pinned) return (a.pinnedOrder ?? 99) - (b.pinnedOrder ?? 99);
+  return b.stars - a.stars;
+});
+
+const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "name": "Mozi Arasaka's Open Source Hub",
+  "url": "https://hub.mozi1924.com",
+  "description": "Showcase of open-source projects, Blender plugins, Rust engines, and AI utilities by Mozi Arasaka.",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Mozi Arasaka",
+    "alternateName": "mozi1924",
+    "url": "https://mozi1924.com",
+    "sameAs": [
+      "https://github.com/mozi1924",
+      "https://twitter.com/CyberMozi",
+      "https://www.youtube.com/@moziarasaka"
+    ]
+  }
+};
+---
+
+<Layout
+  title="Mozi's Open Source Hub | GitHub Projects & Repositories"
+  description="Explore public GitHub repositories and open-source projects by Mozi Arasaka: Blender tools, Rust engines, AI models, and web applications."
+  schemaData={schemaData}
+>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden pt-16 pb-12 border-b border-white/10 bg-gradient-to-b from-[#151518] to-[#111]">
+    <!-- Ambient Glow Background -->
+    <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[#3F89FC]/10 blur-[130px] rounded-full"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6">
+      <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
+        <!-- Logo and Pill -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#3F89FC]/30 bg-[#3F89FC]/10 text-xs font-mono text-[#3F89FC] mb-6 shadow-[0_0_15px_rgba(63,137,252,0.15)]">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#3F89FC] animate-pulse"></span>
+          <span>AUTOMATED GITHUB PAGES SYNC</span>
+        </div>
+
+        <h1 class="font-audiowide text-3xl sm:text-5xl md:text-6xl tracking-wider text-white uppercase drop-shadow-md">
+          OPEN SOURCE <span class="text-[#3F89FC]">HUB</span>
+        </h1>
+
+        <p class="mt-4 text-base sm:text-lg text-gray-400 leading-relaxed max-w-2xl">
+          Curated open-source projects, high-performance Rust engines, Blender DCC pipeline tools, and AI fine-tuning utilities by Mozi Arasaka.
+        </p>
+
+        <!-- Stats Counter Ribbon -->
+        <div class="mt-8 grid grid-cols-3 gap-3 sm:gap-6 w-full max-w-lg">
+          <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center">
+            <div class="font-audiowide text-2xl sm:text-3xl font-bold text-white">{stats.totalProjects}</div>
+            <div class="text-[11px] uppercase tracking-wider text-gray-400 font-mono mt-1">Public Repos</div>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center">
+            <div class="font-audiowide text-2xl sm:text-3xl font-bold text-yellow-400 flex items-center justify-center gap-1">
+              <span>{stats.totalStars}</span>
+              <span class="text-sm">★</span>
+            </div>
+            <div class="text-[11px] uppercase tracking-wider text-gray-400 font-mono mt-1">Total Stars</div>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center">
+            <div class="font-audiowide text-2xl sm:text-3xl font-bold text-cyan-400">{stats.totalForks}</div>
+            <div class="text-[11px] uppercase tracking-wider text-gray-400 font-mono mt-1">Forks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured / Pinned Projects Showcase -->
+  {pinnedProjects.length > 0 && (
+    <section class="max-w-7xl mx-auto px-6 pt-12 pb-6">
+      <div class="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <span class="flex h-3 w-3 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3F89FC] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-[#3F89FC]"></span>
+          </span>
+          <h2 class="font-audiowide text-xl sm:text-2xl text-white tracking-wider flex items-center gap-2">
+            <span>FEATURED PROJECTS</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#3F89FC]/15 text-[#3F89FC] border border-[#3F89FC]/30">PINNED</span>
+          </h2>
+        </div>
+        <a
+          href="https://github.com/mozi1924"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs font-mono text-gray-400 hover:text-[#3F89FC] transition-colors flex items-center gap-1"
+        >
+          <span>From GitHub Profile</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {pinnedProjects.map((project) => (
+          <ProjectCard project={project} highlightPinned={true} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Filter & Search Controls for All Repositories -->
+  <section class="max-w-7xl mx-auto px-6 pt-8 pb-4">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-audiowide text-lg sm:text-xl text-white tracking-wider flex items-center gap-2">
+        <span>ALL REPOSITORIES</span>
+        <span class="text-xs font-mono text-gray-500 font-normal">({projects.length})</span>
+      </h2>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- Search Input -->
+      <div class="relative w-full md:w-96">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          id="project-search"
+          type="text"
+          placeholder="Search by name, topic, or keyword..."
+          class="w-full pl-10 pr-4 py-2.5 bg-[#161619] border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#3F89FC] focus:ring-1 focus:ring-[#3F89FC] transition-colors"
+        />
+      </div>
+
+      <!-- Sorting Select -->
+      <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+        <label for="sort-select" class="text-xs text-gray-400 font-mono">SORT BY:</label>
+        <select
+          id="sort-select"
+          class="bg-[#161619] border border-white/10 rounded-xl px-3 py-2 text-xs font-medium text-gray-300 focus:outline-none focus:border-[#3F89FC] cursor-pointer"
+        >
+          <option value="pinned">Pinned First (📌)</option>
+          <option value="stars">Most Stars (★)</option>
+          <option value="updated">Recently Updated</option>
+          <option value="name">Name (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Language Filter Pills -->
+    <div class="mt-4 flex flex-wrap items-center gap-2" id="language-filters">
+      {uniqueLanguages.map((lang, index) => (
+        <button
+          type="button"
+          data-lang={lang.toLowerCase()}
+          class={`filter-btn px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+            index === 0
+              ? "active bg-[#3F89FC] text-white font-bold shadow-[0_0_12px_rgba(63,137,252,0.3)]"
+              : "border border-white/10 bg-white/[0.02] text-gray-400 hover:text-white hover:bg-white/[0.05]"
+          }`}
+        >
+          {lang} {lang !== "All" && `(${stats.languages[lang as keyof typeof stats.languages] || 0})`}
+        </button>
+      ))}
+    </div>
+  </section>
+
+  <!-- Projects Grid -->
+  <section class="max-w-7xl mx-auto px-6 pb-20">
+    <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {initialProjects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+
+    <!-- No Results Fallback -->
+    <div id="no-results" class="hidden text-center py-20 border border-white/5 rounded-2xl bg-white/[0.01]">
+      <svg class="mx-auto w-12 h-12 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 class="text-lg font-bold text-gray-300">No matching projects found</h3>
+      <p class="text-sm text-gray-500 mt-1">Try searching with different keywords or selecting "All" languages.</p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function setupFilters() {
+    const searchInput = document.getElementById("project-search") as HTMLInputElement;
+    const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const grid = document.getElementById("projects-grid");
+    const noResults = document.getElementById("no-results");
+    if (!grid) return;
+
+    let selectedLang = "all";
+    let searchQuery = "";
+    let sortMode = "pinned";
+
+    function update() {
+      const cards = Array.from(grid.querySelectorAll("[data-name]")) as HTMLElement[];
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const name = card.dataset.name || "";
+        const desc = card.dataset.description || "";
+        const lang = card.dataset.language || "";
+        const topics = card.dataset.topics || "";
+
+        const matchesSearch =
+          !searchQuery ||
+          name.includes(searchQuery) ||
+          desc.includes(searchQuery) ||
+          topics.includes(searchQuery);
+
+        const matchesLang =
+          selectedLang === "all" || lang === selectedLang;
+
+        if (matchesSearch && matchesLang) {
+          card.style.display = "flex";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      // Sort visible cards
+      cards.sort((a, b) => {
+        if (sortMode === "pinned") {
+          const aPinned = a.dataset.pinned === "true" ? 1 : 0;
+          const bPinned = b.dataset.pinned === "true" ? 1 : 0;
+          if (aPinned !== bPinned) return bPinned - aPinned;
+          if (aPinned && bPinned) {
+            return (Number(a.dataset.pinnedOrder) || 0) - (Number(b.dataset.pinnedOrder) || 0);
+          }
+          return (Number(b.dataset.stars) || 0) - (Number(a.dataset.stars) || 0);
+        } else if (sortMode === "stars") {
+          return (Number(b.dataset.stars) || 0) - (Number(a.dataset.stars) || 0);
+        } else if (sortMode === "updated") {
+          return new Date(b.dataset.updated || 0).getTime() - new Date(a.dataset.updated || 0).getTime();
+        } else if (sortMode === "name") {
+          return (a.dataset.name || "").localeCompare(b.dataset.name || "");
+        }
+        return 0;
+      });
+
+      cards.forEach((card) => grid.appendChild(card));
+
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove("hidden");
+        } else {
+          noResults.classList.add("hidden");
+        }
+      }
+    }
+
+    searchInput?.addEventListener("input", (e) => {
+      searchQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
+      update();
+    });
+
+    sortSelect?.addEventListener("change", (e) => {
+      sortMode = (e.target as HTMLSelectElement).value;
+      update();
+    });
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filterButtons.forEach((b) => {
+          b.classList.remove("active", "bg-[#3F89FC]", "text-white", "font-bold", "shadow-[0_0_12px_rgba(63,137,252,0.3)]");
+          b.classList.add("border", "border-white/10", "bg-white/[0.02]", "text-gray-400");
+        });
+        btn.classList.add("active", "bg-[#3F89FC]", "text-white", "font-bold", "shadow-[0_0_12px_rgba(63,137,252,0.3)]");
+        btn.classList.remove("border", "border-white/10", "bg-white/[0.02]", "text-gray-400");
+        selectedLang = (btn as HTMLElement).dataset.lang || "all";
+        update();
+      });
+    });
+  }
+
+  // Run on mount
+  setupFilters();
+</script>

@@ -1,0 +1,14 @@
+{
+  "name": "mozi1924-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:web": "pnpm --filter @mozi/web dev",
+    "dev:hub": "pnpm --filter @mozi/hub dev",
+    "build:web": "pnpm --filter @mozi/web build",
+    "build:hub": "pnpm --filter @mozi/hub build",
+    "check:web": "pnpm --filter @mozi/web check",
+    "sync:hub": "pnpm --filter @mozi/hub sync"
+  }
+}

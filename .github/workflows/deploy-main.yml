@@ -1,0 +1,65 @@
+name: Deploy Main Site to Cloudflare Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/deploy-main.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: "pages-main"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Main Site
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type and Astro checks
+        run: pnpm --filter @mozi/web check
+
+      - name: Build
+        run: pnpm --filter @mozi/web build
+
+      - name: Clean Wrangler redirected deploy config
+        run: rm -rf apps/web/.wrangler/deploy
+
+      - name: Verify build output
+        run: |
+          test -f apps/web/dist/_worker.js
+          test -f apps/web/dist/pagefind/pagefind.js
+          test -d apps/web/dist/_astro
+          test -d apps/web/dist/blogs
+
+      - name: Publish to Cloudflare Pages
+        run: npx wrangler pages deploy apps/web/dist --project-name mozi1924
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

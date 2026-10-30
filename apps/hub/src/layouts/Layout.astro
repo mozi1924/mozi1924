@@ -1,0 +1,69 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  schemaData?: Record<string, any>;
+}
+
+const {
+  title = "Mozi's Open Source Hub | Projects & Repositories",
+  description = "Explore open-source repositories by Mozi Arasaka: high-performance Rust engines, Blender DCC extensions, Minecraft tooling, and machine learning utilities.",
+  image = "/avatar.webp",
+  type = "website",
+  schemaData,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://hub.mozi1924.com");
+const formattedTitle = title.includes("Mozi") ? title : `${title} | Mozi's Open Source Hub`;
+const ogImageUrl = new URL(image, Astro.site || "https://hub.mozi1924.com").href;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth bg-[#111] text-gray-100 antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <title>{formattedTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="mozi1924, Mozi Arasaka, Blender, Rust, Minecraft, DCC, AI, Open Source, GitHub" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={formattedTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={formattedTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImageUrl} />
+
+    <!-- Schema.org JSON-LD -->
+    {schemaData && (
+      <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+    )}
+  </head>
+  <body class="bg-[#111] min-h-screen flex flex-col selection:bg-[#3F89FC]/30 selection:text-white">
+    <Header />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

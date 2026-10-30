@@ -1,0 +1,36 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-white/10 bg-[#0d0d0f] py-12 text-sm text-gray-400">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="flex items-center gap-3">
+      <img src="/favicon.svg" alt="Mozi Logo" class="w-6 h-6 opacity-70" />
+      <div class="flex flex-col">
+        <span class="font-audiowide text-white tracking-wider text-sm">MOZI ARASAKA</span>
+        <span class="text-xs text-gray-500">© {currentYear} • High-Performance Systems & 3D Tech</span>
+      </div>
+    </div>
+
+    <!-- Middle Info -->
+    <div class="text-xs text-gray-500 text-center md:text-left">
+      Auto-synchronized and deployed via <span class="text-gray-300">GitHub Actions</span> & <span class="text-gray-300">Astro</span>.
+    </div>
+
+    <!-- Links -->
+    <div class="flex items-center gap-5 text-gray-400">
+      <a href="https://mozi1924.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#3F89FC] transition-colors">
+        Main Site
+      </a>
+      <a href="https://github.com/mozi1924" target="_blank" rel="noopener noreferrer" class="hover:text-[#3F89FC] transition-colors">
+        GitHub
+      </a>
+      <a href="https://twitter.com/CyberMozi" target="_blank" rel="noopener noreferrer" class="hover:text-[#3F89FC] transition-colors">
+        Twitter
+      </a>
+      <a href="mailto:mozi1924@arasaka.ltd" class="hover:text-[#3F89FC] transition-colors">
+        Contact
+      </a>
+    </div>
+  </div>
+</footer>

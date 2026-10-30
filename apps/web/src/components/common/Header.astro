@@ -54,22 +54,31 @@ const currentPath = normalizePath(pathname);
       </div>
       {
         NAV_LINKS.map((link) => {
+          const isExternal = link.external || link.href.startsWith("http");
           const isActive =
-            link.href === "/"
+            !isExternal &&
+            (link.href === "/"
               ? currentPath === "/"
-              : currentPath.startsWith(link.href);
+              : currentPath.startsWith(link.href));
           return (
             <a
               href={link.href}
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
               data-nav-link
               data-href={link.href}
-              class={`relative z-10 text-sm font-medium transition-colors px-4 py-2 rounded-lg group/link ${
+              class={`relative z-10 text-sm font-medium transition-colors px-4 py-2 rounded-lg group/link flex items-center gap-1.5 ${
                 isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
               }`}
             >
               {/* Separate hover background - only fades in/out, doesn't move */}
               <div class="absolute inset-0 bg-white/[0.04] rounded-lg opacity-0 group-hover/link:opacity-100 transition-opacity duration-200 -z-10 pointer-events-none" />
-              {link.name}
+              <span>{link.name}</span>
+              {isExternal && (
+                <svg class="w-3 h-3 text-gray-400 group-hover/link:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              )}
             </a>
           );
         })
@@ -138,21 +147,30 @@ const currentPath = normalizePath(pathname);
         </div>
         {
           NAV_LINKS.map((link) => {
+            const isExternal = link.external || link.href.startsWith("http");
             const isActive =
-              link.href === "/"
+              !isExternal &&
+              (link.href === "/"
                 ? currentPath === "/"
-                : currentPath.startsWith(link.href);
+                : currentPath.startsWith(link.href));
             return (
               <a
                 href={link.href}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
                 data-mobile-link
                 data-href={link.href}
-                class={`mobile-link relative z-10 text-2xl font-medium transition-colors px-6 py-3 rounded-lg group/mobile-link w-full text-center ${
+                class={`mobile-link relative z-10 text-2xl font-medium transition-colors px-6 py-3 rounded-lg group/mobile-link w-full text-center flex items-center justify-center gap-2 ${
                   isActive ? "text-[#3F89FC]" : "text-gray-300 hover:text-white"
                 }`}
               >
                 <div class="absolute inset-0 bg-white/[0.04] rounded-lg opacity-0 group-hover/mobile-link:opacity-100 transition-opacity duration-200 -z-10 pointer-events-none" />
-                {link.name}
+                <span>{link.name}</span>
+                {isExternal && (
+                  <svg class="w-4 h-4 text-gray-400 group-hover/mobile-link:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                )}
               </a>
             );
           })
@@ -360,8 +378,10 @@ const currentPath = normalizePath(pathname);
       let activeLink: Element | null = null;
       links.forEach((link) => {
         const href = link.getAttribute("data-href");
+        const isExternal = href?.startsWith("http");
         const isActive =
-          href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+          !isExternal &&
+          (href === "/" ? currentPath === "/" : currentPath.startsWith(href!));
         if (isActive) activeLink = link;
       });
       return activeLink;
@@ -386,8 +406,10 @@ const currentPath = normalizePath(pathname);
     // Desktop links
     document.querySelectorAll("[data-nav-link]").forEach((link) => {
       const href = link.getAttribute("data-href");
+      const isExternal = href?.startsWith("http");
       const isActive =
-        href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+        !isExternal &&
+        (href === "/" ? currentPath === "/" : currentPath.startsWith(href!));
 
       if (isActive) {
         link.classList.add("text-[#3F89FC]");
@@ -401,8 +423,10 @@ const currentPath = normalizePath(pathname);
     // Mobile links
     document.querySelectorAll("[data-mobile-link]").forEach((link) => {
       const href = link.getAttribute("data-href");
+      const isExternal = href?.startsWith("http");
       const isActive =
-        href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
+        !isExternal &&
+        (href === "/" ? currentPath === "/" : currentPath.startsWith(href!));
 
       if (isActive) {
         link.classList.add("text-[#3F89FC]");
