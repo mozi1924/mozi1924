@@ -13,10 +13,16 @@ interface Props {
 const {
   project,
   highlightPinned = false,
-  showPinnedBadge = false,
+  showPinnedBadge,
   hubBaseUrl = "",
   variant = "standard",
 } = Astro.props;
+
+// Determine whether to display the Featured/Pinned badge:
+// If explicitly provided via showPinnedBadge prop, respect it;
+// otherwise default to showing it only if the project is pinned.
+const displayPinnedBadge =
+  showPinnedBadge !== undefined ? showPinnedBadge : Boolean(project.pinned);
 
 const projectSlug = project.slug || project.name.toLowerCase();
 
@@ -85,7 +91,7 @@ const ctaText =
     <!-- Header Row: Badges on left, Language on right -->
     <div class="flex items-center justify-between gap-3 mb-3 text-xs font-mono">
       <div class="flex items-center gap-2 flex-wrap">
-        {(project.pinned || showPinnedBadge) && (
+        {displayPinnedBadge && (
           <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold text-[11px]">
             Featured
           </span>
