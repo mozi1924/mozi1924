@@ -1,0 +1,150 @@
+---
+import Icon from "./Icon.astro";
+import type { Project } from "./types";
+
+interface Props {
+  project: Project;
+  highlightPinned?: boolean;
+  showPinnedBadge?: boolean;
+  hubBaseUrl?: string;
+}
+
+const {
+  project,
+  highlightPinned = false,
+  showPinnedBadge = false,
+  hubBaseUrl = "",
+} = Astro.props;
+
+const projectSlug = project.slug || project.name.toLowerCase();
+
+// Language dot colors
+const languageColors: Record<string, string> = {
+  Rust: "bg-[#dea584]",
+  Python: "bg-[#3572A5]",
+  TypeScript: "bg-[#3178c6]",
+  JavaScript: "bg-[#f1e05a]",
+  Java: "bg-[#b07219]",
+  Astro: "bg-[#ff5a03]",
+  HTML: "bg-[#e34c26]",
+  C: "bg-[#555555]",
+  "C++": "bg-[#f34b7d]",
+};
+
+const dotColor = languageColors[project.language || ""] || "bg-gray-400";
+const formattedDate = project.pushedAt
+  ? new Date(project.pushedAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  : "";
+
+const cleanHubBase = hubBaseUrl.replace(/\/+$/, "");
+const projectDocUrl = cleanHubBase
+  ? `${cleanHubBase}/projects/${projectSlug}`
+  : `/projects/${projectSlug}`;
+const isExternal = cleanHubBase.startsWith("http://") || cleanHubBase.startsWith("https://");
+---
+
+<div
+  class="group relative flex flex-col justify-between rounded-2xl border border-white/5 bg-[#1a1a1a] p-6 md:p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/40 hover:shadow-2xl"
+  data-name={project.name.toLowerCase()}
+  data-description={(project.description || "").toLowerCase()}
+  data-language={(project.language || "other").toLowerCase()}
+  data-topics={(project.topics || []).join(" ").toLowerCase()}
+  data-stars={project.stars}
+  data-updated={project.pushedAt || ""}
+  data-pinned={project.pinned ? "true" : "false"}
+  data-pinned-order={project.pinnedOrder ?? 999}
+>
+  <div>
+    <!-- Top Row: Name and Badges -->
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex flex-col gap-1 min-w-0">
+        <a
+          href={projectDocUrl}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          class="text-lg md:text-xl font-bold text-white transition-colors group-hover:text-blue-400 truncate"
+        >
+          {project.name}
+        </a>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        {showPinnedBadge && project.pinned && (
+          <span class="inline-flex items-center gap-1 rounded-md border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-[11px] font-mono font-medium text-blue-400">
+            Featured
+          </span>
+        )}
+        <!-- Stars -->
+        <div class="flex items-center gap-1.5 rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-xs font-mono text-gray-300">
+          <Icon name="star" className="w-3.5 h-3.5 text-yellow-400 fill-current" />
+          <span>{project.stars}</span>
+        </div>
+        <!-- Forks -->
+        {project.forks > 0 && (
+          <div class="flex items-center gap-1.5 rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-xs font-mono text-gray-400">
+            <Icon name="git-fork" className="w-3.5 h-3.5" strokeWidth={2} />
+            <span>{project.forks}</span>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p class="mt-3 text-sm text-gray-400 line-clamp-2 leading-relaxed">
+      {project.description || "No description provided."}
+    </p>
+
+    <!-- Topics -->
+    {project.topics && project.topics.length > 0 && (
+      <div class="mt-4 flex flex-wrap gap-1.5">
+        {project.topics.slice(0, 4).map((topic) => (
+          <span class="rounded-md border border-white/5 bg-white/5 px-2.5 py-0.5 text-[11px] font-mono text-gray-400">
+            #{topic}
+          </span>
+        ))}
+        {project.topics.length > 4 && (
+          <span class="text-[11px] font-mono text-gray-500 self-center px-1">
+            +{project.topics.length - 4}
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+
+  <!-- Bottom Info & Actions -->
+  <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+    <div class="flex items-center gap-2">
+      <span class={`inline-block w-2.5 h-2.5 rounded-full ${dotColor}`}></span>
+      <span class="font-medium text-gray-300">{project.language || "Other"}</span>
+      {project.archived && (
+        <span class="ml-1 rounded px-1.5 py-0.5 text-[10px] uppercase font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          Archived
+        </span>
+      )}
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a
+        href={projectDocUrl}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        class="text-gray-300 hover:text-blue-400 font-medium transition-colors flex items-center gap-1 group/btn"
+      >
+        <span>Docs</span>
+        <Icon name="arrow-right" className="w-3 h-3 text-blue-400 transition-transform group-hover/btn:translate-x-0.5" />
+      </a>
+      <a
+        href={project.repoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-gray-400 hover:text-white transition-colors"
+        title="View on GitHub"
+      >
+        <Icon name="github" className="w-4 h-4" strokeWidth={2} />
+      </a>
+    </div>
+  </div>
+</div>

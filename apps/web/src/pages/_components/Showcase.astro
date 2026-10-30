@@ -1,80 +1,44 @@
 ---
-import Lightbox from "./react/Lightbox.jsx";
-import { getImage } from "astro:assets";
+import ProjectCard from "@mozi/ui/ProjectCard.astro";
+import { pinnedProjects } from "@mozi/ui/pinnedProjects";
+import Icon from "@mozi/ui/Icon.astro";
 
-// Import original images
-import dbhImg from "@/assets/showcase/dbh-max.webp";
-import rig2Img from "@/assets/rig2-ecosystem-dev-months/cover.webp";
-import nodusImg from "@/assets/showcase/nodus.webp";
-
-// Showcase Data
-const rawItems = [
-    {
-        title: "Become Human",
-        date: "2025-05-21",
-        description:
-            "This is a short animation that imitates the opening sequence of the game *Detroit: Become Human*, used to showcase the flexibility of my rigging and the material effects of the skin texture.",
-        button: {
-            text: "Watch Video",
-            url: "https://www.youtube.com/watch?v=XxAqKosI6ZE",
-        },
-        image: dbhImg,
-    },
-    {
-        title: "Rig/2",
-        date: "2026-05-05",
-        description:
-            "From being built for a perfect character to evolving into a perfect character deformation system—Rig2 is a rigging engine driven by individual creative intent, approaching a state of self-sufficiency.",
-        button: {
-            text: "Learn More",
-            url: "https://mozi1924.com/mozi-rig/",
-        },
-        image: rig2Img,
-    },
-    {
-        title: "NOW SHUT UP AND DRIVE 2.0",
-        date: "2025-11-14",
-        description:
-            "A demonstration showcasing my powerful video keypoint tracking and synthesis capabilities, featuring captivating dance and music.",
-        button: {
-            text: "Watch Video",
-            url: "https://www.bilibili.com/video/BV1mjCuByEHR",
-        },
-        image: nodusImg,
-    },
-];
-
-// Optimize images for thumbnail and full display
-const optimizedItems = await Promise.all(
-    rawItems.map(async (item) => {
-        const thumbnail = await getImage({
-            src: item.image,
-            width: Math.min(item.image.width, 1000),
-            format: "webp",
-            quality: 85,
-        });
-        const fullSize = await getImage({
-            src: item.image,
-            width: Math.min(item.image.width, 2560),
-            format: "webp",
-            quality: 92,
-        });
-        return {
-            ...item,
-            thumbnail: thumbnail.src,
-            fullSize: fullSize.src,
-        };
-    })
+// Sort by pinnedOrder
+const projects = [...pinnedProjects].sort(
+  (a, b) => (a.pinnedOrder ?? 99) - (b.pinnedOrder ?? 99)
 );
 ---
 
 <section class="py-24 bg-[#161616] px-6">
-    <div class="max-w-[1600px] mx-auto space-y-16">
-        <div class="text-center space-y-4">
-            <h2 class="text-3xl font-bold text-white">Showcase</h2>
-            <div class="w-20 h-1 bg-white mx-auto rounded-full"></div>
-        </div>
-
-        <Lightbox client:load items={optimizedItems} />
+  <div class="max-w-6xl mx-auto space-y-16">
+    <!-- Centered Classic Showcase Heading with Divider Line -->
+    <div class="text-center space-y-4">
+      <h2 class="text-3xl font-bold text-white tracking-tight">Showcase</h2>
+      <div class="w-20 h-1 bg-white mx-auto rounded-full"></div>
     </div>
+
+    <!-- Pinned Project Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {projects.map((project) => (
+        <ProjectCard
+          project={project}
+          showPinnedBadge={false}
+          hubBaseUrl="https://hub.mozi1924.com"
+        />
+      ))}
+    </div>
+
+    <!-- Subtle Link to Full Hub -->
+    <div class="text-center pt-2">
+      <a
+        href="https://hub.mozi1924.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors group"
+      >
+        <span>Explore all projects on Open Source Hub</span>
+        <Icon name="arrow-right" className="w-4 h-4 text-blue-400 transition-transform group-hover:translate-x-1" />
+      </a>
+    </div>
+  </div>
 </section>

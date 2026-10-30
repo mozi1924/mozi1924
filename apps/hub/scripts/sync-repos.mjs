@@ -138,18 +138,22 @@ async function fetchPinnedRepos() {
     });
 
     if (!res.ok) {
-      console.warn(`[Sync] GraphQL request failed (${res.status}), skipping pinned repos.`);
-      return [];
+      console.warn(`[Sync] GraphQL request failed (${res.status}), falling back to default pinned list.`);
+      return ['MoziToolKit', 'rig2_addons', 'Qwen3-TTS-EasyFinetuning', 'openblive'];
     }
 
     const data = await res.json();
     const nodes = data?.data?.user?.pinnedItems?.nodes || [];
     const pinnedNames = nodes.map((n) => n.name).filter(Boolean);
+    if (pinnedNames.length === 0) {
+      console.log('[Sync] No pinned repos from GraphQL, using fallback pinned list.');
+      return ['MoziToolKit', 'rig2_addons', 'Qwen3-TTS-EasyFinetuning', 'openblive'];
+    }
     console.log(`[Sync] Found ${pinnedNames.length} pinned repositories on profile:`, pinnedNames);
     return pinnedNames;
   } catch (err) {
-    console.warn('[Sync] Warning: Failed to fetch pinned repositories:', err.message);
-    return [];
+    console.warn('[Sync] Warning: Failed to fetch pinned repositories:', err.message, '- using fallback.');
+    return ['MoziToolKit', 'rig2_addons', 'Qwen3-TTS-EasyFinetuning', 'openblive'];
   }
 }
 

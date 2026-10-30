@@ -2,8 +2,8 @@
   {
     "name": "Qwen3-TTS-EasyFinetuning",
     "slug": "qwen3-tts-easyfinetuning",
-    "pinned": false,
-    "pinnedOrder": -1,
+    "pinned": true,
+    "pinnedOrder": 3,
     "description": "Easy fine-tuning for Qwen3-TTS: Fast voice cloning and high-quality multilingual speech synthesis.",
     "repoUrl": "https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning",
     "homepage": "",
@@ -36,8 +36,8 @@
   {
     "name": "openblive",
     "slug": "openblive",
-    "pinned": false,
-    "pinnedOrder": -1,
+    "pinned": true,
+    "pinnedOrder": 4,
     "description": "B站 / 哔哩哔哩直播开播助手，支持 OBS 开播联动、直播姬工作流补充、多账号管理、弹幕互动、房间管理与 Overlay 接入",
     "repoUrl": "https://github.com/mozi1924/openblive",
     "homepage": "https://mozi1924.com/blogs/openblive-studio/",
@@ -89,8 +89,8 @@
   {
     "name": "MoziToolKit",
     "slug": "mozitoolkit",
-    "pinned": false,
-    "pinnedOrder": -1,
+    "pinned": true,
+    "pinnedOrder": 1,
     "description": "面向 Blender 5.0+ (LTS) 的高性能 Minecraft 资产处理、规范 PBR 着色器管线与实时协同插件前端。由 libmozitoolkit (Rust) 驱动，配合 Yefira 模组实现双向 Live Sync。",
     "repoUrl": "https://github.com/mozi1924/MoziToolKit",
     "homepage": "https://github.com/mozi1924/MoziToolKit",
@@ -148,8 +148,8 @@
   {
     "name": "rig2_addons",
     "slug": "rig2_addons",
-    "pinned": false,
-    "pinnedOrder": -1,
+    "pinned": true,
+    "pinnedOrder": 2,
     "description": "The BEST Blender Minecraft Rig addons mozi ever made",
     "repoUrl": "https://github.com/mozi1924/rig2_addons",
     "homepage": "https://mozi1924.com/mozi-rig",

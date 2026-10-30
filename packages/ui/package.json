@@ -5,6 +5,9 @@
   "exports": {
     "./Icon.astro": "./src/Icon.astro",
     "./Footer.astro": "./src/Footer.astro",
+    "./ProjectCard.astro": "./src/ProjectCard.astro",
+    "./types": "./src/types.ts",
+    "./pinnedProjects": "./src/data/pinnedProjects.ts",
     "./*": "./src/*"
   }
 }

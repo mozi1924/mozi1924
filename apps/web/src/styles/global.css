@@ -19,7 +19,7 @@
 
 .os-scrollbar {
     z-index: 90;
-    /* Below Search (100) and Lightbox (99999) */
+    /* Below Search (100) */
 }
 
 /* Restore custom scrollbar for nested elements */
