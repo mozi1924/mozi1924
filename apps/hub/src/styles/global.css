@@ -2,6 +2,7 @@
 @source "../../../../packages/ui/src";
 @plugin "@tailwindcss/typography";
 @import "@mozi/ui/styles/base.css";
+@import "./github-readme.css";
 
 body {
   background-color: var(--color-bg-base);

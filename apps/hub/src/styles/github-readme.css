@@ -1,0 +1,173 @@
+/* GitHub README High-Fidelity Markdown Styling */
+
+.github-readme {
+  color: #e6edf3;
+  line-height: 1.6;
+}
+
+/* 1. Badges & Images: Faithful GitHub Layout & Rendering */
+.github-readme img {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  max-width: 100%;
+  box-sizing: content-box;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+/* Clean spacing between adjacent badges and inline images */
+.github-readme p > img,
+.github-readme p > a > img {
+  margin: 3px 2px !important;
+}
+
+/* Links wrapping badges or images: no text-underline decoration and inline-block flow */
+.github-readme a:has(> img),
+.github-readme a:has(> svg) {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+.github-readme a:has(> img):hover,
+.github-readme a:has(> svg):hover {
+  text-decoration: none !important;
+}
+
+/* 2. HTML Align attributes commonly used in GitHub READMEs */
+.github-readme [align="center"],
+.github-readme p[align="center"],
+.github-readme div[align="center"],
+.github-readme h1[align="center"],
+.github-readme h2[align="center"],
+.github-readme h3[align="center"] {
+  text-align: center !important;
+}
+
+.github-readme [align="right"],
+.github-readme p[align="right"] {
+  text-align: right !important;
+}
+
+.github-readme [align="left"],
+.github-readme p[align="left"] {
+  text-align: left !important;
+}
+
+/* 3. GitHub Headings */
+.github-readme h1 {
+  font-size: 2rem !important;
+  font-weight: 600 !important;
+  padding-bottom: 0.3em !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.github-readme h2 {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  padding-bottom: 0.3em !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.github-readme h3 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.github-readme h4 {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* 4. Horizontal Dividers */
+.github-readme hr {
+  height: 2px !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  margin: 24px 0 !important;
+}
+
+/* 5. GitHub Blockquotes */
+.github-readme blockquote {
+  border-left: 4px solid rgba(255, 255, 255, 0.2) !important;
+  color: #9ca3af !important;
+  padding: 0 1em !important;
+  margin: 1rem 0 !important;
+}
+
+/* 6. Inline Code */
+.github-readme :not(pre) > code {
+  background-color: rgba(110, 118, 129, 0.4) !important;
+  color: #e6edf3 !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 6px !important;
+  font-size: 85% !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+
+/* 7. GitHub Tables */
+.github-readme table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 1.25rem 0 !important;
+  display: block !important;
+  overflow-x: auto !important;
+}
+
+.github-readme table th,
+.github-readme table td {
+  padding: 8px 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.github-readme table th {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  font-weight: 600 !important;
+}
+
+.github-readme table tr:nth-child(2n) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* 8. Lists */
+.github-readme ul {
+  list-style-type: disc !important;
+  padding-left: 1.75rem !important;
+  margin: 1rem 0 !important;
+}
+
+.github-readme ol {
+  list-style-type: decimal !important;
+  padding-left: 1.75rem !important;
+  margin: 1rem 0 !important;
+}
+
+.github-readme li {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* 9. GitHub Task Lists */
+.github-readme ul.contains-task-list {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+
+.github-readme .task-list-item {
+  list-style-type: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
