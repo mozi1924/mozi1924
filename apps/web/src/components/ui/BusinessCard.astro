@@ -1,7 +1,18 @@
 ---
-import Icon from "./Icon.astro";
 import { Image } from "astro:assets";
 import { AUTHORS, DEFAULT_AUTHOR_ID } from "../../config";
+import {
+  IconBrandGithub,
+  IconBrandX,
+  IconBrandYoutube,
+  IconBrandBilibili,
+  IconBrandDiscord,
+  IconBrandLinkedin,
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconMail,
+  IconWorld,
+} from "@tabler/icons-react";
 
 interface Props {
   authorId?: string;
@@ -26,24 +37,31 @@ const {
   socials = author.socialLinks,
 } = props;
 
-const getIconName = (network: string) => {
+const getSocialIcon = (network: string) => {
   switch (network.toLowerCase()) {
     case "github":
-      return "GH";
+      return IconBrandGithub;
     case "twitter":
-      return "X";
+    case "x":
+      return IconBrandX;
     case "youtube":
-      return "YT";
-    case "email":
-      return "@";
+      return IconBrandYoutube;
+    case "bilibili":
+    case "b站":
+      return IconBrandBilibili;
+    case "discord":
+      return IconBrandDiscord;
     case "linkedin":
-      return "IN";
+      return IconBrandLinkedin;
     case "facebook":
-      return "f";
+      return IconBrandFacebook;
     case "instagram":
-      return "IG";
+      return IconBrandInstagram;
+    case "email":
+    case "mail":
+      return IconMail;
     default:
-      return null;
+      return IconWorld;
   }
 };
 ---
@@ -81,8 +99,10 @@ const getIconName = (network: string) => {
   <div class="flex flex-col w-full gap-3">
     {
       socials.map((social) => {
-        const iconName = getIconName(social.network);
-        const isEmail = social.network.toLowerCase() === "email";
+        const IconComponent = getSocialIcon(social.network);
+        const isEmail =
+          social.network.toLowerCase() === "email" ||
+          social.network.toLowerCase() === "mail";
         return (
           <a
             href={social.url}
@@ -91,13 +111,7 @@ const getIconName = (network: string) => {
             class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
           >
             <div class="text-gray-400 group-hover:text-white transition-colors w-5 h-5 flex items-center justify-center">
-              {iconName ? (
-                <span class="text-[10px] font-bold leading-none">{iconName}</span>
-              ) : isEmail ? (
-                <Icon name="mail" className="w-5 h-5" />
-              ) : (
-                <Icon name="globe" className="w-5 h-5" />
-              )}
+              <IconComponent size={20} stroke={1.75} />
             </div>
             <span class="text-sm text-gray-300 font-medium group-hover:text-white">
               {social.network}

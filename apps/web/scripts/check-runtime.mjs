@@ -8,6 +8,7 @@ const pkgPath = path.resolve(__dirname, "../package.json");
 const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
 
 const nodeVersion = process.versions.node;
+const pnpmVersion = process.env.npm_config_user_agent?.match(/pnpm\/([0-9]+\.[0-9]+\.[0-9]+)/)?.[1];
 const npmVersion = process.env.npm_config_user_agent?.match(/npm\/([0-9]+\.[0-9]+\.[0-9]+)/)?.[1];
 const nodeRange = pkg.engines?.node;
 const npmRange = pkg.engines?.npm;
@@ -68,4 +69,5 @@ if (!nodeOk || !npmOk) {
   process.exit(1);
 }
 
-console.log(`Runtime check passed (node ${nodeVersion}${npmVersion ? `, npm ${npmVersion}` : ""}).`);
+const pmLabel = pnpmVersion ? `pnpm ${pnpmVersion}` : npmVersion ? `npm ${npmVersion}` : "";
+console.log(`Runtime check passed (node ${nodeVersion}${pmLabel ? `, ${pmLabel}` : ""}).`);

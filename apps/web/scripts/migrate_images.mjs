@@ -71,18 +71,16 @@ async function processFile(filePath) {
 
     // Let's use a loop with regex.exec
     while ((match = mdImageRegex.exec(content)) !== null) {
-        const fullMatch = match[0];
-        const alt = match[1];
         const url = match[2];
 
         if (url.startsWith('http')) {
             console.log(`Found markdown image: ${url}`);
-            replacements.push({ fullMatch, alt, url });
+            replacements.push({ url });
         }
     }
 
     // Process replacements sequentially
-    for (const { fullMatch, alt, url } of replacements) {
+    for (const { url } of replacements) {
         const imageBuffer = await downloadImage(url);
         if (imageBuffer) {
             // sanitize filename

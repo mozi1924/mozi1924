@@ -313,7 +313,7 @@ const SearchDialog = () => {
                     {pagefind && !query && recents.length > 0 && (
                         <div className="px-2">
                             <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-2 px-2">Recent</h4>
-                            {recents.map((recent, index) => (
+                            {recents.map((recent) => (
                                 <div
                                     key={recent}
                                     onClick={() => setQuery(recent)}

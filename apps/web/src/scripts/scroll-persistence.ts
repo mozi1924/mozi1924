@@ -74,7 +74,7 @@ export function initScrollPersistence() {
 
     // Save position on scroll (throttled)
     let isTicking = false;
-    const handleScroll = (e: Event) => {
+    const handleScroll = () => {
         // Prevent saving if we are still initializing or if user is at the very top
         if (!isInitialized) return;
 

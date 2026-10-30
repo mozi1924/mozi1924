@@ -8,7 +8,7 @@ interface Props {
   enableReadingProgress?: boolean;
 }
 
-const { enableReadingProgress = false } = Astro.props;
+const { enableReadingProgress: _enableReadingProgress = false } = Astro.props;
 
 const { pathname } = Astro.url;
 const normalizePath = (path: string) => {

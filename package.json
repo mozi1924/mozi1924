@@ -2,6 +2,7 @@
   "name": "mozi1924-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@12.16.1",
   "type": "module",
   "scripts": {
     "dev:web": "pnpm --filter @mozi/web dev",

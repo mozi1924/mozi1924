@@ -64,13 +64,12 @@ const Avatar: React.FC<{ hash?: string; name: string; defaultAvatarUrl?: string 
 // Thread Modal
 const RepliesModal: React.FC<{
   parentComment: Comment;
-  allComments: Comment[];
   onClose: () => void;
   siteId: string;
   turnstileSiteKey: string;
   highlightCommentId?: string;
   defaultAvatarUrl?: string;
-}> = ({ parentComment, allComments, onClose, siteId, turnstileSiteKey, highlightCommentId, defaultAvatarUrl }) => {
+}> = ({ parentComment, onClose, siteId, turnstileSiteKey, highlightCommentId, defaultAvatarUrl }) => {
   const [replies, setReplies] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
@@ -196,12 +195,10 @@ const RepliesModal: React.FC<{
 
 const CommentSection: React.FC<CommentSectionProps> = ({
   siteId,
-  workerUrl = COMMENT_CONFIG.workerUrl,
   turnstileSiteKey = COMMENT_CONFIG.turnstileSiteKey,
   defaultAvatarUrl,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [allComments, setAllComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [activeParent, setActiveParent] = useState<Comment | null>(null);
@@ -214,7 +211,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       if (res.ok) {
         const data = await res.json();
         const all: Comment[] = data.comments || [];
-        setAllComments(all);
         const roots = all.filter(c => !c.parent_id).map(root => ({
           ...root,
           reply_count: all.filter(c => c.parent_id === root.id).length,
@@ -308,7 +304,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       {activeParent && (
         <RepliesModal
           parentComment={activeParent}
-          allComments={allComments}
           onClose={() => { setActiveParent(null); setHighlightedCommentId(undefined); }}
           siteId={siteId}
           turnstileSiteKey={turnstileSiteKey}
@@ -451,7 +446,7 @@ const CommentForm: React.FC<{
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!token) { setError("Please verify you are human."); return; }
     setSubmitting(true); setError(null);

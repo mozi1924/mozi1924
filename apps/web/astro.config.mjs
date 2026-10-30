@@ -21,10 +21,11 @@ export default defineConfig({
         external: ['/pagefind/pagefind.js'],
         output: {
           assetFileNames: (assetInfo) => {
-            if (assetInfo.name?.endsWith('.css')) {
+            const assetName = assetInfo.names?.[0] ?? '';
+            if (assetName.endsWith('.css')) {
               return '_astro/style.[hash][extname]';
             }
-            if (/\.(gif|jpe?g|png|svg|webp|avif|ico)$/i.test(assetInfo.name || '')) {
+            if (/\.(gif|jpe?g|png|svg|webp|avif|ico)$/i.test(assetName)) {
               return '_astro/image.[hash][extname]';
             }
             return '_astro/[name].[hash][extname]';
