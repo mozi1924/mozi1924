@@ -39,11 +39,17 @@ function formatYearLabel(yearKey: string) {
         </span>
       </div>
 
-      <!-- Segmented Year Pills in Header -->
+      <!-- Segmented Year Pills in Header with Sliding Highlight Indicator -->
       <div
-        class="inline-flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/10 overflow-x-auto max-w-full scrollbar-none self-start sm:self-auto"
+        class="relative inline-flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/10 overflow-x-auto max-w-full scrollbar-none self-start sm:self-auto"
         id="year-buttons"
       >
+        <!-- Smooth Sliding Highlight Indicator (mirrors header nav) -->
+        <div
+          id="year-indicator"
+          class="absolute rounded-lg bg-blue-500/20 border border-blue-500/40 shadow-sm transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
+        ></div>
+
         {availableYears.map((yearKey: string) => {
           const isInitial = yearKey === initialYear;
           const yearInfo = contributionsData.years[yearKey as keyof typeof contributionsData.years];
@@ -51,10 +57,10 @@ function formatYearLabel(yearKey: string) {
             <button
               type="button"
               data-year={yearKey}
-              class={`year-btn px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              class={`year-btn relative z-10 px-2.5 py-1 rounded-lg text-xs font-mono transition-colors duration-200 flex items-center gap-1.5 shrink-0 cursor-pointer ${
                 isInitial
-                  ? "active bg-blue-500/20 text-blue-400 border border-blue-500/40 font-bold shadow-sm"
-                  : "text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                  ? "active text-blue-400 font-bold"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               <span>{formatYearLabel(yearKey)}</span>
@@ -201,6 +207,8 @@ function formatYearLabel(yearKey: string) {
     const monthsContainer = document.getElementById("heatmap-months");
     const gridContainer = document.getElementById("heatmap-grid");
     const yearButtons = document.querySelectorAll(".year-btn");
+    const yearIndicator = document.getElementById("year-indicator");
+    const yearContainer = document.getElementById("year-buttons");
     const tooltip = document.getElementById("cal-tooltip");
     const tooltipText = document.getElementById("tooltip-text");
 
@@ -213,7 +221,54 @@ function formatYearLabel(yearKey: string) {
       return;
     }
 
-    // 1. Tooltip logic
+    // 1. Sliding highlight indicator logic (mirrors main site nav)
+    function updateYearIndicator(targetBtn: HTMLElement | null, smooth = true) {
+      if (!targetBtn || !yearIndicator) return;
+      if (!smooth) {
+        yearIndicator.style.transition = "none";
+      } else {
+        yearIndicator.style.transition = "all 300ms cubic-bezier(0.16, 1, 0.3, 1)";
+      }
+
+      yearIndicator.style.left = `${targetBtn.offsetLeft}px`;
+      yearIndicator.style.top = `${targetBtn.offsetTop}px`;
+      yearIndicator.style.width = `${targetBtn.offsetWidth}px`;
+      yearIndicator.style.height = `${targetBtn.offsetHeight}px`;
+      yearIndicator.style.opacity = "1";
+
+      if (!smooth) {
+        void yearIndicator.offsetHeight;
+        yearIndicator.style.transition = "";
+      }
+    }
+
+    // Initialize indicator on the active button
+    const initialActiveBtn = (yearContainer?.querySelector(".year-btn.active") || yearButtons[0]) as HTMLElement;
+    if (initialActiveBtn) {
+      requestAnimationFrame(() => {
+        updateYearIndicator(initialActiveBtn, false);
+      });
+      document.fonts?.ready?.then(() => {
+        const cur = yearContainer?.querySelector(".year-btn.active") as HTMLElement;
+        if (cur) updateYearIndicator(cur, false);
+      });
+    }
+
+    const handleResize = () => {
+      const cur = yearContainer?.querySelector(".year-btn.active") as HTMLElement;
+      if (cur) updateYearIndicator(cur, false);
+    };
+    window.addEventListener("resize", handleResize);
+
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        window.removeEventListener("resize", handleResize);
+      },
+      { once: true }
+    );
+
+    // 2. Tooltip logic
     function bindCellTooltips() {
       if (!gridContainer) return;
       const cells = gridContainer.querySelectorAll(".cal-cell");
@@ -241,33 +296,22 @@ function formatYearLabel(yearKey: string) {
 
     bindCellTooltips();
 
-    // 2. Year Switching logic
+    // 3. Year Switching logic with sliding indicator
     yearButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const yearKey = btn.getAttribute("data-year");
         if (!yearKey || !allData.years?.[yearKey]) return;
 
-        // Update active button state
+        // Update active button state text
         yearButtons.forEach((b) => {
-          b.classList.remove(
-            "active",
-            "bg-blue-500/20",
-            "text-blue-400",
-            "border-blue-500/40",
-            "font-bold",
-            "shadow-sm"
-          );
-          b.classList.add("text-gray-400", "border-transparent");
+          b.classList.remove("active", "text-blue-400", "font-bold");
+          b.classList.add("text-gray-400");
         });
-        btn.classList.add(
-          "active",
-          "bg-blue-500/20",
-          "text-blue-400",
-          "border-blue-500/40",
-          "font-bold",
-          "shadow-sm"
-        );
-        btn.classList.remove("text-gray-400", "border-transparent");
+        btn.classList.add("active", "text-blue-400", "font-bold");
+        btn.classList.remove("text-gray-400");
+
+        // Smoothly slide the indicator to the clicked button
+        updateYearIndicator(btn as HTMLElement, true);
 
         const data = allData.years[yearKey];
 
