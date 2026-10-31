@@ -745,7 +745,7 @@ function formatBytes(bytes: number) {
     }
 
     // Tab switching logic compliant with accessible ARIA standards & URL fragments
-    window.switchTab = function (tabId) {
+    window.switchTab = function (tabId, updateUrl = true) {
       const tabs = ["readme", "todo", "releases"];
       tabs.forEach((t) => {
         const btn = document.getElementById(`tab-btn-${t}`);
@@ -771,14 +771,14 @@ function formatBytes(bytes: number) {
       });
 
       // Update URL hash without forcing full page reload
-      if (window.history && window.history.replaceState) {
+      if (updateUrl && window.history && window.history.replaceState) {
         window.history.replaceState(null, "", "#" + tabId);
       }
     };
 
     // Switch tab and smooth scroll to target panel (with fixed header + subnav offset compensation)
     window.switchTabAndScroll = function (tabId) {
-      window.switchTab(tabId);
+      window.switchTab(tabId, true);
       const panel = document.getElementById("panel-" + tabId);
       if (panel) {
         // Offset for 64px fixed header + 52px sticky subnav + 14px breathing room
@@ -792,15 +792,17 @@ function formatBytes(bytes: number) {
       }
     };
 
-    // Deep-linking support and indicator initialization on mount
+    // Deep-linking support and indicator initialization on mount / navigation
     function initTabs() {
       const hash = window.location.hash.replace("#", "");
       const activeTab = ["readme", "todo", "releases"].includes(hash) ? hash : "readme";
       const targetBtn = document.getElementById(`tab-btn-${activeTab}`) || document.getElementById("tab-btn-readme");
 
-      window.switchTab(activeTab);
+      // Don't inject #readme into URL if the user visited with a clean URL path
+      window.switchTab(activeTab, Boolean(hash));
 
       if (targetBtn) {
+        updateTabIndicator(targetBtn, false);
         requestAnimationFrame(() => {
           updateTabIndicator(targetBtn, false);
         });
@@ -813,7 +815,20 @@ function formatBytes(bytes: number) {
       }
     }
 
-    window.addEventListener("DOMContentLoaded", initTabs);
+    // Run on script execution
+    initTabs();
+
+    // Astro View Transitions: fires every time a page is entered via client-side routing
+    document.addEventListener("astro:page-load", initTabs);
+
+    // Browser back/forward navigation support
+    window.addEventListener("hashchange", () => {
+      const hash = window.location.hash.replace("#", "");
+      const activeTab = ["readme", "todo", "releases"].includes(hash) ? hash : "readme";
+      window.switchTab(activeTab, false);
+    });
+
+    // Resize handler
     window.addEventListener("resize", () => {
       const curBtn = document.querySelector(".tab-btn[aria-selected='true']");
       if (curBtn) updateTabIndicator(curBtn, false);
