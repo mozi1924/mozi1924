@@ -21,133 +21,110 @@ function formatYearLabel(yearKey: string) {
 }
 ---
 
-<section class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3.5">
+<section class="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3">
   <!-- Outer Card with Flat Deep Blue Background (No Gradient) -->
   <div
     id="contribution-card"
     class="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-[#0c1322] p-3.5 sm:p-5 shadow-xl transition-colors"
   >
-    <!-- Header Section: Clean, compact, no theme switcher -->
+    <!-- Header Section: Clean & Flush with Year Pills on the Right -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-white/5 pb-3">
-      <!-- Title & Live Counter -->
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono border border-blue-500/30 bg-blue-500/10 text-blue-400">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-            <span>GitHub Activity</span>
-          </span>
-          <span class="text-xs text-gray-400 font-mono">@mozi1924</span>
-        </div>
-        <div class="flex items-baseline gap-2 mt-0.5">
-          <span id="cal-total-count" class="text-2xl sm:text-3xl font-bold font-mono text-white tracking-tight">
-            {currentYearData.totalContributions.toLocaleString()}
-          </span>
-          <span id="cal-total-suffix" class="text-xs sm:text-sm text-gray-400 font-mono">
-            contributions in the last year
-          </span>
-        </div>
+      <!-- Live Counter & Title -->
+      <div class="flex items-baseline gap-2">
+        <span id="cal-total-count" class="text-2xl sm:text-3xl font-bold font-mono text-white tracking-tight">
+          {currentYearData.totalContributions.toLocaleString()}
+        </span>
+        <span id="cal-total-suffix" class="text-xs sm:text-sm text-gray-400 font-mono">
+          contributions in the last year
+        </span>
       </div>
 
-      <!-- Quick Status in Header -->
-      <div class="flex items-center gap-2 text-xs font-mono text-gray-400 self-start sm:self-center">
-        <span class="text-gray-500 hidden sm:inline">Sync Status:</span>
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-          <span>Continuous Builder</span>
-        </span>
+      <!-- Segmented Year Pills in Header -->
+      <div
+        class="inline-flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/10 overflow-x-auto max-w-full scrollbar-none self-start sm:self-auto"
+        id="year-buttons"
+      >
+        {availableYears.map((yearKey: string) => {
+          const isInitial = yearKey === initialYear;
+          const yearInfo = contributionsData.years[yearKey as keyof typeof contributionsData.years];
+          return (
+            <button
+              type="button"
+              data-year={yearKey}
+              class={`year-btn px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                isInitial
+                  ? "active bg-blue-500/20 text-blue-400 border border-blue-500/40 font-bold shadow-sm"
+                  : "text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
+              }`}
+            >
+              <span>{formatYearLabel(yearKey)}</span>
+              {yearInfo && (
+                <span class="text-[10px] font-normal opacity-60">
+                  {yearInfo.totalContributions}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
 
-    <!-- Main Content Area: Heatmap Grid on Left + Year Selector on Right -->
-    <div class="flex flex-col lg:flex-row gap-4 lg:gap-5 items-start">
-      <!-- Heatmap Scrollable Wrapper -->
-      <div class="flex-1 w-full overflow-x-auto custom-scrollbar pb-2">
-        <div class="min-w-[880px] select-none" id="heatmap-container">
-          <!-- Month Header Row -->
-          <div class="flex pl-8 mb-1.5 text-[11px] font-mono text-gray-400 h-4 relative" id="heatmap-months">
-            {currentYearData.months.map((m: { colspan: number; name: string }) => (
-              <div
-                class="truncate text-left pr-1"
-                style={`width: ${m.colspan * 16}px; flex-shrink: 0;`}
-              >
-                {m.name}
+    <!-- Heatmap Scrollable Wrapper -->
+    <div class="w-full overflow-x-auto no-scrollbar sm:custom-scrollbar pb-1">
+      <div class="min-w-[930px] select-none mx-auto" id="heatmap-container">
+        <!-- Month Header Row -->
+        <div class="flex pl-[32px] mb-1.5 text-[11px] font-mono text-gray-400 h-4 relative" id="heatmap-months">
+          {currentYearData.months.map((m: { colspan: number; name: string }) => (
+            <div
+              class="truncate text-left pr-1"
+              style={`width: ${m.colspan * 17}px; flex-shrink: 0;`}
+            >
+              {m.name}
+            </div>
+          ))}
+        </div>
+
+        <!-- Calendar Matrix (7 rows: Sun - Sat) -->
+        <div class="flex gap-2">
+          <!-- Weekday Labels -->
+          <div class="flex flex-col gap-1 w-6 shrink-0 pt-0.5 text-[10px] font-mono text-gray-500 text-right pr-1 select-none">
+            <span class="h-[13px] leading-[13px] opacity-0">Sun</span>
+            <span class="h-[13px] leading-[13px]">Mon</span>
+            <span class="h-[13px] leading-[13px] opacity-0">Tue</span>
+            <span class="h-[13px] leading-[13px]">Wed</span>
+            <span class="h-[13px] leading-[13px] opacity-0">Thu</span>
+            <span class="h-[13px] leading-[13px]">Fri</span>
+            <span class="h-[13px] leading-[13px] opacity-0">Sat</span>
+          </div>
+
+          <!-- Heatmap Week Columns (13px cells + 4px gap = 17px per week) -->
+          <div class="flex gap-1" id="heatmap-grid">
+            {currentYearData.weeks.map((week: any[], weekIdx: number) => (
+              <div class="flex flex-col gap-1 shrink-0" data-week-idx={weekIdx}>
+                {week.map((day: any) => {
+                  if (!day) {
+                    return <div class="w-[13px] h-[13px] opacity-0" />;
+                  }
+                  return (
+                    <div
+                      class={`cal-cell w-[13px] h-[13px] rounded-[2.5px] cursor-pointer transition-all duration-100 hover:scale-125 hover:z-20 border border-transparent contrib-level-${day.level}`}
+                      data-date={day.date}
+                      data-count={day.count}
+                      data-level={day.level}
+                      data-tooltip={day.tooltip}
+                    />
+                  );
+                })}
               </div>
             ))}
           </div>
-
-          <!-- Calendar Matrix (7 rows: Sun - Sat) -->
-          <div class="flex gap-2">
-            <!-- Weekday Labels -->
-            <div class="flex flex-col gap-1 w-6 shrink-0 pt-0.5 text-[10px] font-mono text-gray-500 text-right pr-1 select-none">
-              <span class="h-[12px] leading-[12px] opacity-0">Sun</span>
-              <span class="h-[12px] leading-[12px]">Mon</span>
-              <span class="h-[12px] leading-[12px] opacity-0">Tue</span>
-              <span class="h-[12px] leading-[12px]">Wed</span>
-              <span class="h-[12px] leading-[12px] opacity-0">Thu</span>
-              <span class="h-[12px] leading-[12px]">Fri</span>
-              <span class="h-[12px] leading-[12px] opacity-0">Sat</span>
-            </div>
-
-            <!-- Heatmap Week Columns -->
-            <div class="flex gap-1" id="heatmap-grid">
-              {currentYearData.weeks.map((week: any[], weekIdx: number) => (
-                <div class="flex flex-col gap-1 shrink-0" data-week-idx={weekIdx}>
-                  {week.map((day: any) => {
-                    if (!day) {
-                      return <div class="w-[12px] h-[12px] opacity-0" />;
-                    }
-                    return (
-                      <div
-                        class={`cal-cell w-[12px] h-[12px] rounded-[2.5px] cursor-pointer transition-all duration-100 hover:scale-125 hover:z-20 border border-transparent contrib-level-${day.level}`}
-                        data-date={day.date}
-                        data-count={day.count}
-                        data-level={day.level}
-                        data-tooltip={day.tooltip}
-                      />
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Year Selector Tabs (Compact Sidebar on Desktop / Horizontal Scrollable Pills on Mobile) -->
-      <div class="w-full lg:w-28 shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 pt-2.5 lg:pt-0 lg:pl-3.5">
-        <span class="text-[10px] font-mono text-gray-500 uppercase tracking-wider block mb-1.5 font-semibold">
-          Years
-        </span>
-        <div class="flex lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0" id="year-buttons">
-          {availableYears.map((yearKey: string) => {
-            const isInitial = yearKey === initialYear;
-            const yearInfo = contributionsData.years[yearKey as keyof typeof contributionsData.years];
-            return (
-              <button
-                type="button"
-                data-year={yearKey}
-                class={`year-btn text-left px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center justify-between min-h-[30px] shrink-0 cursor-pointer ${
-                  isInitial
-                    ? "active bg-blue-500/20 text-blue-400 border border-blue-500/40 font-bold shadow-sm"
-                    : "text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
-                }`}
-              >
-                <span>{formatYearLabel(yearKey)}</span>
-                {yearInfo && (
-                  <span class="text-[10px] font-normal opacity-60 ml-2">
-                    {yearInfo.totalContributions}
-                  </span>
-                )}
-              </button>
-            );
-          })}
         </div>
       </div>
     </div>
 
     <!-- Footer Area: Status & Legend -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-2.5 mt-3 pt-3 border-t border-white/5 text-xs font-mono text-gray-400">
-      <div class="flex items-center gap-2 text-gray-400">
+      <div class="flex items-center gap-2 text-gray-400 text-[11px] sm:text-xs">
         <span>⚡ Continuous Open-Source Building</span>
         <span class="text-white/20">•</span>
         <a
@@ -303,22 +280,22 @@ function formatYearLabel(yearKey: string) {
               : `contributions in ${yearKey}`;
         }
 
-        // Re-render months with 16px unit
+        // Re-render months with 17px unit (13px cell + 4px gap)
         monthsContainer.innerHTML = (data.months || [])
           .map(
             (m: { colspan: number; name: string }) =>
-              `<div class="truncate text-left pr-1" style="width: ${m.colspan * 16}px; flex-shrink: 0;">${m.name}</div>`
+              `<div class="truncate text-left pr-1" style="width: ${m.colspan * 17}px; flex-shrink: 0;">${m.name}</div>`
           )
           .join("");
 
-        // Re-render grid
+        // Re-render grid with 13px cells
         gridContainer.innerHTML = (data.weeks || [])
           .map((week: any[], wIdx: number) => {
             const daysHtml = week
               .map((day: any) => {
-                if (!day) return `<div class="w-[12px] h-[12px] opacity-0"></div>`;
+                if (!day) return `<div class="w-[13px] h-[13px] opacity-0"></div>`;
                 const escTooltip = (day.tooltip || "").replace(/"/g, "&quot;");
-                return `<div class="cal-cell w-[12px] h-[12px] rounded-[2.5px] cursor-pointer transition-all duration-100 hover:scale-125 hover:z-20 border border-transparent contrib-level-${day.level}" data-date="${day.date || ''}" data-count="${day.count || 0}" data-level="${day.level || 0}" data-tooltip="${escTooltip}"></div>`;
+                return `<div class="cal-cell w-[13px] h-[13px] rounded-[2.5px] cursor-pointer transition-all duration-100 hover:scale-125 hover:z-20 border border-transparent contrib-level-${day.level}" data-date="${day.date || ''}" data-count="${day.count || 0}" data-level="${day.level || 0}" data-tooltip="${escTooltip}"></div>`;
               })
               .join("");
             return `<div class="flex flex-col gap-1 shrink-0" data-week-idx="${wIdx}">${daysHtml}</div>`;
