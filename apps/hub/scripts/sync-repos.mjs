@@ -264,8 +264,16 @@ async function main() {
     });
   }
 
-  // Sort summaries by stars descending by default
-  projectSummaries.sort((a, b) => b.stars - a.stars);
+  // Sort summaries: pinned first, then by recently updated
+  projectSummaries.sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    if (a.pinned && b.pinned) return (a.pinnedOrder ?? 99) - (b.pinnedOrder ?? 99);
+    const timeA = a.pushedAt ? new Date(a.pushedAt).getTime() : 0;
+    const timeB = b.pushedAt ? new Date(b.pushedAt).getTime() : 0;
+    if (timeB !== timeA) return timeB - timeA;
+    return b.stars - a.stars;
+  });
 
   // Write metadata JSON files
   await fs.writeFile(
