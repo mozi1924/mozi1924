@@ -119,6 +119,82 @@ async function fetchReadme(owner, repo) {
   return await res.text();
 }
 
+async function fetchTodo(owner, repo, defaultBranch = 'main') {
+  const branch = defaultBranch || 'main';
+  const filenames = ['TODO.md', 'todo.md', 'Roadmap.md', 'ROADMAP.md'];
+
+  for (const filename of filenames) {
+    const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filename}`;
+    try {
+      const res = await fetch(rawUrl, {
+        headers: { 'User-Agent': 'mozi1924-hub-sync' },
+      });
+      if (res.ok) {
+        let content = await res.text();
+        content = fixRelativeLinks(content, owner, repo, branch);
+
+        // Calculate task stats via regex
+        const completedMatches = content.match(/^[\s]*[-*+]\s+\[[xX]\]/gm) || [];
+        const pendingMatches = content.match(/^[\s]*[-*+]\s+\[\s\]/gm) || [];
+        const completed = completedMatches.length;
+        const pending = pendingMatches.length;
+        const total = completed + pending;
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        return {
+          filename,
+          content,
+          stats: {
+            total,
+            completed,
+            pending,
+            percentage,
+          },
+        };
+      }
+    } catch {
+      // Continue to next filename
+    }
+  }
+
+  return null;
+}
+
+async function fetchReleases(owner, repo) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases?per_page=5`;
+  try {
+    const res = await fetch(url, { headers: HEADERS });
+    if (res.status === 404 || res.status === 403) {
+      return [];
+    }
+    if (!res.ok) {
+      console.warn(`[Sync] Warning: Failed to fetch releases for ${repo}: ${res.status}`);
+      return [];
+    }
+    const releases = await res.json();
+    if (!Array.isArray(releases)) return [];
+
+    return releases.map((r) => ({
+      id: r.id,
+      tagName: r.tag_name,
+      name: r.name || r.tag_name,
+      publishedAt: r.published_at || r.created_at,
+      prerelease: Boolean(r.prerelease),
+      body: r.body || '',
+      htmlUrl: r.html_url,
+      assets: (r.assets || []).map((a) => ({
+        name: a.name,
+        size: a.size,
+        downloadCount: a.download_count || 0,
+        downloadUrl: a.browser_download_url,
+      })),
+    }));
+  } catch (err) {
+    console.warn(`[Sync] Error fetching releases for ${repo}:`, err.message);
+    return [];
+  }
+}
+
 async function fetchPinnedRepos() {
   console.log(`[Sync] Fetching pinned repositories via GitHub GraphQL API...`);
   const query = `
@@ -331,9 +407,10 @@ async function main() {
   await fs.mkdir(projectsDir, { recursive: true });
   await fs.mkdir(dataDir, { recursive: true });
 
-  // Read existing stats/contributions if available
+  // Read existing stats/contributions/details if available
   let existingStats = {};
   let existingContributions = null;
+  let existingProjectDetails = {};
   try {
     const raw = await fs.readFile(path.join(dataDir, 'stats.json'), 'utf-8');
     existingStats = JSON.parse(raw);
@@ -341,6 +418,10 @@ async function main() {
   try {
     const raw = await fs.readFile(path.join(dataDir, 'contributions.json'), 'utf-8');
     existingContributions = JSON.parse(raw);
+  } catch {}
+  try {
+    const raw = await fs.readFile(path.join(dataDir, 'project-details.json'), 'utf-8');
+    existingProjectDetails = JSON.parse(raw);
   } catch {}
 
   const [rawRepos, pinnedRepoNames, activityStats, contributionCalendar] = await Promise.all([
@@ -362,6 +443,7 @@ async function main() {
   console.log(`[Sync] Processing ${repos.length} non-fork public repositories...`);
 
   const projectSummaries = [];
+  const projectDetails = {};
   const languageStats = {};
   let totalStars = 0;
   let totalForks = 0;
@@ -392,6 +474,26 @@ async function main() {
     const pinnedOrder = isPinned ? pinnedRepoNames.indexOf(repo.name) : -1;
     const slug = slugify(repo.name);
     const topicsJson = JSON.stringify(repo.topics || []);
+
+    const prevDetails = existingProjectDetails[slug] || {};
+
+    let todoData = await fetchTodo(repo.owner.login, repo.name, repo.default_branch);
+    if (!todoData && prevDetails.todo) {
+      todoData = prevDetails.todo;
+    }
+
+    let releasesData = await fetchReleases(repo.owner.login, repo.name);
+    if ((!releasesData || releasesData.length === 0) && prevDetails.releases?.length > 0) {
+      releasesData = prevDetails.releases;
+    }
+
+    projectDetails[slug] = {
+      name: repo.name,
+      slug,
+      todo: todoData || null,
+      releases: releasesData || [],
+    };
+
     const frontmatter = [
       '---',
       `title: ${yamlEscape(repo.name)}`,
@@ -434,6 +536,10 @@ async function main() {
       createdAt: repo.created_at,
       pushedAt: repo.pushed_at,
       archived: repo.archived,
+      hasTodo: Boolean(todoData),
+      todoPercentage: todoData?.stats?.percentage ?? null,
+      hasReleases: (releasesData && releasesData.length > 0) || false,
+      latestReleaseTag: releasesData?.[0]?.tagName ?? null,
       ...(PROJECT_IMAGES[repo.name] ? { image: PROJECT_IMAGES[repo.name] } : {}),
     });
   }
@@ -453,6 +559,12 @@ async function main() {
   await fs.writeFile(
     path.join(dataDir, 'projects.json'),
     JSON.stringify(projectSummaries, null, 2),
+    'utf-8'
+  );
+
+  await fs.writeFile(
+    path.join(dataDir, 'project-details.json'),
+    JSON.stringify(projectDetails, null, 2),
     'utf-8'
   );
 

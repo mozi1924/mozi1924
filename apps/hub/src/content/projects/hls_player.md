@@ -17,8 +17,5 @@ pushedAt: "2024-03-30T12:28:51Z"
 defaultBranch: "main"
 archived: false
 ---
-## hls_player
-
+# hls_player
 简单的hls播放器页面，支持深色和亮色模式跟随系统，响应式设计适配桌面端和移动端
-
-[View original repository on GitHub](https://github.com/mozi1924/hls_player)

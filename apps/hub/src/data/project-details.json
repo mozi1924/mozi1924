@@ -1,0 +1,1592 @@
+{
+  "mozi1924": {
+    "name": "mozi1924",
+    "slug": "mozi1924",
+    "todo": null,
+    "releases": []
+  },
+  "build-agy": {
+    "name": "build-agy",
+    "slug": "build-agy",
+    "todo": null,
+    "releases": [
+      {
+        "id": 429530541,
+        "tagName": "v20261030-220209",
+        "name": "Antigravity Release (IDE v2.6.0 / Hub v2.28.2 / CLI v1.4.12)",
+        "publishedAt": "2026-10-30T22:02:31Z",
+        "prerelease": false,
+        "body": "## Antigravity Linux Packages Release\n\n- **Antigravity IDE**: `v2.6.0`\n- **Antigravity 2.0 (Hub)**: `v2.28.2`\n- **Antigravity CLI**: `v1.4.12`\n\n### 📋 Official Changelogs\n#### Antigravity IDE (v2.6.0): Gemini 4 Argon, Refreshed Agent Interface, and Inline Diff Shortcuts\n- Gemini 4 Argon is now available in the IDE, alongside a refreshed agent interface and architecture, keyboard shortcuts for inline diffs, inline editor comments, and faster multi-window startup.\n- Enabled Gemini 4 Argon in Antigravity IDE for eligible tiers, bringing Google's next-generation reasoning model directly into your development workflow.\n- Updated the agent interface and architecture powered by the built-in Antigravity extension, delivering faster startup, automatic background updates, and seamless feature parity.\n- Added keyboard shortcuts (Alt+Enter or Option+Enter to accept, Alt+Shift+Enter or Option+Shift+Enter to reject) to accept or reject focused inline diff changes.\n- Added inline code comments directly from the editor (Ctrl+Alt+M / Cmd+Alt+M) to queue feedback for your next prompt.\n\n#### Antigravity CLI (v1.4.12): Low-bandwidth terminal scrollback streaming, post-startup memory reclamation, accurate compaction size metrics, and automatic image resizing\n- Reduces terminal streaming output by ~70% using native scrollback and batched text wrapping, reclaims ~100 MB of startup memory after launch, reports full post-compaction context size in /context, and automatically resizes large attached images to prevent request size errors.\n- Improved streaming of agent replies: lines that scroll off the top of the screen are now scrolled into your terminal's scrollback instead of repainting the whole screen, and text wrapping writes whole runs of text at a time, so streaming writes about 70% fewer bytes to the terminal and stays much smoother over slow SSH connections.\n- Improved memory use shortly after startup: the CLI now returns about 100 MB of memory left over from startup to the operating system 15 seconds after the interactive UI opens; print and headless modes are unaffected.\n- Improved the after-compaction size shown in the compaction marker and in /context to also count what the summary carries into the next prompt, such as your earlier requests and artifact, subagent, and running-task snapshots, so it is closer to the real size; the (N summary) label still shows the summary alone.\n- Fixed subagents losing the task their parent agent gave them, and the parent's ID, after their context was compacted, including with /compact; a subagent's summary now keeps the parent agent's 10 most recent messages.\n\n### 📦 Repository Usage\nVisit the [Repository Portal](https://mozi1924.github.io/build-agy) for one-click setup on Debian, Ubuntu, Fedora, RHEL, and openSUSE.",
+        "htmlUrl": "https://github.com/mozi1924/build-agy/releases/tag/v20261030-220209",
+        "assets": [
+          {
+            "name": "antigravity-2.28.2-1.aarch64.rpm",
+            "size": 145496829,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-2.28.2-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-2.28.2-1.x86_64.rpm",
+            "size": 148116479,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-2.28.2-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.12-1.aarch64.rpm",
+            "size": 51144181,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-cli-1.4.12-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.12-1.x86_64.rpm",
+            "size": 54368188,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-cli-1.4.12-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli_1.4.12-1_amd64.deb",
+            "size": 54363962,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-cli_1.4.12-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-cli_1.4.12-1_arm64.deb",
+            "size": 51138788,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-cli_1.4.12-1_arm64.deb"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.aarch64.rpm",
+            "size": 141165590,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-ide-2.6.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.x86_64.rpm",
+            "size": 143375835,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-ide-2.6.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_amd64.deb",
+            "size": 140944456,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-ide_2.6.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_arm64.deb",
+            "size": 138753588,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity-ide_2.6.0-1_arm64.deb"
+          },
+          {
+            "name": "antigravity_2.28.2-1_amd64.deb",
+            "size": 148031170,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity_2.28.2-1_amd64.deb"
+          },
+          {
+            "name": "antigravity_2.28.2-1_arm64.deb",
+            "size": 145386014,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/antigravity_2.28.2-1_arm64.deb"
+          },
+          {
+            "name": "Packages",
+            "size": 4107,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/Packages"
+          },
+          {
+            "name": "Packages.gz",
+            "size": 1117,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/Packages.gz"
+          },
+          {
+            "name": "Release",
+            "size": 650,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-220209/Release"
+          }
+        ]
+      },
+      {
+        "id": 428992946,
+        "tagName": "v20261030-121256",
+        "name": "Antigravity Release (IDE v2.6.0 / Hub v2.28.1 / CLI v1.4.11)",
+        "publishedAt": "2026-10-30T12:13:23Z",
+        "prerelease": false,
+        "body": "## Antigravity Linux Packages Release\n\n- **Antigravity IDE**: `v2.6.0`\n- **Antigravity 2.0 (Hub)**: `v2.28.1`\n- **Antigravity CLI**: `v1.4.11`\n\n### 📋 Official Changelogs\n#### Antigravity IDE (v2.6.0): Gemini 4 Argon, Refreshed Agent Interface, and Inline Diff Shortcuts\n- Gemini 4 Argon is now available in the IDE, alongside a refreshed agent interface and architecture, keyboard shortcuts for inline diffs, inline editor comments, and faster multi-window startup.\n- Enabled Gemini 4 Argon in Antigravity IDE for eligible tiers, bringing Google's next-generation reasoning model directly into your development workflow.\n- Updated the agent interface and architecture powered by the built-in Antigravity extension, delivering faster startup, automatic background updates, and seamless feature parity.\n- Added keyboard shortcuts (Alt+Enter or Option+Enter to accept, Alt+Shift+Enter or Option+Shift+Enter to reject) to accept or reject focused inline diff changes.\n- Added inline code comments directly from the editor (Ctrl+Alt+M / Cmd+Alt+M) to queue feedback for your next prompt.\n\n#### Antigravity CLI (v1.4.11): Low-bandwidth terminal scrollback streaming, post-startup memory reclamation, accurate compaction size metrics, and automatic image resizing\n- Reduces terminal streaming output by ~70% using native scrollback and batched text wrapping, reclaims ~100 MB of startup memory after launch, reports full post-compaction context size in /context, and automatically resizes large attached images to prevent request size errors.\n- Improved streaming of agent replies: lines that scroll off the top of the screen are now scrolled into your terminal's scrollback instead of repainting the whole screen, and text wrapping writes whole runs of text at a time, so streaming writes about 70% fewer bytes to the terminal and stays much smoother over slow SSH connections.\n- Improved memory use shortly after startup: the CLI now returns about 100 MB of memory left over from startup to the operating system 15 seconds after the interactive UI opens; print and headless modes are unaffected.\n- Improved the after-compaction size shown in the compaction marker and in /context to also count what the summary carries into the next prompt, such as your earlier requests and artifact, subagent, and running-task snapshots, so it is closer to the real size; the (N summary) label still shows the summary alone.\n- Fixed subagents losing the task their parent agent gave them, and the parent's ID, after their context was compacted, including with /compact; a subagent's summary now keeps the parent agent's 10 most recent messages.\n\n### 📦 Repository Usage\nVisit the [Repository Portal](https://mozi1924.github.io/build-agy) for one-click setup on Debian, Ubuntu, Fedora, RHEL, and openSUSE.",
+        "htmlUrl": "https://github.com/mozi1924/build-agy/releases/tag/v20261030-121256",
+        "assets": [
+          {
+            "name": "antigravity-2.28.1-1.aarch64.rpm",
+            "size": 145404812,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-2.28.1-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-2.28.1-1.x86_64.rpm",
+            "size": 148105687,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-2.28.1-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.11-1.aarch64.rpm",
+            "size": 51118795,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-cli-1.4.11-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.11-1.x86_64.rpm",
+            "size": 54338222,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-cli-1.4.11-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli_1.4.11-1_amd64.deb",
+            "size": 54464956,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-cli_1.4.11-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-cli_1.4.11-1_arm64.deb",
+            "size": 51090912,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-cli_1.4.11-1_arm64.deb"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.aarch64.rpm",
+            "size": 141165590,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-ide-2.6.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.x86_64.rpm",
+            "size": 143375835,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-ide-2.6.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_amd64.deb",
+            "size": 140944456,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-ide_2.6.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_arm64.deb",
+            "size": 138753588,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity-ide_2.6.0-1_arm64.deb"
+          },
+          {
+            "name": "antigravity_2.28.1-1_amd64.deb",
+            "size": 148026502,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity_2.28.1-1_amd64.deb"
+          },
+          {
+            "name": "antigravity_2.28.1-1_arm64.deb",
+            "size": 145386296,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/antigravity_2.28.1-1_arm64.deb"
+          },
+          {
+            "name": "Packages",
+            "size": 4107,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/Packages"
+          },
+          {
+            "name": "Packages.gz",
+            "size": 1122,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/Packages.gz"
+          },
+          {
+            "name": "Release",
+            "size": 650,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261030-121256/Release"
+          }
+        ]
+      },
+      {
+        "id": 427468809,
+        "tagName": "v20261029-043241",
+        "name": "Antigravity Release (IDE v2.6.0 / Hub v2.28.1 / CLI v1.4.10)",
+        "publishedAt": "2026-10-29T04:33:03Z",
+        "prerelease": false,
+        "body": "## Antigravity Linux Packages Release\n\n- **Antigravity IDE**: `v2.6.0`\n- **Antigravity 2.0 (Hub)**: `v2.28.1`\n- **Antigravity CLI**: `v1.4.10`\n\n### 📋 Official Changelogs\n#### Antigravity IDE (v2.6.0): Gemini 4 Argon, Refreshed Agent Interface, and Inline Diff Shortcuts\n- Gemini 4 Argon is now available in the IDE, alongside a refreshed agent interface and architecture, keyboard shortcuts for inline diffs, inline editor comments, and faster multi-window startup.\n- Enabled Gemini 4 Argon in Antigravity IDE for eligible tiers, bringing Google's next-generation reasoning model directly into your development workflow.\n- Updated the agent interface and architecture powered by the built-in Antigravity extension, delivering faster startup, automatic background updates, and seamless feature parity.\n- Added keyboard shortcuts (Alt+Enter or Option+Enter to accept, Alt+Shift+Enter or Option+Shift+Enter to reject) to accept or reject focused inline diff changes.\n- Added inline code comments directly from the editor (Ctrl+Alt+M / Cmd+Alt+M) to queue feedback for your next prompt.\n\n#### Antigravity CLI (v1.4.10): OSC 7501 terminal status reporting, alt+m message queue toggle, and enhanced agy plugin validate diagnostics\n- Adds terminal status reporting over OSC 7501, the alt+m shortcut to toggle between immediate and queued message delivery, and comprehensive plugin validation rules in agy plugin validate with --strict and --json flags, alongside fixes for startup eligibility checks, MCP header variable expansion, and 100-commit history in /diff.\n- Added terminal status reporting over OSC 7501: in terminals that support it, the tab or window shows whether the CLI is working, waiting for your input, done, or failed. The CLI checks for support first, so other terminals are unaffected. Set AGY_CLI_OSC7501=off to turn it off, AGY_CLI_OSC7501=on for a terminal that supports it but doesn't answer the check, or AGY_CLI_OSC7501_MESSAGES=brief to show only the status without details such as the pending command or question.\n- Added the alt+m shortcut (Option+m on macOS when Option is set to act as Alt) to send a message using the opposite of your Queued Messages setting in /config, so you can send right away while in Queue mode, or queue a message while in Send Immediately mode.\n- Improved agy plugin validate so it checks a plugin with the same rules the CLI uses to load it, instead of simplified checks that rejected valid plugins (such as a manifest without a name) and missed problems that kept a plugin from loading. It lists each error and warning with its file and line, accepts a plugin directory or its plugin.json, warns about common plugin.json mistakes such as unknown fields (with \"did you mean\" suggestions), invalid names, and components placed inside .antigravity-plugin/ instead of the plugin root, and adds --strict to fail on warnings and --json for a machine-readable report in CI.\n- Fixed the CLI refusing every message with Eligibility check failed until you restarted it when the service was briefly unavailable or rate-limited at launch; the check now retries temporary errors and no longer locks the session.\n\n### 📦 Repository Usage\nVisit the [Repository Portal](https://mozi1924.github.io/build-agy) for one-click setup on Debian, Ubuntu, Fedora, RHEL, and openSUSE.",
+        "htmlUrl": "https://github.com/mozi1924/build-agy/releases/tag/v20261029-043241",
+        "assets": [
+          {
+            "name": "antigravity-2.28.1-1.aarch64.rpm",
+            "size": 145404812,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-2.28.1-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-2.28.1-1.x86_64.rpm",
+            "size": 148105687,
+            "downloadCount": 3,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-2.28.1-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.10-1.aarch64.rpm",
+            "size": 49998662,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-cli-1.4.10-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.10-1.x86_64.rpm",
+            "size": 53151604,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-cli-1.4.10-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli_1.4.10-1_amd64.deb",
+            "size": 53135028,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-cli_1.4.10-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-cli_1.4.10-1_arm64.deb",
+            "size": 49956474,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-cli_1.4.10-1_arm64.deb"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.aarch64.rpm",
+            "size": 141165590,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-ide-2.6.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.x86_64.rpm",
+            "size": 143375835,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-ide-2.6.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_amd64.deb",
+            "size": 140944456,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-ide_2.6.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_arm64.deb",
+            "size": 138753588,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity-ide_2.6.0-1_arm64.deb"
+          },
+          {
+            "name": "antigravity_2.28.1-1_amd64.deb",
+            "size": 148026502,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity_2.28.1-1_amd64.deb"
+          },
+          {
+            "name": "antigravity_2.28.1-1_arm64.deb",
+            "size": 145386296,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/antigravity_2.28.1-1_arm64.deb"
+          },
+          {
+            "name": "Packages",
+            "size": 4107,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/Packages"
+          },
+          {
+            "name": "Packages.gz",
+            "size": 1122,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/Packages.gz"
+          },
+          {
+            "name": "Release",
+            "size": 650,
+            "downloadCount": 9,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261029-043241/Release"
+          }
+        ]
+      },
+      {
+        "id": 426624020,
+        "tagName": "v20261028-121141",
+        "name": "Antigravity Release (IDE v2.6.0 / Hub v2.28.0 / CLI v1.4.9)",
+        "publishedAt": "2026-10-28T12:11:59Z",
+        "prerelease": false,
+        "body": "## Antigravity Linux Packages Release\n\n- **Antigravity IDE**: `v2.6.0`\n- **Antigravity 2.0 (Hub)**: `v2.28.0`\n- **Antigravity CLI**: `v1.4.9`\n\n### 📋 Official Changelogs\n#### Antigravity IDE (v2.6.0): Gemini 4 Argon, Refreshed Agent Interface, and Inline Diff Shortcuts\n- Gemini 4 Argon is now available in the IDE, alongside a refreshed agent interface and architecture, keyboard shortcuts for inline diffs, inline editor comments, and faster multi-window startup.\n- Enabled Gemini 4 Argon in Antigravity IDE for eligible tiers, bringing Google's next-generation reasoning model directly into your development workflow.\n- Updated the agent interface and architecture powered by the built-in Antigravity extension, delivering faster startup, automatic background updates, and seamless feature parity.\n- Added keyboard shortcuts (Alt+Enter or Option+Enter to accept, Alt+Shift+Enter or Option+Shift+Enter to reject) to accept or reject focused inline diff changes.\n- Added inline code comments directly from the editor (Ctrl+Alt+M / Cmd+Alt+M) to queue feedback for your next prompt.\n\n#### Antigravity CLI (v1.4.9): OSC 7501 terminal status reporting, alt+m message queue toggle, and enhanced agy plugin validate diagnostics\n- Adds terminal status reporting over OSC 7501, the alt+m shortcut to toggle between immediate and queued message delivery, and comprehensive plugin validation rules in agy plugin validate with --strict and --json flags, alongside fixes for startup eligibility checks, MCP header variable expansion, and 100-commit history in /diff.\n- Added terminal status reporting over OSC 7501: in terminals that support it, the tab or window shows whether the CLI is working, waiting for your input, done, or failed. The CLI checks for support first, so other terminals are unaffected. Set AGY_CLI_OSC7501=off to turn it off, AGY_CLI_OSC7501=on for a terminal that supports it but doesn't answer the check, or AGY_CLI_OSC7501_MESSAGES=brief to show only the status without details such as the pending command or question.\n- Added the alt+m shortcut (Option+m on macOS when Option is set to act as Alt) to send a message using the opposite of your Queued Messages setting in /config, so you can send right away while in Queue mode, or queue a message while in Send Immediately mode.\n- Improved agy plugin validate so it checks a plugin with the same rules the CLI uses to load it, instead of simplified checks that rejected valid plugins (such as a manifest without a name) and missed problems that kept a plugin from loading. It lists each error and warning with its file and line, accepts a plugin directory or its plugin.json, warns about common plugin.json mistakes such as unknown fields (with \"did you mean\" suggestions), invalid names, and components placed inside .antigravity-plugin/ instead of the plugin root, and adds --strict to fail on warnings and --json for a machine-readable report in CI.\n- Fixed the CLI refusing every message with Eligibility check failed until you restarted it when the service was briefly unavailable or rate-limited at launch; the check now retries temporary errors and no longer locks the session.\n\n### 📦 Repository Usage\nVisit the [Repository Portal](https://mozi1924.github.io/build-agy) for one-click setup on Debian, Ubuntu, Fedora, RHEL, and openSUSE.",
+        "htmlUrl": "https://github.com/mozi1924/build-agy/releases/tag/v20261028-121141",
+        "assets": [
+          {
+            "name": "antigravity-2.28.0-1.aarch64.rpm",
+            "size": 145409405,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-2.28.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-2.28.0-1.x86_64.rpm",
+            "size": 148269057,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-2.28.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.9-1.aarch64.rpm",
+            "size": 49651177,
+            "downloadCount": 3,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-cli-1.4.9-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.9-1.x86_64.rpm",
+            "size": 52865736,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-cli-1.4.9-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli_1.4.9-1_amd64.deb",
+            "size": 52811332,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-cli_1.4.9-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-cli_1.4.9-1_arm64.deb",
+            "size": 49649786,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-cli_1.4.9-1_arm64.deb"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.aarch64.rpm",
+            "size": 141165590,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-ide-2.6.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.x86_64.rpm",
+            "size": 143375835,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-ide-2.6.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_amd64.deb",
+            "size": 140944456,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-ide_2.6.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_arm64.deb",
+            "size": 138753588,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity-ide_2.6.0-1_arm64.deb"
+          },
+          {
+            "name": "antigravity_2.28.0-1_amd64.deb",
+            "size": 148047080,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity_2.28.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity_2.28.0-1_arm64.deb",
+            "size": 145337436,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/antigravity_2.28.0-1_arm64.deb"
+          },
+          {
+            "name": "Packages",
+            "size": 4103,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/Packages"
+          },
+          {
+            "name": "Packages.gz",
+            "size": 1119,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/Packages.gz"
+          },
+          {
+            "name": "Release",
+            "size": 650,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-121141/Release"
+          }
+        ]
+      },
+      {
+        "id": 426252661,
+        "tagName": "v20261028-040910",
+        "name": "Antigravity Release (IDE v2.6.0 / Hub v2.28.0 / CLI v1.4.8)",
+        "publishedAt": "2026-10-28T04:09:26Z",
+        "prerelease": false,
+        "body": "## Antigravity Linux Packages Release\n\n- **Antigravity IDE**: `v2.6.0`\n- **Antigravity 2.0 (Hub)**: `v2.28.0`\n- **Antigravity CLI**: `v1.4.8`\n\n### 📋 Official Changelogs\n#### Antigravity IDE (v2.6.0): Gemini 4 Argon, Refreshed Agent Interface, and Inline Diff Shortcuts\n- Gemini 4 Argon is now available in the IDE, alongside a refreshed agent interface and architecture, keyboard shortcuts for inline diffs, inline editor comments, and faster multi-window startup.\n- Enabled Gemini 4 Argon in Antigravity IDE for eligible tiers, bringing Google's next-generation reasoning model directly into your development workflow.\n- Updated the agent interface and architecture powered by the built-in Antigravity extension, delivering faster startup, automatic background updates, and seamless feature parity.\n- Added keyboard shortcuts (Alt+Enter or Option+Enter to accept, Alt+Shift+Enter or Option+Shift+Enter to reject) to accept or reject focused inline diff changes.\n- Added inline code comments directly from the editor (Ctrl+Alt+M / Cmd+Alt+M) to queue feedback for your next prompt.\n\n#### Antigravity CLI (v1.4.8): OSC 7501 terminal status reporting, alt+m message queue toggle, and enhanced agy plugin validate diagnostics\n- Adds terminal status reporting over OSC 7501, the alt+m shortcut to toggle between immediate and queued message delivery, and comprehensive plugin validation rules in agy plugin validate with --strict and --json flags, alongside fixes for startup eligibility checks, MCP header variable expansion, and 100-commit history in /diff.\n- Added terminal status reporting over OSC 7501: in terminals that support it, the tab or window shows whether the CLI is working, waiting for your input, done, or failed. The CLI checks for support first, so other terminals are unaffected. Set AGY_CLI_OSC7501=off to turn it off, AGY_CLI_OSC7501=on for a terminal that supports it but doesn't answer the check, or AGY_CLI_OSC7501_MESSAGES=brief to show only the status without details such as the pending command or question.\n- Added the alt+m shortcut (Option+m on macOS when Option is set to act as Alt) to send a message using the opposite of your Queued Messages setting in /config, so you can send right away while in Queue mode, or queue a message while in Send Immediately mode.\n- Improved agy plugin validate so it checks a plugin with the same rules the CLI uses to load it, instead of simplified checks that rejected valid plugins (such as a manifest without a name) and missed problems that kept a plugin from loading. It lists each error and warning with its file and line, accepts a plugin directory or its plugin.json, warns about common plugin.json mistakes such as unknown fields (with \"did you mean\" suggestions), invalid names, and components placed inside .antigravity-plugin/ instead of the plugin root, and adds --strict to fail on warnings and --json for a machine-readable report in CI.\n- Fixed the CLI refusing every message with Eligibility check failed until you restarted it when the service was briefly unavailable or rate-limited at launch; the check now retries temporary errors and no longer locks the session.\n\n### 📦 Repository Usage\nVisit the [Repository Portal](https://mozi1924.github.io/build-agy) for one-click setup on Debian, Ubuntu, Fedora, RHEL, and openSUSE.",
+        "htmlUrl": "https://github.com/mozi1924/build-agy/releases/tag/v20261028-040910",
+        "assets": [
+          {
+            "name": "antigravity-2.28.0-1.aarch64.rpm",
+            "size": 145409405,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-2.28.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-2.28.0-1.x86_64.rpm",
+            "size": 148269057,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-2.28.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.8-1.aarch64.rpm",
+            "size": 49479899,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-cli-1.4.8-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-cli-1.4.8-1.x86_64.rpm",
+            "size": 52554578,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-cli-1.4.8-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-cli_1.4.8-1_amd64.deb",
+            "size": 52554394,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-cli_1.4.8-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-cli_1.4.8-1_arm64.deb",
+            "size": 49464150,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-cli_1.4.8-1_arm64.deb"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.aarch64.rpm",
+            "size": 141165590,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-ide-2.6.0-1.aarch64.rpm"
+          },
+          {
+            "name": "antigravity-ide-2.6.0-1.x86_64.rpm",
+            "size": 143375835,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-ide-2.6.0-1.x86_64.rpm"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_amd64.deb",
+            "size": 140944456,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-ide_2.6.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity-ide_2.6.0-1_arm64.deb",
+            "size": 138753588,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity-ide_2.6.0-1_arm64.deb"
+          },
+          {
+            "name": "antigravity_2.28.0-1_amd64.deb",
+            "size": 148047080,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity_2.28.0-1_amd64.deb"
+          },
+          {
+            "name": "antigravity_2.28.0-1_arm64.deb",
+            "size": 145337436,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/antigravity_2.28.0-1_arm64.deb"
+          },
+          {
+            "name": "Packages",
+            "size": 4103,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/Packages"
+          },
+          {
+            "name": "Packages.gz",
+            "size": 1122,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/Packages.gz"
+          },
+          {
+            "name": "Release",
+            "size": 650,
+            "downloadCount": 6,
+            "downloadUrl": "https://github.com/mozi1924/build-agy/releases/download/v20261028-040910/Release"
+          }
+        ]
+      }
+    ]
+  },
+  "mozitoolkit": {
+    "name": "MoziToolKit",
+    "slug": "mozitoolkit",
+    "todo": {
+      "filename": "TODO.md",
+      "content": "# 📋 MoziToolKit (Blender Addon) 开发计划与版本路线图 (Roadmap)\n\n本文档为 `MoziToolKit` Blender 插件前端的功能演进与版本规划清单。底层核心算法、体素流与几何计算见 [`libmozitoolkit/TODO.md`](https://github.com/mozi1924/MoziToolKit/blob/main/../libmozitoolkit/TODO.md)。实时协同服务端见 [`yefira/GEMINI.md`](https://github.com/mozi1924/MoziToolKit/blob/main/../yefira/GEMINI.md)。\n\n---\n\n## 📌 版本演进总览 (Milestones Overview)\n\n| 版本 | 阶段定位 | 核心主题与边界 | 状态 |\n| :--- | :--- | :--- | :--- |\n| **v2.0 基础发版** | **核心基石** | **核心世界资产与材质渲染基石 (Production Release)**<br>世界存档导入、Live Sync 实时同步、小三样核心工具、Biome 3D 染色、CTM 规则与静态/动态双图集端到端闭环。 | ✅ **完成交付 (2026-10-18)** |\n| **v2.0 架构淬炼** | **纯净化里程碑** | **B0–B7 架构大收敛、预解码 PBR 材质与原生三端闭环 (Hardened Milestone)**<br>完成系统级 B0–B7 架构大清理；剥离独立 `libmtk_blender_dna` 适配器；原生 C++/Rust 像素切分（Quads 重构）；PBR 图集预解码全面上线，彻底物理清除 LabPBR 运行时生成器与 `mtk_material_props`；打通全链路诊断探针；强制原版客户端资产门禁；Yefira Protocol v3 闭环与 6 平台 Wheels 构建矩阵。 | ✅ **全面达成 (2026-10-21)** |\n| **v2.1** | **次级大版本** | **Mine-imator 深度集成、通用动作重定向与高级实体 (Animation Ecosystem)**<br>以 Mine-imator 2.0 官方源码为底座，重构 `mi2bl`；构建**临时参考骨骼 + 通用动作重定向引擎**（直通 Rig2 / Ice Cube / BPS / Thomas）；攻坚 1.21.4+ 铜像 Special Renderers 模型、原版悬挂实体与自包含场景交换包 (`.mtkscene`)。 | 📋 **启动推进中** |\n| **v2.2** | **高级生产力** | **从资产到代码：通用面部绑定系统与全能创作套件 (Universal Rigging & Tools)**<br>将 Blend shapes 映射解耦为通用代码规范（支持 Rig2 / Ice Cube / BPS / Thomas 等人模）；Rust 后端处理网络与滤波；交互式 2D 俯视微缩地图选区器；建筑蓝图 (`.litematic` / `.schematic`) 导入；GeckoLib 双向动画协同。 | 📋 **规划排期中** |\n| **v2.3+** | **万能工作流** | **创作者全能生态 (Universal Creator Suite)**<br>角色皮肤 3D 立体挤出与预设 Rig 库、Mine-imator HLSL 渲染特性 1:1 复刻、原版环境日夜天空盒与渲染预设。 | 🔮 **远景规划** |\n\n---\n\n## 🏆 近期重大架构跃迁：v2.0 架构淬炼战役 (2026-10-18 ~ 2026-10-21)\n\n> 详细设计与执行记录参见：\n> - [`docs/planning/2026-10-20_deletion_and_surface_cleanup.md`](https://github.com/mozi1924/MoziToolKit/blob/main/docs/planning/2026-10-20_deletion_and_surface_cleanup.md) (B0–B7 计划)\n> - [`docs/planning/2026-10-21_legacy_material_isolation.md`](https://github.com/mozi1924/MoziToolKit/blob/main/docs/planning/2026-10-21_legacy_material_isolation.md) (材质清洗记录)\n\n### 1. B0–B7 架构大清理战役 (✅ 全部通过验证)\n- [x] **B0：基准快照与自动化冒烟守护**：记录 184 原生 API 与 344 项测试基线，建立零回归守护网。\n- [x] **B1：剔除废弃菜单操作符与注册表垫片**：清除无用操作符与 legacy registry shims。\n- [x] **B2：胶水层虚假降级与旧轮子回退彻底归零**：删除 Python bridge fake 分支，杜绝运行时“静默吞错”与假数据污染。\n- [x] **B3：Rust 核心零调用方绑定与废弃管线收敛**：删除 Python 未消费的 47 个绑定方法，`libmtk` 从 175 符号收敛至 9 个核心符号，彻底废弃 `mtk-ffi`。\n- [x] **B4：物理剔除遗留 `unified_mesh` 胶水与废弃格式**。\n- [x] **B5：收敛网格与体素点云数据模型**：全面统一为基于调色板索引（Palette）的内存高效表达。\n- [x] **B6：API 握手契约与业务编排彻底归位**：网格创建、集合装配、材质节点生成等宿主逻辑全部移入 `utils/`，`bridge/` 彻底纯化为纯数据转换桥梁；全面暴露 Palette Biome APIs。\n- [x] **B7：拆分宿主内存适配器为独立 Wheel**：Blender C++ 内存直写被剥离为独立的 `libmtk_blender_dna` wheel，计算核保持 100% 宿主无关。\n\n### 2. 材质管线现代化与旧实现物理清除 (✅ 全部完成)\n- [x] **PBR 图集预解码全面接管**：Rust 预编译期（`ASSET_CACHE_FORMAT_VERSION = 5`）将 LabPBR 解码为规范图集通道（Albedo, Normal_GL, Roughness, Metallic, Aux/Emission），丢弃原始 `_n` / `_s`。\n- [x] **彻底删除 `mtk_material_props`**：移除物理属性注册表、`properties_config.py` 与外部 JSON，移除逐面材质属性字符串展开，每面少存一份 Float4。\n- [x] **着色器现代化**：前端着色器全面适配原生 Principled BSDF，节点图全面迁移至现代 `ShaderNodeMix`（彻底消除过时的 `ShaderNodeMixRGB` 与 `use_nodes = True` 警告）。\n- [x] **材质视觉回归测试框架**：增加 `test(material): add legacy-vs-baked visual regression harness`，保障材质渲染 100% 视觉对齐。\n\n### 3. 原生 C++/Rust 几何切分与拓扑修复 (✅ 全部完成)\n- [x] **移除 Python 切分降级**：自适应像素网格切分 (`op_pixel_split.py`) 全面交由原生底层驱动。\n- [x] **切片三角形转 Quads**：像素切分后的网格三角面自动重构为规范四边形，优化视口与着色。\n- [x] **任意旋转像素切片与 UV 修复**：解决带旋转网格切片时的 UV 扭曲问题；统一动画长条贴图截断。\n\n### 4. 全链路执行诊断与探针体系 (✅ 全部完成)\n- [x] Rust 核心与 Python 前端 (`bridge/diagnostics.py`) 全链路接入执行探针。\n- [x] 操作符报告中拆分并输出 Rust 耗时与 Blender 宿主耗时，消除黑盒。\n\n### 5. 权威原版客户端资产门禁 (✅ 全部完成)\n- [x] 强制校验真正的 Minecraft 原版客户端资产（JAR / 解包目录），杜绝因资产缺失导致的无 UV 灰模。\n\n### 6. Live Sync 实时协同 Protocol v3 闭环 (✅ 全部完成)\n- [x] 与 `yefira` 伴生模组全面对接 Protocol v3：XXHash64 校验自愈、增量分片批量推送、选区原子化与软限制。\n- [x] 客户端支持安全 Token 鉴权与 Loopback 本地连接免密直连。\n- [x] 握手决策码 (`decision_code`) 与进度归一化由 Rust 权威掌控。\n\n### 7. 6 平台 Native Wheels 自动化构建与发布矩阵 (✅ 全部完成)\n- [x] Windows x64, macOS (arm64/x64), Linux (glibc/musl) CI 验证全绿，支持 rolling release 自动注入。\n\n---\n\n## 🧭 当前待办与持续优化清单\n\n### 📋 性能持续微调\n- [ ] **1M faces 渲染与导入进一步优化**：进一步减少 source-key 展开，推进全流程 Palette-native 优化。\n- [ ] **C-ABI 独立头文件（可选/按需）**：按 C4D 或独立查看器实际需求提供轻量级 C-ABI 头文件示例。\n\n---\n\n## 🎯 v2.0 正式版：核心世界资产与材质渲染基石 (✅ 已交付并淬炼)\n\n### 1. 动画材质系统端到端串联 (✅ 已完成)\n- [x] 偏好设置与导入面板提供 `enable_animated_textures` 选项；\n- [x] “静态图集保底 + 动态图集专用寻址”双通道机制；\n- [x] 时间线驱动与双帧插值混合。\n\n### 2. 存档导入容器化与稳定性闭环 (✅ 已完成)\n- [x] 顶部主菜单接入（`File -> Import -> Minecraft World / Save (.mca / level.dat)`）；\n- [x] 3D 轴对齐选区坐标输入与方块体积统计；\n- [x] 独立 Empty 根容器化与多选区自动递增；\n- [x] 本地隐私注册表（UUID 存储，防工程泄漏本地路径）；\n- [x] “🔄 刷新模型 (Refresh Model)”原地无感重构算子。\n\n### 3. 真实生态 3D Biome 染色与平滑过渡管线 (✅ 已完成)\n- [x] 真实 3D Quart Biome 染色采样（沼泽特异水色、双色草、热带雨林、黑森林等）；\n- [x] 5×5 原版均匀盒式平滑滤波；\n- [x] Rust 扁平 memoryview 零拷贝直写（498k faces 耗时降至 ~2.1 ms）。\n\n### 4. CTM 连接纹理端到端验证 (✅ 已完成)\n- [x] OptiFine / Continuity 47-tile 拓扑解算与 UV 渲染。\n\n### 5. 现代 Blender 5.0+ 零拷贝内存直写 (✅ 已完成)\n- [x] 独立 `libmtk_blender_dna` 实现硬件带宽级连续内存拷贝；\n- [x] 通用属性（Generic Attributes）向量化批量灌入与 Palette 调色板化。\n\n### 6. 小三样核心网格与 UV 工具库 (✅ 已完成)\n- [x] 自适应像素网格切分 (`op_pixel_split.py`)；\n- [x] 智能挤出与 UV 修复系统 (`operators/extrude/`)；\n- [x] 外部网格面遮挡剔除（`op_cull.py` 已彻底废弃并移除，面遮挡判定全面收敛至权威体素级 `FaceCuller`）。\n\n---\n\n## 🚀 v2.1 版本：Mine-imator 深度集成、通用动作重定向与高级实体 (📋 启动推进中)\n\n> **2.1 版本主题**：以官方停更的 Mine-imator 2.0 源码为权威参考，构建“临时参考骨骼 + 通用动作重定向”管道，将角色动作自由映射到 Rig2 / Ice Cube / BPS / Thomas 等主流人模，并攻坚 1.21.4+ 客户端特殊模型与场景交换包。\n\n### 1. Mine-imator 深度集成与全能动作重定向管线 (`mi2bl` - P1 核心 🌟)\n- [ ] **Mine-imator 2.0 官方源码参考与逆向分析**\n  - [ ] 剖析关键帧过渡曲线（Linear, Instant, Bézier 速度与张力参数算法）；\n  - [ ] 剖析摄像机物理参数（FOV、景深焦距/光圈、散景叶片、Camera Shake 随机噪声）；\n  - [ ] 剖析灯光能量换算（Strength × Range² × 4π 物理辐射照度映射）；\n- [ ] **MI 标准临时参考骨骼 (Template Intermediate Armature)**\n  - [ ] 导入 `.miproject` / `.miobject` / `.miframes` 时现场动态构建 1:1 对齐 Mine-imator 关节命名与层级的标准临时骨骼；\n  - [ ] 将 MI 原始关键帧无损灌入该参考骨骼；\n- [ ] **通用动作重定向引擎 (Universal Minecraft Action Retargeting Engine)**\n  - [ ] 预置主流人模映射 Profile：**Rig2**, **Ice Cube**, **BPS**, **Thomas**, **Custom Armature**；\n  - [ ] 一键重定向、解算轴心偏移并烘焙为目标人模的 FK/IK 动作；\n  - [ ] 动作重定向完成后一键安全清理/隐藏临时中介骨骼；\n- [ ] **场景材质与物理相机一键映射**\n  - [ ] 将 MI 材质轨道转换为标准 Principled BSDF 节点树；\n  - [ ] 生成对齐 MI 渲染特性的物理摄像机与 Cycles/Eevee 灯光阵列。\n\n### 2. 1.21.4+ 客户端特殊模型攻坚 (Special Renderers & Copper Golem Statue) (P1)\n- [ ] **解析客户端模型新规范 (`mtk-model::special`)**\n  - [ ] 支持 `\"type\": \"minecraft:special\"` 与 `\"type\": \"minecraft:select\"` 语法；\n- [ ] **铜像 / 铜傀儡像 (Copper Golem Statue) 网格重构**\n  - [ ] 解决铜像在缺少传统 `\"elements\"` 字段时的网格丢失；\n  - [ ] 内置铜傀儡像 4 种氧化态与各姿态盒模型几何与贴图映射。\n\n### 3. 原版静态与悬挂实体导入系统 (P1)\n- [ ] **艺术画 (Painting) 前端构建器 (`bridge/entity.py`)**：生成带木质背板的三维画框网格；\n- [ ] **物品展示框 (Item Frame & Glow Item Frame)**：支持 45° 旋转、隐形状态与内部物品装配；\n- [ ] **填充地图 (Filled Map Data) 像素图像解码**：对接 Rust 导出的 128×128 RGBA8 像素流，现场生成贴图并赋材质；\n- [ ] **盔甲架 (Armor Stand)**：导入支架骨架与 `Pose` 姿态角度，挂载装备。\n\n### 4. 复杂方块实体 NBT 图元与动画分体铰链装配 (P2)\n- [ ] **告示牌与悬挂告示牌文字生成器 (Sign Text)**：支持 16 色染料与发光墨囊；\n- [ ] **旗帜多层花纹合成 (Banner Patterns)**：按原版公式进行多层 Alpha 顺位合成；\n- [ ] **动画铰链分体装配选项**：门、栅栏门、箱子顶盖、钟体生成为独立子物体并预留精确轴心。\n\n### 5. 自包含轻量场景交换包交互 (`.mtkscene`) (P2)\n- [ ] **导出端 (`Export -> MTK Scene Interchange (.mtkscene)`)**：按需提取最小依赖模型与独立贴图闭包（Tree-shaking），稀疏体素单文件打包；\n- [ ] **导入端与现场重构 (`Import -> MTK Scene Interchange (.mtkscene)`)**：极速读取单文件并重构世界几何。\n\n---\n\n## 🛠️ v2.2 版本：通用面部绑定系统与全能创作套件 (📋 规划排期中)\n\n### 1. 通用 Minecraft 面部绑定与驱动系统 (Universal Facial Engine - P1 核心 🌟)\n- [ ] **从资产强绑定解耦为通用代码规范**：将 ARKit 52 Blendshapes 抽象为通用骨骼变换映射表；\n- [ ] **主流人模全覆盖预设 Profile**：Rig2, Ice Cube, BPS, Thomas 及可视化映射编辑器；\n- [ ] **一键装配模式 vs 实时驱动模式**：生成原生 Blender Driver 或实时写入 PoseBone；\n- [ ] **Rust 高性能网络与平滑滤波后端 (`mtk-face` / `mtk-net`)**：LiveLinkFace (UDP 11111) 与 WebSocket 异步接收，One Euro Filter 抗抖动。\n\n### 2. GeckoLib 动画双向协同 (`.animation.json`) (P2)\n- [ ] Rig2 / 通用骨骼导出至 Blockbench / GeckoLib；\n- [ ] GeckoLib 动画导入至 Blender 并重定向至主流骨骼。\n\n### 3. 交互式 2D 俯视微型地图选区器 (Interactive 2D Minimap Selector) (P1)\n- [ ] 基于 Rust 后端渲染 2D 俯视地形与群系切片，提供视口拖拽框选。\n\n### 4. 建筑投影与蓝图文件直接导入 (`.litematic` / `.schematic` / `.nbt`) (P1)\n- [ ] 直接解包 Litematica 区域并现场生成带完整材质、CTM 与 Biome 的建筑网格。\n\n---\n\n## 🔮 v2.3+ 远景：万能创作者全能生态 (Future Vision)\n\n- [ ] 玩家角色与原版生物绑定库（皮肤 3D 双层立体挤出与预设 Rig）；\n- [ ] Mine-imator 渲染特性 1:1 深度复刻预设（光影衰减、高光反光率、卡通描边）；\n- [ ] 原版环境日夜循环天空盒节点树与渲染优化预设。\n",
+      "stats": {
+        "total": 80,
+        "completed": 39,
+        "pending": 41,
+        "percentage": 49
+      }
+    },
+    "releases": [
+      {
+        "id": 416946360,
+        "tagName": "rolling",
+        "name": "MoziToolKit Rolling Build (main)",
+        "publishedAt": "2026-10-19T05:53:38Z",
+        "prerelease": true,
+        "body": "Continuous rolling build of MoziToolKit from main branch.",
+        "htmlUrl": "https://github.com/mozi1924/MoziToolKit/releases/tag/rolling",
+        "assets": [
+          {
+            "name": "mozitoolkit-2.0.0-linux_arm64.zip",
+            "size": 5291141,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/rolling/mozitoolkit-2.0.0-linux_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-2.0.0-linux_x64.zip",
+            "size": 5890843,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/rolling/mozitoolkit-2.0.0-linux_x64.zip"
+          },
+          {
+            "name": "mozitoolkit-2.0.0-macos_arm64.zip",
+            "size": 3916359,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/rolling/mozitoolkit-2.0.0-macos_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-2.0.0-macos_x64.zip",
+            "size": 4285947,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/rolling/mozitoolkit-2.0.0-macos_x64.zip"
+          },
+          {
+            "name": "mozitoolkit-2.0.0-windows_arm64.zip",
+            "size": 3507265,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/rolling/mozitoolkit-2.0.0-windows_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-2.0.0-windows_x64.zip",
+            "size": 3727836,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/rolling/mozitoolkit-2.0.0-windows_x64.zip"
+          }
+        ]
+      },
+      {
+        "id": 383956458,
+        "tagName": "1.1.0",
+        "name": "MoziToolKit 1.1.0",
+        "publishedAt": "2026-09-07T09:05:42Z",
+        "prerelease": true,
+        "body": "## What's Changed\n* Align documentation with codebase implementation and fix relative links by @mozi1924 in https://github.com/mozi1924/MoziToolKit/pull/2\n* Clean up legacy POC code and deliver repository refactoring review by @mozi1924 in https://github.com/mozi1924/MoziToolKit/pull/3\n* Refactor README.md to include Live Sync and MC Baker features by @mozi1924 in https://github.com/mozi1924/MoziToolKit/pull/5\n\n\n**Full Changelog**: https://github.com/mozi1924/MoziToolKit/compare/v1.0.0...1.1.0\n\n**Full Changelog**: https://github.com/mozi1924/MoziToolKit/compare/v1.0.0...1.1.0",
+        "htmlUrl": "https://github.com/mozi1924/MoziToolKit/releases/tag/1.1.0",
+        "assets": [
+          {
+            "name": "mozitoolkit-1.1.0-linux_x64.zip",
+            "size": 7657316,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/1.1.0/mozitoolkit-1.1.0-linux_x64.zip"
+          },
+          {
+            "name": "mozitoolkit-1.1.0-macos_arm64.zip",
+            "size": 5500243,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/1.1.0/mozitoolkit-1.1.0-macos_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-1.1.0-windows_arm64.zip",
+            "size": 3288305,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/1.1.0/mozitoolkit-1.1.0-windows_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-1.1.0-windows_x64.zip",
+            "size": 7959807,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/1.1.0/mozitoolkit-1.1.0-windows_x64.zip"
+          }
+        ]
+      },
+      {
+        "id": 379018255,
+        "tagName": "v1.0.0",
+        "name": "MoziToolKit v1.0.0",
+        "publishedAt": "2026-08-29T15:05:01Z",
+        "prerelease": true,
+        "body": "## What's Changed\n* refactor: direct mesh engine and material precompilation system by @mozi1924 in https://github.com/mozi1924/MoziToolKit/pull/1\n\n## New Contributors\n* @mozi1924 made their first contribution in https://github.com/mozi1924/MoziToolKit/pull/1\n\n**Full Changelog**: https://github.com/mozi1924/MoziToolKit/commits/v1.0.0\n\n**Full Changelog**: https://github.com/mozi1924/MoziToolKit/commits/v1.0.0",
+        "htmlUrl": "https://github.com/mozi1924/MoziToolKit/releases/tag/v1.0.0",
+        "assets": [
+          {
+            "name": "mozitoolkit-1.0.0-linux_x64.zip",
+            "size": 7553368,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/v1.0.0/mozitoolkit-1.0.0-linux_x64.zip"
+          },
+          {
+            "name": "mozitoolkit-1.0.0-macos_arm64.zip",
+            "size": 5396296,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/v1.0.0/mozitoolkit-1.0.0-macos_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-1.0.0-windows_arm64.zip",
+            "size": 3184355,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/v1.0.0/mozitoolkit-1.0.0-windows_arm64.zip"
+          },
+          {
+            "name": "mozitoolkit-1.0.0-windows_x64.zip",
+            "size": 7855859,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/MoziToolKit/releases/download/v1.0.0/mozitoolkit-1.0.0-windows_x64.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "libmozitoolkit": {
+    "name": "libmozitoolkit",
+    "slug": "libmozitoolkit",
+    "todo": {
+      "filename": "TODO.md",
+      "content": "# 📋 libmozitoolkit (`libmtk`) 开发计划与版本路线图 (Roadmap)\n\n本文档为 `libmtk` 底层核心库的功能演进规划，严格遵循**宿主无关（Host-Agnostic）**与**纯数据输入输出（Data-in, Data-out）**设计原则。前端 Blender 插件规划见 [`MoziToolKit/TODO.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/../MoziToolKit/TODO.md)。实时协同服务端见 [`yefira/GEMINI.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/../yefira/GEMINI.md)。\n\n---\n\n## 📌 版本演进总览 (Milestones Overview)\n\n| 版本 | 阶段定位 | 核心主题与边界 | 状态 |\n| :--- | :--- | :--- | :--- |\n| **v2.0 基础发版** | **核心计算内核** | **通用 3D/体素世界几何、双图集烘焙与材质渲染基石 (Production Core)**<br>Anvil 存档解析、BlockState 烘焙、真实 3D Quart Biome 平滑采样、CTM 求解、静态+动态双图集 (Dual-Atlas) 与直接指针直写。 | ✅ **完成交付 (2026-10-18)** |\n| **v2.0 架构淬炼** | **纯净化里程碑** | **B0–B7 架构大清理、预解码 PBR 材质与 6 平台 Wheels 矩阵 (Hardened Milestone)**<br>完成系统级 B0–B7 架构收敛；`libmtk` 收敛为极简应用编排层；拆分独立 `bindings/mtk-blender-dna` 宿主内存适配器；预解码标准 PBR 通道全面接管，物理清除旧 LabPBR 运行时与 `mtk_material_props` 物理属性表；新增 `mtk-profile` 性能探针；原生像素切片三角形转 Quads；RFC v3.1 握手与进度裁决；6 平台 Native Wheels 矩阵验证通过。 | ✅ **全面达成 (2026-10-21)** |\n| **v2.1** | **次级大版本** | **高级实体、特殊渲染器与动作重定向 (Advanced Entities & Animation)**<br>支持 1.21.4+ 铜像 Special Renderers 模型、骨骼动画与曲线重定向数学库 (`mtk-anim`)、实体 MCA 文件解析、填充地图解码与自包含场景交换包 (`mtk-package::scene`)。 | 📋 **启动推进中** |\n| **v2.2** | **通用面部与格式** | **面部捕捉网络流、平滑滤波与蓝图全覆盖 (Facial Stream & Blueprint Expansion)**<br>Rust 原生高性能 LiveLinkFace UDP (11111) 与 WebSocket 异步接收、One Euro Filter 平滑滤波、ARKit 52 向量化解算；`.litematic` 蓝图解析；2D 俯视小地图切片渲染。 | 📋 **规划排期中** |\n| **v2.3+** | **万能生态扩展** | **全格式与全场景覆盖 (Multi-format & Ecosystem Expansion)**<br>基岩版 LevelDB 存储与模组世界扩展、体素反向逆向推算器 (Voxel Guesser)。 | 🔮 **远景规划** |\n\n---\n\n## 🏆 近期重大架构跃迁：v2.0 架构淬炼战役 (2026-10-18 ~ 2026-10-21)\n\n### 1. B0–B7 架构大清理战役 (✅ 全部通过验证)\n- [x] **`libmtk` 极简化应用编排**：删除 42 个 `pub use` 块（门面从 175 符号收敛至 9 个），只保留 `prebake` + `pipeline` + `MtkError`；领域 crate 直连，杜绝臃肿门面转发。\n- [x] **零调用方绝对清除**：删除 `mtk-ffi`；删除 47 个前端未指名消费的 PyO3 绑定方法；删除 `AnvilWorldSource`、`MeshSanitizer`、`mtk-model::culling` shim、重复贴图属性等死代码。\n- [x] **物理剔除 `unified_mesh` 胶水与废弃格式**。\n- [x] **数据模型统一为 Palette 调色板表达**：点云与扁平多边形几何流全面调色板化，大幅降低内存占用并提速重映射。\n- [x] **拆分宿主内存适配器 (`bindings/mtk-blender-dna`)**：将直连 Blender C++ 连续内存的指针直写逻辑从通用 `mtk-py` 剥离为独立的 `libmtk_blender_dna` 轮子，核心保持 100% 宿主无关。\n- [x] **消除 `no_std` 假象**：移除全部 crate 的无用 `std` feature 与条件编译，明确声明为 std-only（wasm32 目标同样使用 std）。\n\n### 2. 预解码 PBR 材质现代化与旧实现物理清除 (✅ 全部完成)\n- [x] **预解码 PBR 图集通道 (`ASSET_CACHE_FORMAT_VERSION = 5`)**：\n  - 资产预编译期直接将 LabPBR 解码为规范图集通道（Albedo, Normal_GL, Roughness, Metallic, Aux/Emission），丢弃原始 `_n` / `_s`；\n  - 提供 `lookup_static(loc)` 与 `lookup_animated(loc)` 权威双通道寻址。\n- [x] **物理清除旧材质属性注册表与逐面字段**：\n  - 彻底删除 `mtk-material/src/properties/` 与 `material_properties.json`；\n  - 彻底移除 `mtk-core` 中的 `material_props` 字段与常量，每面减少一份 Float4 存储；\n  - 网格化阶段停止一切逐面物理属性查询，全链统一采用标准 Principled PBR。\n\n### 3. 全链路性能探针与分析体系 (`mtk-profile` - ✅ 全部完成)\n- [x] 新增轻量级 `mtk-profile` crate。\n- [x] 在 `subdivide`、`extrude`、`VoxelWorld` meshing 及 `mtk-sync` 事件派发全链路植入轻量级微秒性能探针。\n- [x] 配合前端精准输出 Rust 核心执行耗时。\n\n### 4. 原生几何算子与拓扑修复 (✅ 全部完成)\n- [x] **切片三角形转 Quads**：像素切分后的网格三角面自动重构为规范四边形拓扑。\n- [x] **拓扑与 UV 修复**：解决任意旋转网格像素切片时的 UV 扭曲问题；统一动画长条贴图单帧截断规则。\n- [x] 确保 PerLoop buffer 拓扑布局一致，杜绝 UV 越界。\n\n### 5. RFC v3.1 Live Sync 服务端协同闭环 (✅ 全部完成)\n- [x] 对接 `yefira` 伴生模组，全面支持 Protocol v3、XXHash64 体素校验与增量分片推送。\n- [x] 握手决策码 (`decision_code`)、进度归一化 (`normalize_stream_progress`)、增量事件合并 (`poll_events_coalesced`) 由 Rust 权威控制。\n- [x] 支持携带 Auth Token 进行安全鉴权，并处理本地 Loopback 直连流程。\n\n### 6. 跨平台 6 平台 Wheels 构建与验证 (✅ 全部完成)\n- [x] Windows x64、macOS (arm64/x64)、Linux (glibc/musl) CI 矩阵验证通过，提供 rolling release 自动化流水线。\n\n---\n\n## 🎯 v2.0 正式版：核心计算与材质渲染基石 (✅ 已交付并淬炼)\n\n### 1. 双图集 (Dual-Atlas: Static & Animated) 烘焙与寻址映射 (✅ 已完成)\n- [x] 全量材质保底静态图集与长条切片动态图集双通道寻址；\n- [x] 动态图集 `.png.mcmeta` 垂直长条打包与帧时间线解析。\n\n### 2. 核心几何与 UV 算子库 (`mtk-core` - ✅ 已完成)\n- [x] 自适应像素网格切分系统 (`mtk-core::subdivide`)：四边形自适应细分、非均匀像素吸附与属性双线性插值；\n- [x] 智能挤出与 UV 修复系统 (`mtk-core::extrude`)：SMART / INWARD / OUTWARD 模式几何重构、Perlin/Voronoi 噪声与锐边标记；\n- [x] 空间邻域遮挡剔除系统 (`mtk-cull`)：6 向邻域状态机与 2D 矩形投影差集微观剔除。\n\n### 3. Minecraft 存档与体素源抽象 (`mtk-save`, `mtk-voxel` - ✅ 已完成)\n- [x] 4KiB 扇区直接寻址 Anvil / MCA 文件读取；\n- [x] 零拷贝 NBT 反序列化（Chunk, BlockStates, Biomes, LevelData）；\n- [x] 统一体素源特征 (`VoxelSource`, `VoxelReader`, `VoxelWriter`)。\n\n### 4. BlockState 烘焙与世界重构 (`mtk-model`, `mtk-voxel` - ✅ 已完成)\n- [x] 1.21+ BlockState 条件规则求值、UV Lock、TintIndex、混合式实体模型架构；\n- [x] 真实 3D Quart Biome 染色采样与 5×5 原版均匀盒式平滑滤波；\n- [x] OptiFine / Continuity CTM 连接纹理 47-tile 求解器。\n\n### 5. 现代 Blender 5.0+ 零拷贝内存直写管道 (`bindings/mtk-blender-dna` - ✅ 已完成)\n- [x] C++ 连续内存指针直接写入（顶点、法线、循环 UV、索引、材质槽），消除 Python 对象开销。\n\n### 6. 单文件预编译资产缓存 (`crates/mtk-package` - ✅ 已完成)\n- [x] 64 字节 Header + 块级 Zstd 压缩 TOC + 64 字节内存对齐；\n- [x] 输出单一 `<fingerprint>.mtkcache`。\n\n---\n\n## 🚀 v2.1 版本：高级实体、特殊渲染器、动作重定向与场景交换 (📋 启动推进中)\n\n> **2.1 版本主题**：拓展特殊渲染模型、实体数据流、动作重定向数学库与自包含场景交换包。\n\n### 1. 1.21.4+ 客户端特殊模型攻坚 (Special Renderers & Copper Golem Statue) (P1)\n- [ ] **解析客户端模型新语法 (`mtk-model::special`)**\n  - [ ] 扩展模型反序列化器，识别 `\"type\": \"minecraft:special\"` 与 `\"type\": \"minecraft:select\"`；\n- [ ] **铜像 / 铜傀儡像 (Copper Golem Statue) 几何模型生成**\n  - [ ] 缺少 `\"elements\"` 字段时路由至特殊渲染器模型构建器；\n  - [ ] 内置铜傀儡像 4 种氧化态与各姿态盒模型几何与贴图映射。\n\n### 2. 动画曲线与骨骼重定向数学库 (`mtk-anim::retarget` - P1)\n- [ ] **Mine-imator 关键帧与曲线解算**\n  - [ ] 实现 Linear、Instant 与 Bézier 贝塞尔缓动曲线的离散数值解算器；\n- [ ] **骨骼变换与坐标轴重定向矩阵流 (Bone Retargeting Math)**\n  - [ ] 针对 Y/Z 轴向翻转、四元数局部与世界旋转重定向的高性能批量批处理计算；\n  - [ ] 提供从 MI 临时参考骨骼快速重定向至 Rig2 / Ice Cube / BPS / Thomas 的向量化通道。\n\n### 3. 原版静态与悬挂实体解析 (`mtk-save::entity`) (P1)\n- [ ] **`entities/r.X.Z.mca` 独立实体区域文件解析**\n  - [ ] 扩展 MCA 读取器，支持 Minecraft 1.17+ 独立实体区域文件；\n  - [ ] 基于选区 AABB 过滤空间相交实体。\n- [ ] **艺术画 (`PaintingEntity`) 解析**\n  - [ ] 提取 `variant`, `facing`, `pos`，内置原版 40+ 种画作尺寸表，生成带木质背板的三维画框网格。\n- [ ] **物品展示框 (`ItemFrameEntity`) 解析**\n  - [ ] 提取展示框旋转角度、发光属性与内容物信息。\n- [ ] **原版填充地图数据解码器 (`mtk-save::map`)**\n  - [ ] 解析 `data/map_<id>.dat` Gzip NBT 文件；\n  - [ ] 内置 60+ 种 `MapColor` 基础色彩表与 4 级明暗倍率，解码 128×128 RGBA8 连续像素流。\n\n### 4. 高级方块实体 NBT 图元生成器 (`mtk-model::ber_nbt`) (P2)\n- [ ] **告示牌文字生成器 (Sign Text)**：解析 `front_text` / `back_text`，按原版点阵排版生成面文字图元与发光材质标记；\n- [ ] **旗帜多层花纹合成 (Banner Patterns)**：依照原版公式按顺序进行 16 种颜色的多层 Alpha 混合合成；\n- [ ] **双箱 (Double Chest) 几何缝合与铰链预留**：依据 BlockState 自动缝合为宽箱子网格并预留铰链轴心。\n\n### 5. 自包含轻量场景交换包 (`mtk-package::scene` - P2)\n- [ ] **导出端按需剪枝 (`export_scene_package`)**：扫描选区体素世界，提取最小依赖模型与独立贴图闭包（Tree-shaking），稀疏体素写入 `VOXL` Chunk，贴图写入 `TXTR` Chunk；\n- [ ] **导入端现场重构 (`import_scene_package`)**：读取 `VOXL` 与 `TXTR`，现场构建微型图集并重构世界几何。\n\n---\n\n## 🛠️ v2.2 版本：通用面部网络流、平滑滤波与蓝图全覆盖 (📋 规划排期中)\n\n### 1. 原生高性能面部捕捉网络流与平滑滤波 (`mtk-face` / `mtk-net` - P1 核心 🌟)\n- [ ] 原生 Rust 实现 LiveLinkFace (UDP 11111) 与 WebSocket 异步数据包监听；\n- [ ] 零拷贝快速解析 ARKit 52 种 Blendshape 浮点数组与头部姿态四元数；\n- [ ] One Euro Filter 自适应低通滤波与丢包插值补偿；\n- [ ] 矩阵乘加通用骨骼偏移向量计算与零延迟桥接。\n\n### 2. 建筑蓝图文件直接解析器 (`mtk-schematic` - P1)\n- [ ] `.litematic` / `.schematic` 纯 Rust 解析，直接对接 `VoxelSource` 一键生成完整建筑几何。\n\n### 3. 2D 俯视微型小地图切片渲染器 (`mtk-voxel::minimap` - P1)\n- [ ] 快速光线表面高度与群系色彩投影，极速输出连续 RGBA8 贴图内存。\n\n---\n\n## 🔮 v2.3+ 远景：万能格式与生态扩展 (Future Vision)\n\n- [ ] 基岩版（Bedrock Edition）存储读取 (`mtk-voxel::storage::leveldb`)；\n- [ ] 体素反向逆向推算器 (Voxel Guesser / Mesh Inferrer)。\n",
+      "stats": {
+        "total": 65,
+        "completed": 32,
+        "pending": 33,
+        "percentage": 49
+      }
+    },
+    "releases": [
+      {
+        "id": 404565315,
+        "tagName": "ci-latest",
+        "name": "CI rolling wheel (ci-latest)",
+        "publishedAt": "2026-10-06T10:09:18Z",
+        "prerelease": true,
+        "body": "Automated abi3 wheel built from main. Not a published release.",
+        "htmlUrl": "https://github.com/mozi1924/libmozitoolkit/releases/tag/ci-latest",
+        "assets": [
+          {
+            "name": "libmtk_blender_dna-0.1.0-cp311-abi3-macosx_10_12_x86_64.whl",
+            "size": 197155,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_blender_dna-0.1.0-cp311-abi3-macosx_10_12_x86_64.whl"
+          },
+          {
+            "name": "libmtk_blender_dna-0.1.0-cp311-abi3-macosx_11_0_arm64.whl",
+            "size": 191238,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_blender_dna-0.1.0-cp311-abi3-macosx_11_0_arm64.whl"
+          },
+          {
+            "name": "libmtk_blender_dna-0.1.0-cp311-abi3-manylinux_2_28_aarch64.whl",
+            "size": 516577,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_blender_dna-0.1.0-cp311-abi3-manylinux_2_28_aarch64.whl"
+          },
+          {
+            "name": "libmtk_blender_dna-0.1.0-cp311-abi3-manylinux_2_28_x86_64.whl",
+            "size": 559990,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_blender_dna-0.1.0-cp311-abi3-manylinux_2_28_x86_64.whl"
+          },
+          {
+            "name": "libmtk_blender_dna-0.1.0-cp311-abi3-win_amd64.whl",
+            "size": 88186,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_blender_dna-0.1.0-cp311-abi3-win_amd64.whl"
+          },
+          {
+            "name": "libmtk_blender_dna-0.1.0-cp311-abi3-win_arm64.whl",
+            "size": 86700,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_blender_dna-0.1.0-cp311-abi3-win_arm64.whl"
+          },
+          {
+            "name": "libmtk_py-0.1.0-cp311-abi3-macosx_10_12_x86_64.whl",
+            "size": 3706570,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_py-0.1.0-cp311-abi3-macosx_10_12_x86_64.whl"
+          },
+          {
+            "name": "libmtk_py-0.1.0-cp311-abi3-macosx_11_0_arm64.whl",
+            "size": 3342907,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_py-0.1.0-cp311-abi3-macosx_11_0_arm64.whl"
+          },
+          {
+            "name": "libmtk_py-0.1.0-cp311-abi3-manylinux_2_28_aarch64.whl",
+            "size": 4392326,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_py-0.1.0-cp311-abi3-manylinux_2_28_aarch64.whl"
+          },
+          {
+            "name": "libmtk_py-0.1.0-cp311-abi3-manylinux_2_28_x86_64.whl",
+            "size": 4948616,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_py-0.1.0-cp311-abi3-manylinux_2_28_x86_64.whl"
+          },
+          {
+            "name": "libmtk_py-0.1.0-cp311-abi3-win_amd64.whl",
+            "size": 3257462,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_py-0.1.0-cp311-abi3-win_amd64.whl"
+          },
+          {
+            "name": "libmtk_py-0.1.0-cp311-abi3-win_arm64.whl",
+            "size": 3038377,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/libmtk_py-0.1.0-cp311-abi3-win_arm64.whl"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "size": 1424,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/libmozitoolkit/releases/download/ci-latest/SHA256SUMS.txt"
+          }
+        ]
+      }
+    ]
+  },
+  "yefira": {
+    "name": "yefira",
+    "slug": "yefira",
+    "todo": null,
+    "releases": []
+  },
+  "fzs-driver-rs": {
+    "name": "fzs-driver-rs",
+    "slug": "fzs-driver-rs",
+    "todo": null,
+    "releases": []
+  },
+  "side-route-daemon": {
+    "name": "side-route-daemon",
+    "slug": "side-route-daemon",
+    "todo": null,
+    "releases": []
+  },
+  "openblive": {
+    "name": "openblive",
+    "slug": "openblive",
+    "todo": null,
+    "releases": [
+      {
+        "id": 364668941,
+        "tagName": "v0.2.1-dev.22",
+        "name": "OpenBlive Studio v0.2.1",
+        "publishedAt": "2026-08-04T06:55:41Z",
+        "prerelease": false,
+        "body": "Automated release built by GitHub Actions.\n\n## Changelog\nFrom `v0.2.0-dev.20` to `HEAD`:\n\n- chore: install pkg-config and libasound2-dev for audio support in Linux build workflow ([`78014d9`](https://github.com/mozi1924/openblive/commit/78014d9f30e925c757a2ee16534db6493cecd3ac)) — @mozi1924\n- chore: bump project version to 0.2.1 ([`561f217`](https://github.com/mozi1924/openblive/commit/561f2177b0fdc558a5ac201ff30fffc9b5973d62)) — @mozi1924\n- refactor: replace streaming audio buffer with dedicated output thread and command-based playback ([`aa88025`](https://github.com/mozi1924/openblive/commit/aa88025e05dda89ca66b060864ddfe20c6293112)) — @mozi1924\n- refactor: replace legacy TTS queue with priority-based system featuring auto-shedding and multi-module architecture ([`7190af5`](https://github.com/mozi1924/openblive/commit/7190af5a3373b79dc1b5169e29a7e98bd6113788)) — @mozi1924\n- feat: implement audio streaming for lower latency playback using a shared buffer and MP3 decoder ([`00b172b`](https://github.com/mozi1924/openblive/commit/00b172bf7fa6404ea32ebecfd3b89be395ac3f7f)) — @mozi1924\n- feat: implement TTS playback interruption and state tracking with real-time UI synchronization ([`843b5f2`](https://github.com/mozi1924/openblive/commit/843b5f29497b24fb9bd4407ffd68e38eceb4a25c)) — @mozi1924\n- refactor: unify TTS voice constants, update fallback voice list, and improve default parameter handling ([`c6ce12c`](https://github.com/mozi1924/openblive/commit/c6ce12cd3db8831a0a4c7940bd6aa59c745d2f0f)) — @mozi1924\n- feat: update TTS settings select inputs with chevron icons and improved styling ([`159538b`](https://github.com/mozi1924/openblive/commit/159538bc49d081ec1a085d9edd7bda3ef1918959)) — @mozi1924\n- feat: implement backend configuration handlers and refactor TTS settings UI for enhanced customization ([`2b7c46a`](https://github.com/mozi1924/openblive/commit/2b7c46a041fe554ff9c6e87aa49007be90878e3e)) — @mozi1924\n- feat: implement TTS settings interface and backend command support ([`dfffae4`](https://github.com/mozi1924/openblive/commit/dfffae44e470967b777d0fd01a86edcd1eb843ad)) — @mozi1924\n- feat: implement explicit sending state and error handling for optimistic danmu messages ([`6f741a2`](https://github.com/mozi1924/openblive/commit/6f741a2e7b7e043c1e750ef8ebe090ab7775d8c3)) — @mozi1924\n\n\n## Notes\n\nmacOS users need to remove the quarantine attribute before first launch:\n\n```bash\nsudo xattr -dr com.apple.quarantine \"/Applications/OpenBlive Studio.app\"\n```\n\nIf the app is installed outside `/Applications`, replace the path with the actual app location.",
+        "htmlUrl": "https://github.com/mozi1924/openblive/releases/tag/v0.2.1-dev.22",
+        "assets": [
+          {
+            "name": "latest.json",
+            "size": 8178,
+            "downloadCount": 2112,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/latest.json"
+          },
+          {
+            "name": "OpenBlive.Studio-0.2.1-1.x86_64.rpm",
+            "size": 12587377,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio-0.2.1-1.x86_64.rpm"
+          },
+          {
+            "name": "OpenBlive.Studio-0.2.1-1.x86_64.rpm.sig",
+            "size": 428,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio-0.2.1-1.x86_64.rpm.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_aarch64.dmg",
+            "size": 10623746,
+            "downloadCount": 4,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_aarch64.dmg"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_amd64.AppImage",
+            "size": 91081208,
+            "downloadCount": 15,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_amd64.AppImage"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_amd64.AppImage.sig",
+            "size": 432,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_amd64.AppImage.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_amd64.deb",
+            "size": 12588222,
+            "downloadCount": 5,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_amd64.deb"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_amd64.deb.sig",
+            "size": 424,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_amd64.deb.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_x64-setup.exe",
+            "size": 6834588,
+            "downloadCount": 58,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_x64-setup.exe"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_x64-setup.exe.sig",
+            "size": 428,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_x64-setup.exe.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_x64_en-US.msi",
+            "size": 10215424,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_x64_en-US.msi"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.1_x64_en-US.msi.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_0.2.1_x64_en-US.msi.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz",
+            "size": 10791320,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_aarch64.app.tar.gz"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz.sig",
+            "size": 416,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/OpenBlive.Studio_aarch64.app.tar.gz.sig"
+          }
+        ]
+      },
+      {
+        "id": 364349024,
+        "tagName": "v0.2.0-dev.20",
+        "name": "OpenBlive Studio v0.2.0",
+        "publishedAt": "2026-08-03T16:22:26Z",
+        "prerelease": false,
+        "body": "Automated release built by GitHub Actions.\n\n## Changelog\nFrom `v0.1.9-dev.19` to `HEAD`:\n\n- chore: bump version to 0.2.0 ([`7f13938`](https://github.com/mozi1924/openblive/commit/7f139380266222997e0729a1b866e7c0180c4fe3)) — @mozi1924\n- feat: implement device identity enrichment with Buvid and Bilibili ticket acquisition ([`cbb5660`](https://github.com/mozi1924/openblive/commit/cbb5660a1a8b51d3debb61ec160f27b1f803826e)) — @mozi1924\n- refactor: update frontend chat rendering components and styles, improve plugin architecture, and synchronize backend services. ([`51a163b`](https://github.com/mozi1924/openblive/commit/51a163b30b667a6599376df4ac96b57bd251d82c)) — @mozi1924\n- feat: centralize action dispatching and add REST API endpoints for server actions ([`cbe0aeb`](https://github.com/mozi1924/openblive/commit/cbe0aeb9b012735643a140212eed91c9a2f1643f)) — @mozi1924\n- feat: add support for local file uploads and optimize live cover image fetching and processing ([`6c038c8`](https://github.com/mozi1924/openblive/commit/6c038c868dbf58d58523de0cffd8ea974b1594ba)) — @mozi1924\n- feat: implement stream info persistence and periodic background room profile synchronization ([`bc76ddf`](https://github.com/mozi1924/openblive/commit/bc76ddfa731d56b376cc34db961d19fec878e492)) — @mozi1924\n- refactor: remove redundant account and live command wrappers while improving overlay build logic and updating WebSocket API documentation. ([`4812d38`](https://github.com/mozi1924/openblive/commit/4812d384d73fcc8d55872d57820b1f3754ee1ec2)) — @mozi1924\n- refactor: centralize user session management and refactor shared utilities for code reuse ([`31cd6fb`](https://github.com/mozi1924/openblive/commit/31cd6fb6858c6b0b2a33d30de249ad31c515c08d)) — @mozi1924\n- feat: implement danmu message filtering and unify asset URL normalization logic ([`a8a6e69`](https://github.com/mozi1924/openblive/commit/a8a6e69a5f01517f7abaef992e8812f52f21a31e)) — @mozi1924\n- feat: add isolated client instantiation and ensure profile sync only affects current user session ([`fa124ac`](https://github.com/mozi1924/openblive/commit/fa124ac097f0718c0297fda6b1dec65179c3078c)) — @mozi1924\n- feat: add cookie refresh testing script, unit tests for CSRF extraction, and enable compression support in reqwest ([`c186e9d`](https://github.com/mozi1924/openblive/commit/c186e9dd34645ca0fac587d28379a15bfd8a2696)) — @mozi1924\n- feat: add configurable danmu filtering options for entry effects, interaction messages, guard status, and follow/share events ([`5172e56`](https://github.com/mozi1924/openblive/commit/5172e56d6d1d5399bfb55c50614fe53054d9c1b4)) — @mozi1924\n\n\n## Notes\n\nmacOS users need to remove the quarantine attribute before first launch:\n\n```bash\nsudo xattr -dr com.apple.quarantine \"/Applications/OpenBlive Studio.app\"\n```\n\nIf the app is installed outside `/Applications`, replace the path with the actual app location.",
+        "htmlUrl": "https://github.com/mozi1924/openblive/releases/tag/v0.2.0-dev.20",
+        "assets": [
+          {
+            "name": "latest.json",
+            "size": 8485,
+            "downloadCount": 41,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/latest.json"
+          },
+          {
+            "name": "OpenBlive.Studio-0.2.0-1.x86_64.rpm",
+            "size": 11783108,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio-0.2.0-1.x86_64.rpm"
+          },
+          {
+            "name": "OpenBlive.Studio-0.2.0-1.x86_64.rpm.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio-0.2.0-1.x86_64.rpm.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_aarch64.dmg",
+            "size": 9931957,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_aarch64.dmg"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_amd64.AppImage",
+            "size": 90364408,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_amd64.AppImage"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_amd64.AppImage.sig",
+            "size": 432,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_amd64.AppImage.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_amd64.deb",
+            "size": 11781544,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_amd64.deb"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_amd64.deb.sig",
+            "size": 424,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_amd64.deb.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_x64-setup.exe",
+            "size": 6423648,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_x64-setup.exe"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_x64-setup.exe.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_x64-setup.exe.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_x64_en-US.msi",
+            "size": 9523200,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_x64_en-US.msi"
+          },
+          {
+            "name": "OpenBlive.Studio_0.2.0_x64_en-US.msi.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_0.2.0_x64_en-US.msi.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz",
+            "size": 10078859,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_aarch64.app.tar.gz"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz.sig",
+            "size": 416,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.0-dev.20/OpenBlive.Studio_aarch64.app.tar.gz.sig"
+          }
+        ]
+      },
+      {
+        "id": 360330710,
+        "tagName": "v0.1.9-dev.19",
+        "name": "OpenBlive Studio v0.1.9",
+        "publishedAt": "2026-07-27T09:47:18Z",
+        "prerelease": false,
+        "body": "Automated release built by GitHub Actions.\r\n\r\n## Changelog\r\nFrom `v0.1.8-dev.17` to `HEAD`:\r\n\r\n- chore: update reqwest TLS features and expand Tauri CSP security directives ([`372cb0d`](https://github.com/mozi1924/openblive/commit/372cb0dcae4fecf8e4ee65342fdc46d71bc24e28)) — @mozi1924\r\n- chore: bump version to 0.1.9 ([`5c170cb`](https://github.com/mozi1924/openblive/commit/5c170cb5b26a4bd4437d1a9b4046422d84f4fd50)) — @mozi1924\r\n- feat: update live cover aspect ratio to 4:3, add HTTP headers to upload requests, and improve file sanitization and validation ([`37a6c5f`](https://github.com/mozi1924/openblive/commit/37a6c5f47a241c8fd4b0afba089fbb26b1438da5)) — @mozi1924\r\n\r\n## Notes\r\n\r\nmacOS users need to remove the quarantine attribute before first launch:\r\n\r\n```bash\r\nsudo xattr -dr com.apple.quarantine \"/Applications/OpenBlive Studio.app\"\r\n```\r\n\r\nIf the app is installed outside `/Applications`, replace the path with the actual app location.",
+        "htmlUrl": "https://github.com/mozi1924/openblive/releases/tag/v0.1.9-dev.19",
+        "assets": [
+          {
+            "name": "latest.json",
+            "size": 6103,
+            "downloadCount": 111,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/latest.json"
+          },
+          {
+            "name": "OpenBlive.Studio-0.1.9-1.x86_64.rpm",
+            "size": 10966432,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio-0.1.9-1.x86_64.rpm"
+          },
+          {
+            "name": "OpenBlive.Studio-0.1.9-1.x86_64.rpm.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio-0.1.9-1.x86_64.rpm.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_aarch64.dmg",
+            "size": 9259630,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_aarch64.dmg"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_amd64.AppImage",
+            "size": 89610744,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_amd64.AppImage"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_amd64.AppImage.sig",
+            "size": 432,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_amd64.AppImage.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_amd64.deb",
+            "size": 10965712,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_amd64.deb"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_amd64.deb.sig",
+            "size": 424,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_amd64.deb.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_x64-setup.exe",
+            "size": 5994024,
+            "downloadCount": 3,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_x64-setup.exe"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_x64-setup.exe.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_x64-setup.exe.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_x64_en-US.msi",
+            "size": 8871936,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_x64_en-US.msi"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.9_x64_en-US.msi.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_0.1.9_x64_en-US.msi.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz",
+            "size": 9373069,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_aarch64.app.tar.gz"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz.sig",
+            "size": 416,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.9-dev.19/OpenBlive.Studio_aarch64.app.tar.gz.sig"
+          }
+        ]
+      },
+      {
+        "id": 355681168,
+        "tagName": "v0.1.8-dev.17",
+        "name": "OpenBlive Studio v0.1.8",
+        "publishedAt": "2026-07-17T12:54:01Z",
+        "prerelease": false,
+        "body": "Automated release built by GitHub Actions.\n\n## Changelog\nFrom `v0.1.7-dev.16` to `HEAD`:\n\n- chore: bump project version to 0.1.8 ([`0723d31`](https://github.com/mozi1924/openblive/commit/0723d31816b34bc4a18987b8e7e32474a3083f39)) — @mozi1924\n- feat: add custom push URL configuration and host override support ([`311cb9f`](https://github.com/mozi1924/openblive/commit/311cb9fc1e207115d23ccdb378dd19a76e55b050)) — @mozi1924\n- feat: add WsServerSection to settings page for configuring external WebSocket server settings ([`b37378b`](https://github.com/mozi1924/openblive/commit/b37378b1db4de1716bf137bde88607a68d30bab9)) — @mozi1924\n\n\n## Notes\n\nmacOS users need to remove the quarantine attribute before first launch:\n\n```bash\nsudo xattr -dr com.apple.quarantine \"/Applications/OpenBlive Studio.app\"\n```\n\nIf the app is installed outside `/Applications`, replace the path with the actual app location.",
+        "htmlUrl": "https://github.com/mozi1924/openblive/releases/tag/v0.1.8-dev.17",
+        "assets": [
+          {
+            "name": "latest.json",
+            "size": 6460,
+            "downloadCount": 85,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/latest.json"
+          },
+          {
+            "name": "OpenBlive.Studio-0.1.8-1.x86_64.rpm",
+            "size": 10967004,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio-0.1.8-1.x86_64.rpm"
+          },
+          {
+            "name": "OpenBlive.Studio-0.1.8-1.x86_64.rpm.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio-0.1.8-1.x86_64.rpm.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_aarch64.dmg",
+            "size": 9231939,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_aarch64.dmg"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_amd64.AppImage",
+            "size": 89635320,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_amd64.AppImage"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_amd64.AppImage.sig",
+            "size": 432,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_amd64.AppImage.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_amd64.deb",
+            "size": 10966638,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_amd64.deb"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_amd64.deb.sig",
+            "size": 424,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_amd64.deb.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_x64-setup.exe",
+            "size": 5992256,
+            "downloadCount": 3,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_x64-setup.exe"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_x64-setup.exe.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_x64-setup.exe.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_x64_en-US.msi",
+            "size": 8851456,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_x64_en-US.msi"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.8_x64_en-US.msi.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_0.1.8_x64_en-US.msi.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz",
+            "size": 9345419,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_aarch64.app.tar.gz"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz.sig",
+            "size": 416,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.8-dev.17/OpenBlive.Studio_aarch64.app.tar.gz.sig"
+          }
+        ]
+      },
+      {
+        "id": 355590714,
+        "tagName": "v0.1.7-dev.16",
+        "name": "OpenBlive Studio v0.1.7",
+        "publishedAt": "2026-07-17T09:44:58Z",
+        "prerelease": false,
+        "body": "Automated release built by GitHub Actions.\n\n## Changelog\nFrom `v0.1.6-dev.15` to `HEAD`:\n\n- feat: implement captcha decryption and tracking and update Livehime version to 7.63.0 ([`fed2d9c`](https://github.com/mozi1924/openblive/commit/fed2d9c12e1c99bd2ed7e9707c458d42f9f8dcd0)) — @mozi1924\n\n\n## Notes\n\nmacOS users need to remove the quarantine attribute before first launch:\n\n```bash\nsudo xattr -dr com.apple.quarantine \"/Applications/OpenBlive Studio.app\"\n```\n\nIf the app is installed outside `/Applications`, replace the path with the actual app location.",
+        "htmlUrl": "https://github.com/mozi1924/openblive/releases/tag/v0.1.7-dev.16",
+        "assets": [
+          {
+            "name": "latest.json",
+            "size": 6113,
+            "downloadCount": 13,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/latest.json"
+          },
+          {
+            "name": "OpenBlive.Studio-0.1.7-1.x86_64.rpm",
+            "size": 10963612,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio-0.1.7-1.x86_64.rpm"
+          },
+          {
+            "name": "OpenBlive.Studio-0.1.7-1.x86_64.rpm.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio-0.1.7-1.x86_64.rpm.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_aarch64.dmg",
+            "size": 9231621,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_aarch64.dmg"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_amd64.AppImage",
+            "size": 89643512,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_amd64.AppImage"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_amd64.AppImage.sig",
+            "size": 432,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_amd64.AppImage.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_amd64.deb",
+            "size": 10963852,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_amd64.deb"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_amd64.deb.sig",
+            "size": 424,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_amd64.deb.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_x64-setup.exe",
+            "size": 5988547,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_x64-setup.exe"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_x64-setup.exe.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_x64-setup.exe.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_x64_en-US.msi",
+            "size": 8855552,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_x64_en-US.msi"
+          },
+          {
+            "name": "OpenBlive.Studio_0.1.7_x64_en-US.msi.sig",
+            "size": 428,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_0.1.7_x64_en-US.msi.sig"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz",
+            "size": 9348542,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_aarch64.app.tar.gz"
+          },
+          {
+            "name": "OpenBlive.Studio_aarch64.app.tar.gz.sig",
+            "size": 416,
+            "downloadCount": 0,
+            "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.1.7-dev.16/OpenBlive.Studio_aarch64.app.tar.gz.sig"
+          }
+        ]
+      }
+    ]
+  },
+  "debian-cloud-images": {
+    "name": "debian-cloud-images",
+    "slug": "debian-cloud-images",
+    "todo": null,
+    "releases": []
+  },
+  "rig2_addons": {
+    "name": "rig2_addons",
+    "slug": "rig2_addons",
+    "todo": null,
+    "releases": [
+      {
+        "id": 344074186,
+        "tagName": "v1.1.9",
+        "name": "Rig2 1.1.9",
+        "publishedAt": "2026-06-24T11:49:11Z",
+        "prerelease": false,
+        "body": "## Rig2 Blender Addon 1.1.9\n\nOpen-source release with bundled native binaries for all platforms.\n\n### Supported Platforms\n- macOS (ARM64 / x86_64)\n- Windows (x86_64 / ARM64)\n- Linux (x86_64 / ARM64)\n\n### Installation\nInstall via Blender Extensions repository or download the zip below.\n\n\n**Full Changelog**: https://github.com/mozi1924/rig2_addons/compare/v1.1.7...v1.1.9",
+        "htmlUrl": "https://github.com/mozi1924/rig2_addons/releases/tag/v1.1.9",
+        "assets": [
+          {
+            "name": "rig2_extension-1.1.9.zip",
+            "size": 2646265,
+            "downloadCount": 86,
+            "downloadUrl": "https://github.com/mozi1924/rig2_addons/releases/download/v1.1.9/rig2_extension-1.1.9.zip"
+          }
+        ]
+      },
+      {
+        "id": 339440677,
+        "tagName": "v1.1.8",
+        "name": "Rig2 1.1.8",
+        "publishedAt": "2026-06-15T09:25:48Z",
+        "prerelease": false,
+        "body": "## Rig2 Blender Addon 1.1.8\n\nOpen-source release with bundled native binaries for all platforms.\n\n### Supported Platforms\n- macOS (ARM64 / x86_64)\n- Windows (x86_64 / ARM64)\n- Linux (x86_64 / ARM64)\n\n### Installation\nInstall via Blender Extensions repository or download the zip below.\n\n\n## What's Changed\n* Add cross-platform native binary build and ABI3 loading support by @mozi1924 in https://github.com/mozi1924/rig2_addons/pull/1\n* Harden license/native state sync against concurrency races by @mozi1924 in https://github.com/mozi1924/rig2_addons/pull/2\n\n## New Contributors\n* @mozi1924 made their first contribution in https://github.com/mozi1924/rig2_addons/pull/1\n\n**Full Changelog**: https://github.com/mozi1924/rig2_addons/commits/v1.1.8",
+        "htmlUrl": "https://github.com/mozi1924/rig2_addons/releases/tag/v1.1.8",
+        "assets": [
+          {
+            "name": "rig2_extension-1.1.8.zip",
+            "size": 2617482,
+            "downloadCount": 7,
+            "downloadUrl": "https://github.com/mozi1924/rig2_addons/releases/download/v1.1.8/rig2_extension-1.1.8.zip"
+          }
+        ]
+      },
+      {
+        "id": 338929933,
+        "tagName": "v1.1.7",
+        "name": "Rig2 1.1.7",
+        "publishedAt": "2026-06-13T08:16:59Z",
+        "prerelease": false,
+        "body": "## Rig2 Blender Addon 1.1.7\n\nOpen-source release with bundled native binaries for all platforms.\n\n### Supported Platforms\n- macOS (ARM64 / x86_64)\n- Windows (x86_64 / ARM64)\n- Linux (x86_64 / ARM64)\n\n### Installation\nInstall via Blender Extensions repository or download the zip below.\n\n\n## What's Changed\n* Add cross-platform native binary build and ABI3 loading support by @mozi1924 in https://github.com/mozi1924/rig2_addons/pull/1\n* Harden license/native state sync against concurrency races by @mozi1924 in https://github.com/mozi1924/rig2_addons/pull/2\n\n## New Contributors\n* @mozi1924 made their first contribution in https://github.com/mozi1924/rig2_addons/pull/1\n\n**Full Changelog**: https://github.com/mozi1924/rig2_addons/commits/v1.1.7",
+        "htmlUrl": "https://github.com/mozi1924/rig2_addons/releases/tag/v1.1.7",
+        "assets": [
+          {
+            "name": "rig2_extension-1.1.7.zip",
+            "size": 2622912,
+            "downloadCount": 4,
+            "downloadUrl": "https://github.com/mozi1924/rig2_addons/releases/download/v1.1.7/rig2_extension-1.1.7.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "agentjax": {
+    "name": "AgentJax",
+    "slug": "agentjax",
+    "todo": null,
+    "releases": []
+  },
+  "qwen3-tts-easyfinetuning": {
+    "name": "Qwen3-TTS-EasyFinetuning",
+    "slug": "qwen3-tts-easyfinetuning",
+    "todo": null,
+    "releases": [
+      {
+        "id": 302833165,
+        "tagName": "v1.2.0",
+        "name": "Release v1.2.0",
+        "publishedAt": "2026-03-29T10:43:09Z",
+        "prerelease": false,
+        "body": "## Release v1.2.0\n\n### What's Changed\n- new release workflow (89b206f)\n- 🐛 fix(webui): Load speakers from model config (631ce1a)\n- 🐛 fix(sft_12hz): Space speaker IDs by 20. (6d7c594)\n- ✨ feat(utils): Support shared model directory reuse. (cae1e46)\n- refactor: modularize training logic, add audio resampling support, and improve path and speaker name resolution utilities. (a50b73c)\n- feat: Add functions to detect and strip edge silence, and apply fades and padding to audio segments during splitting. (351b381)\n- fix: adjust `codec_mask` slicing for `talker_hidden_states` extraction. (1072748)\n### Docker Image\n- `ghcr.io/mozi1924/Qwen3-TTS-EasyFinetuning:v1.2.0`\n- `ghcr.io/mozi1924/Qwen3-TTS-EasyFinetuning:1.2.0`\n- `ghcr.io/mozi1924/Qwen3-TTS-EasyFinetuning:latest`\n\n**Full Changelog**: https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning/compare/v1.1.1...v1.2.0\n",
+        "htmlUrl": "https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning/releases/tag/v1.2.0",
+        "assets": []
+      },
+      {
+        "id": 291814389,
+        "tagName": "v1.1.1",
+        "name": "v1.1.1",
+        "publishedAt": "2026-03-01T16:14:18Z",
+        "prerelease": false,
+        "body": "## [1.1.1] - 2026-03-02\r\n\r\n### Fixed\r\n- Fix WSL2 file save issues\r\n- Update README.md and README_zh.md add Special Note for Windows Users, add Environment & Requirements\r\n\r\n### Changed\r\n- Add Processing Threads in webui.py and cli.py\r\n- Add Free disk space check in docker-build-push.yml (github action)",
+        "htmlUrl": "https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning/releases/tag/v1.1.1",
+        "assets": []
+      },
+      {
+        "id": 289351019,
+        "tagName": "v1.1.0",
+        "name": "v1.1.0",
+        "publishedAt": "2026-02-23T10:21:15Z",
+        "prerelease": false,
+        "body": "## [1.1.0] - 2025-02-23\r\n\r\n### Added\r\n- **Multi-Speaker Fine-tuning**: Train a single model with multiple speakers simultaneously. Each speaker gets a unique `spk_id` index and independent speaker embedding.\r\n  - WebUI: Select multiple speakers from the dropdown in Training tab.\r\n  - CLI: Use comma-separated `--speaker_name speaker_a,speaker_b` for `tokenize` and `train` commands.\r\n- **Per-Sample Speaker Encoding**: Speaker embeddings are computed individually per sample to avoid padding artifacts from variable-length reference audio.\r\n- **Automatic JSONL Merge**: Step 3 (Tokenization) automatically merges per-speaker `tts_train.jsonl` files with `speaker_id` field when multiple speakers are selected.\r\n\r\n### Changed\r\n- `dataset.py`: Added `speaker_id` field to dataset items and batch dict, `ref_mels` returned as list for variable-length support.\r\n- `sft_12hz.py`: Replaced single `target_speaker_embedding` with per-speaker `speaker_embeddings` dict. Checkpoint saves all speaker embeddings at unique codec indices.\r\n- `data_pipeline.py`: Added optional `speaker_id` to JSONL output.\r\n- `cli.py`: Added `json` and `argparse` imports, multi-speaker support for `tokenize` and `train` subcommands.",
+        "htmlUrl": "https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning/releases/tag/v1.1.0",
+        "assets": []
+      }
+    ]
+  },
+  "literag-mcp": {
+    "name": "literag-mcp",
+    "slug": "literag-mcp",
+    "todo": null,
+    "releases": []
+  },
+  "infinite-inbox": {
+    "name": "infinite-inbox",
+    "slug": "infinite-inbox",
+    "todo": null,
+    "releases": []
+  },
+  "bldoc4agent": {
+    "name": "bldoc4agent",
+    "slug": "bldoc4agent",
+    "todo": null,
+    "releases": []
+  },
+  "mi2bl": {
+    "name": "mi2bl",
+    "slug": "mi2bl",
+    "todo": null,
+    "releases": []
+  },
+  "worker-comment": {
+    "name": "worker-comment",
+    "slug": "worker-comment",
+    "todo": null,
+    "releases": []
+  },
+  "vercel-email-routing": {
+    "name": "Vercel-Email-routing",
+    "slug": "vercel-email-routing",
+    "todo": null,
+    "releases": []
+  },
+  "text2arch": {
+    "name": "text2arch",
+    "slug": "text2arch",
+    "todo": null,
+    "releases": []
+  },
+  "jaxlockeuk": {
+    "name": "jaxlocke.uk",
+    "slug": "jaxlockeuk",
+    "todo": null,
+    "releases": []
+  },
+  "natmap-git": {
+    "name": "natmap-git",
+    "slug": "natmap-git",
+    "todo": null,
+    "releases": []
+  },
+  "mozi-rig-doc": {
+    "name": "mozi-rig-doc",
+    "slug": "mozi-rig-doc",
+    "todo": null,
+    "releases": []
+  },
+  "mediapipe-facecap-for-blender": {
+    "name": "mediapipe-facecap-for-blender",
+    "slug": "mediapipe-facecap-for-blender",
+    "todo": null,
+    "releases": [
+      {
+        "id": 222354052,
+        "tagName": "v0.14-release",
+        "name": "Mozi's FacemoCap 0.14-release",
+        "publishedAt": "2025-06-02T07:58:15Z",
+        "prerelease": false,
+        "body": "**Full Changelog**: https://github.com/mozi1924/mediapipe-facecap-for-blender/compare/v0.13-beta...v0.14-release",
+        "htmlUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/tag/v0.14-release",
+        "assets": [
+          {
+            "name": "Mozi_s_Facemocap_0.14-release_Linux.zip",
+            "size": 166946123,
+            "downloadCount": 22,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.14-release/Mozi_s_Facemocap_0.14-release_Linux.zip"
+          },
+          {
+            "name": "Mozi_s_Facemocap_0.14-release_Windows.zip",
+            "size": 102108569,
+            "downloadCount": 165,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.14-release/Mozi_s_Facemocap_0.14-release_Windows.zip"
+          }
+        ]
+      },
+      {
+        "id": 219409723,
+        "tagName": "v0.13-beta",
+        "name": "Mozi's FacemoCap 0.13-beta",
+        "publishedAt": "2025-05-19T06:43:35Z",
+        "prerelease": false,
+        "body": "**Full Changelog**: https://github.com/mozi1924/mediapipe-facecap-for-blender/compare/v0.12-beta...v0.13-beta",
+        "htmlUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/tag/v0.13-beta",
+        "assets": [
+          {
+            "name": "Mozi_s_Facemocap_0.13-beta_Linux.zip",
+            "size": 166945266,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.13-beta/Mozi_s_Facemocap_0.13-beta_Linux.zip"
+          },
+          {
+            "name": "Mozi_s_Facemocap_0.13-beta_Windows.zip",
+            "size": 102108789,
+            "downloadCount": 5,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.13-beta/Mozi_s_Facemocap_0.13-beta_Windows.zip"
+          }
+        ]
+      },
+      {
+        "id": 218877938,
+        "tagName": "v0.12-beta",
+        "name": "Mozi's FacemoCap 0.12-beta",
+        "publishedAt": "2025-05-15T15:07:56Z",
+        "prerelease": false,
+        "body": "**Full Changelog**: https://github.com/mozi1924/mediapipe-facecap-for-blender/compare/modules-0.1...v0.12-beta",
+        "htmlUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/tag/v0.12-beta",
+        "assets": [
+          {
+            "name": "Mozi_s_Facemocap_0.12-beta_Linux.zip",
+            "size": 166943469,
+            "downloadCount": 7,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.12-beta/Mozi_s_Facemocap_0.12-beta_Linux.zip"
+          },
+          {
+            "name": "Mozi_s_Facemocap_0.12-beta_Windows.zip",
+            "size": 102106461,
+            "downloadCount": 7,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.12-beta/Mozi_s_Facemocap_0.12-beta_Windows.zip"
+          }
+        ]
+      },
+      {
+        "id": 218579962,
+        "tagName": "v0.11-beta",
+        "name": "Mozi's FacemoCap 0.11-beta",
+        "publishedAt": "2025-05-14T14:14:14Z",
+        "prerelease": false,
+        "body": "**Full Changelog**: https://github.com/mozi1924/mediapipe-facecap-for-blender/compare/v0.1-beta...v0.11-beta",
+        "htmlUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/tag/v0.11-beta",
+        "assets": [
+          {
+            "name": "Mozi_s_Facemocap_0.11-beta_Linux.zip",
+            "size": 166942937,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.11-beta/Mozi_s_Facemocap_0.11-beta_Linux.zip"
+          },
+          {
+            "name": "Mozi_s_Facemocap_0.11-beta_Windows.zip",
+            "size": 102107146,
+            "downloadCount": 2,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.11-beta/Mozi_s_Facemocap_0.11-beta_Windows.zip"
+          }
+        ]
+      },
+      {
+        "id": 218527605,
+        "tagName": "v0.1-beta",
+        "name": "FaceCap 0.1-beta",
+        "publishedAt": "2025-05-14T10:52:27Z",
+        "prerelease": false,
+        "body": "**Full Changelog**: https://github.com/mozi1924/mediapipe-facecap-for-blender/commits/v0.1-beta",
+        "htmlUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/tag/v0.1-beta",
+        "assets": [
+          {
+            "name": "FaceCap_0.1-beta_Linux.zip",
+            "size": 166941999,
+            "downloadCount": 1,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.1-beta/FaceCap_0.1-beta_Linux.zip"
+          },
+          {
+            "name": "FaceCap_0.1-beta_Windows.zip",
+            "size": 102105493,
+            "downloadCount": 3,
+            "downloadUrl": "https://github.com/mozi1924/mediapipe-facecap-for-blender/releases/download/v0.1-beta/FaceCap_0.1-beta_Windows.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "mctlilngxyz": {
+    "name": "mc.tlilng.xyz",
+    "slug": "mctlilngxyz",
+    "todo": null,
+    "releases": []
+  },
+  "wwwarasakaltd": {
+    "name": "www.arasaka.ltd",
+    "slug": "wwwarasakaltd",
+    "todo": null,
+    "releases": []
+  },
+  "hls_player": {
+    "name": "hls_player",
+    "slug": "hls_player",
+    "todo": null,
+    "releases": []
+  },
+  "micro-app-store": {
+    "name": "micro-app-store",
+    "slug": "micro-app-store",
+    "todo": null,
+    "releases": [
+      {
+        "id": 99920982,
+        "tagName": "micro-app-store-mdui",
+        "name": "1.0.0",
+        "publishedAt": "2023-04-18T14:16:40Z",
+        "prerelease": false,
+        "body": "Add Material Design ui\r\non http://127.0.0.1:5000/mdui",
+        "htmlUrl": "https://github.com/mozi1924/micro-app-store/releases/tag/micro-app-store-mdui",
+        "assets": []
+      },
+      {
+        "id": 99909098,
+        "tagName": "micro-app-store",
+        "name": "First Release",
+        "publishedAt": "2023-04-18T13:04:08Z",
+        "prerelease": false,
+        "body": "**Full Changelog**: https://github.com/mozi1924/micro-app-store/commits/micro-app-store",
+        "htmlUrl": "https://github.com/mozi1924/micro-app-store/releases/tag/micro-app-store",
+        "assets": []
+      }
+    ]
+  }
+}
