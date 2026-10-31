@@ -16,11 +16,17 @@ export interface PillIndicatorOptions {
   easing?: string;
   /** Whether to scroll target element into view within scrollable container. Default false */
   scrollIntoView?: boolean;
+  /** Whether to enable hover following across items within container */
+  hover?: boolean;
+  /** Selector for interactive items within container if hover is enabled, e.g. '[data-nav-link]' */
+  itemSelector?: string;
 }
 
 export interface PillIndicatorInstance {
   /** Move indicator to target element. If smooth is true, animates. If false, snaps instantly. If null, fades out. */
   moveTo: (target: HTMLElement | null, smooth?: boolean) => void;
+  /** Set the permanent active element (used as the return target when mouse leaves container) */
+  setActive: (target: HTMLElement | null, smooth?: boolean) => void;
   /** Recalculate and update position of the current active element */
   update: (smooth?: boolean) => void;
   /** Get current active element */
@@ -66,6 +72,7 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
   if (typeof window === "undefined" || typeof document === "undefined") {
     return {
       moveTo: () => {},
+      setActive: () => {},
       update: () => {},
       getActiveElement: () => null,
       destroy: () => {},
@@ -83,6 +90,7 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
   if (!container || !indicator) {
     return {
       moveTo: () => {},
+      setActive: () => {},
       update: () => {},
       getActiveElement: () => null,
       destroy: () => {},
@@ -100,19 +108,21 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
   const easing = options.easing ?? "cubic-bezier(0.16, 1, 0.3, 1)";
   const transitionStyle = `all ${duration}ms ${easing}`;
 
-  let currentActive: HTMLElement | null = options.initialActive ?? null;
+  let activeElement: HTMLElement | null = options.initialActive ?? null;
+  let currentTarget: HTMLElement | null = activeElement;
   let isDestroyed = false;
+  const cleanups: (() => void)[] = [];
 
   function moveTo(target: HTMLElement | null, smooth = true) {
     if (isDestroyed || !indicator || !container) return;
 
     if (!target) {
       indicator.style.opacity = "0";
-      currentActive = null;
+      currentTarget = null;
       return;
     }
 
-    currentActive = target;
+    currentTarget = target;
 
     // Check if element is displayed / connected
     if (
@@ -156,16 +166,37 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
     }
   }
 
+  function setActive(target: HTMLElement | null, smooth = true) {
+    activeElement = target;
+    moveTo(target, smooth);
+  }
+
   function update(smooth = false) {
-    if (currentActive) {
-      moveTo(currentActive, smooth);
+    if (activeElement) {
+      moveTo(activeElement, smooth);
     }
+  }
+
+  // Hover following support across nav items
+  if (options.hover && options.itemSelector) {
+    const items = container.querySelectorAll<HTMLElement>(options.itemSelector);
+    items.forEach((item) => {
+      const onEnter = () => moveTo(item, true);
+      item.addEventListener("mouseenter", onEnter);
+      cleanups.push(() => item.removeEventListener("mouseenter", onEnter));
+    });
+
+    const onLeave = () => {
+      moveTo(activeElement, true);
+    };
+    container.addEventListener("mouseleave", onLeave);
+    cleanups.push(() => container.removeEventListener("mouseleave", onLeave));
   }
 
   // Window resize handler (always snap without lag)
   const handleResize = () => {
-    if (currentActive) {
-      moveTo(currentActive, false);
+    if (activeElement) {
+      moveTo(activeElement, false);
     }
   };
   window.addEventListener("resize", handleResize);
@@ -173,8 +204,8 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
   // Sync with web font loading
   if (document.fonts?.ready) {
     document.fonts.ready.then(() => {
-      if (currentActive) {
-        moveTo(currentActive, false);
+      if (activeElement) {
+        moveTo(activeElement, false);
       }
     });
   }
@@ -183,6 +214,8 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
   function destroy() {
     isDestroyed = true;
     window.removeEventListener("resize", handleResize);
+    cleanups.forEach((fn) => fn());
+    cleanups.length = 0;
     if (indicator && (indicator as any)._pillController === instance) {
       delete (indicator as any)._pillController;
     }
@@ -193,19 +226,20 @@ export function createPillIndicator(options: PillIndicatorOptions): PillIndicato
 
   const instance: PillIndicatorInstance = {
     moveTo,
+    setActive,
     update,
-    getActiveElement: () => currentActive,
+    getActiveElement: () => activeElement,
     destroy,
   };
 
   (indicator as any)._pillController = instance;
 
   // Initial positioning: snap immediately and also on next RAF
-  if (currentActive) {
-    moveTo(currentActive, false);
+  if (activeElement) {
+    moveTo(activeElement, false);
     requestAnimationFrame(() => {
-      if (currentActive && !isDestroyed) {
-        moveTo(currentActive, false);
+      if (activeElement && !isDestroyed) {
+        moveTo(activeElement, false);
       }
     });
   }
