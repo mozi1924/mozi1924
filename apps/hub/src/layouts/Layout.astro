@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Analytics from "@mozi/ui/Analytics.astro";
 import StructuredData from "@mozi/ui/StructuredData.astro";
+import { ClientRouter } from "astro:transitions";
 import { MOZI_IDENTITY } from "@mozi/ui/siteConfig";
 
 interface Props {
@@ -69,6 +70,7 @@ const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
 
     <!-- SSOT Analytics (GA4 + Clarity) -->
     <Analytics />
+    <ClientRouter />
 
     <!-- SSOT Schema.org JSON-LD -->
     {schemaType ? (
@@ -95,7 +97,7 @@ const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
   </head>
   <body class="bg-[#111] min-h-[100dvh] flex flex-col selection:bg-blue-500/30 selection:text-white font-sans">
     <Header />
-    <main class="flex-grow pt-16">
+    <main class="flex-grow pt-16" transition:animate="fade">
       <slot />
     </main>
     <Footer />
