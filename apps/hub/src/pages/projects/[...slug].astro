@@ -101,7 +101,7 @@ function formatBytes(bytes: number) {
   schemaType="software"
   software={software}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 sm:pt-8 pb-20 md:pb-28 space-y-6 sm:space-y-8 min-w-0 w-full overflow-x-clip">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-20 md:pb-28 space-y-6 min-w-0 w-full overflow-x-clip [overflow-anchor:none]">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs sm:text-sm text-gray-400 min-w-0 max-w-full overflow-hidden">
       <a href="/" class="hover:text-blue-400 transition-colors flex items-center gap-1.5 shrink-0">
@@ -112,15 +112,12 @@ function formatBytes(bytes: number) {
       <span class="text-gray-200 font-mono truncate max-w-[160px] sm:max-w-none">{p.name}</span>
     </nav>
 
-    <!-- Project Showcase Header Card -->
-    <header class="rounded-2xl md:rounded-3xl border border-white/5 bg-[#18181b] p-5 sm:p-8 md:p-10 shadow-xl relative overflow-hidden min-w-0 max-w-full">
-      <!-- Glow gradient background -->
-      <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="relative z-10 flex flex-col lg:flex-row lg:items-start justify-between gap-6">
-        <div class="space-y-4 max-w-3xl min-w-0">
+    <!-- Project Showcase Header (De-boxed GitHub-style Repository Header) -->
+    <header class="pb-6 border-b border-white/10 min-w-0 max-w-full">
+      <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-5 sm:gap-6">
+        <div class="space-y-3.5 max-w-3xl min-w-0">
           <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-white flex flex-wrap items-center gap-2.5 sm:gap-3 break-words hyphens-auto">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white flex flex-wrap items-center gap-2.5 sm:gap-3 break-words hyphens-auto">
               <span>{p.name}</span>
               {latestRelease && (
                 <span class="text-xs sm:text-sm font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 shrink-0">
@@ -139,46 +136,46 @@ function formatBytes(bytes: number) {
             )}
           </div>
 
-          <p class="text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed break-words">
+          <p class="text-sm sm:text-base text-gray-300 leading-relaxed break-words">
             {p.description || "Open-source project on GitHub."}
           </p>
 
           <!-- Metadata Chips -->
-          <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs font-mono pt-1">
+          <div class="flex flex-wrap items-center gap-2 text-xs font-mono pt-0.5">
             {p.pinned && (
-              <div class="flex items-center gap-1.5 rounded-lg border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-blue-400 font-bold shrink-0">
+              <div class="flex items-center gap-1.5 rounded-md border border-blue-500/30 bg-blue-500/10 px-2.5 py-1 text-blue-400 font-bold shrink-0">
                 <span>Featured</span>
               </div>
             )}
 
             <!-- Language -->
-            <div class="flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-1 text-gray-200 shrink-0">
+            <div class="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-gray-200 shrink-0">
               <span class="w-2 h-2 rounded-full bg-blue-400"></span>
               <span>{p.language || "Other"}</span>
             </div>
 
             <!-- Stars -->
-            <div class="flex items-center gap-1.5 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-1 text-yellow-400 font-bold shrink-0">
+            <div class="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-yellow-400 font-bold shrink-0">
               <Icon name="star" className="w-3.5 h-3.5 fill-current" />
               <span>{p.stars} Stars</span>
             </div>
 
             <!-- Forks -->
-            <div class="flex items-center gap-1.5 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-1 text-cyan-400 font-bold shrink-0">
+            <div class="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-cyan-400 font-bold shrink-0">
               <Icon name="git-fork" className="w-3.5 h-3.5" strokeWidth={2} />
               <span>{p.forks} Forks</span>
             </div>
 
             <!-- License -->
             {p.license && (
-              <div class="rounded-lg border border-white/5 bg-white/[0.03] px-3 py-1 text-gray-300 shrink-0">
+              <div class="rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-gray-300 shrink-0">
                 License: <span class="text-white font-semibold">{p.license}</span>
               </div>
             )}
 
             <!-- Updated -->
             {formattedDate && (
-              <div class="rounded-lg border border-white/5 bg-white/[0.03] px-3 py-1 text-gray-400 shrink-0">
+              <div class="rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-gray-400 shrink-0">
                 Updated: {formattedDate}
               </div>
             )}
@@ -186,9 +183,9 @@ function formatBytes(bytes: number) {
 
           <!-- Topics -->
           {p.topics && p.topics.length > 0 && (
-            <div class="flex flex-wrap gap-1.5 pt-1">
+            <div class="flex flex-wrap gap-1.5 pt-0.5">
               {p.topics.map((topic: string) => (
-                <span class="rounded-md border border-white/5 bg-white/[0.03] px-2.5 py-0.5 text-xs font-mono text-gray-400">
+                <span class="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[11px] font-mono text-gray-400 hover:text-blue-300 transition-colors">
                   #{topic}
                 </span>
               ))}
@@ -197,12 +194,12 @@ function formatBytes(bytes: number) {
         </div>
 
         <!-- Action Buttons (Responsive on Mobile: stacked vertically on mobile, side-by-side on tablet/desktop) -->
-        <div class="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-stretch gap-2.5 sm:gap-3 w-full lg:w-auto shrink-0 pt-2 lg:pt-0">
+        <div class="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-stretch gap-2.5 w-full lg:w-auto shrink-0 pt-1 lg:pt-0">
           <a
             href={p.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500 shadow-lg shadow-blue-600/20 min-h-[44px] w-full sm:w-auto lg:w-full"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white transition-all hover:bg-blue-500 shadow-md shadow-blue-600/20 min-h-[40px] w-full sm:w-auto lg:w-full"
           >
             <Icon name="star" className="w-4 h-4 fill-current text-yellow-300" />
             <span>Star on GitHub</span>
@@ -212,7 +209,7 @@ function formatBytes(bytes: number) {
             href={p.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-gray-200 hover:bg-white/[0.08] hover:text-white transition-all min-h-[44px] w-full sm:w-auto lg:w-full"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2 text-xs sm:text-sm font-medium text-gray-200 hover:bg-white/[0.08] hover:text-white transition-all min-h-[40px] w-full sm:w-auto lg:w-full"
           >
             <Icon name="github" className="w-4 h-4" />
             <span>Source Code</span>
@@ -224,7 +221,7 @@ function formatBytes(bytes: number) {
               href={p.homepage}
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-500/20 bg-blue-500/10 px-5 py-2.5 text-sm font-medium text-blue-400 hover:bg-blue-500/20 transition-all min-h-[44px] w-full sm:w-auto lg:w-full"
+              class="inline-flex items-center justify-center gap-2 rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs sm:text-sm font-medium text-blue-400 hover:bg-blue-500/20 transition-all min-h-[40px] w-full sm:w-auto lg:w-full"
             >
               <span>Dedicated Page</span>
               <Icon name="arrow-right" className="w-3.5 h-3.5" />
@@ -234,94 +231,99 @@ function formatBytes(bytes: number) {
       </div>
     </header>
 
-    <!-- 2-Column Responsive Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start min-w-0 max-w-full">
-
-      <!-- LEFT COLUMN: Primary Content with Semantic Tabs (8 Cols) -->
-      <main class="lg:col-span-8 space-y-6 min-w-0 max-w-full">
-
-        <!-- Modern Accessible Tab Control (Only rendered if >1 tab exists) -->
-        {hasMultipleTabs && (
-          <div class="sticky top-[4.5rem] sm:top-20 z-20 pointer-events-none py-1">
+    <!-- Secondary Repository Navigation (Sticky GitHub-style Subnav across full width) -->
+    {hasMultipleTabs && (
+      <nav
+        aria-label="Repository Navigation"
+        class="sticky top-16 z-20 bg-[#111]/90 backdrop-blur-md border-b border-white/10 -mx-4 sm:-mx-6 px-4 sm:px-6 mb-2"
+      >
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+          <div
+            role="tablist"
+            id="project-tablist"
+            class="flex items-center gap-1 sm:gap-2 py-2 relative max-w-full overflow-x-auto no-scrollbar"
+          >
+            <!-- Smooth Sliding Highlight Indicator -->
             <div
-              role="tablist"
-              id="project-tablist"
-              class="pointer-events-auto inline-flex items-center gap-1.5 bg-[#18181b]/95 backdrop-blur-md border border-white/10 p-1.5 rounded-2xl shadow-xl relative max-w-full overflow-x-auto no-scrollbar"
-            >
-              <!-- Smooth Sliding Highlight Indicator (mirrors contribution calendar & header) -->
-              <div
-                id="tab-indicator"
-                class="absolute rounded-xl bg-blue-600 shadow-md shadow-blue-600/30 transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
-              ></div>
+              id="tab-indicator"
+              class="absolute rounded-lg bg-blue-600 shadow-sm transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
+            ></div>
 
+            <button
+              type="button"
+              id="tab-btn-readme"
+              onclick="window.switchTab('readme')"
+              class="tab-btn active relative z-10 h-9 px-3.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors duration-200 flex items-center gap-2 shrink-0 text-white cursor-pointer select-none"
+              role="tab"
+              aria-controls="panel-readme"
+              aria-selected="true"
+            >
+              <Icon name="file-text" className="w-4 h-4 text-blue-200 shrink-0" />
+              <span>README</span>
+            </button>
+
+            {hasTodo && (
               <button
                 type="button"
-                id="tab-btn-readme"
-                onclick="window.switchTab('readme')"
-                class="tab-btn active relative z-10 h-10 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 flex items-center gap-2 shrink-0 text-white cursor-pointer select-none"
+                id="tab-btn-todo"
+                onclick="window.switchTab('todo')"
+                class="tab-btn relative z-10 h-9 px-3.5 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-2 shrink-0 text-gray-400 hover:text-white cursor-pointer select-none"
                 role="tab"
-                aria-controls="panel-readme"
-                aria-selected="true"
+                aria-controls="panel-todo"
+                aria-selected="false"
               >
-                <Icon name="file-text" className="w-4 h-4 text-blue-200 shrink-0" />
-                <span>README</span>
+                <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                <span>TODO & 路线图</span>
+                {todo?.stats && (
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-500/15 text-amber-400 border border-amber-500/25 shrink-0">
+                    {todo.stats.percentage}%
+                  </span>
+                )}
               </button>
+            )}
 
-              {hasTodo && (
-                <button
-                  type="button"
-                  id="tab-btn-todo"
-                  onclick="window.switchTab('todo')"
-                  class="tab-btn relative z-10 h-10 px-4 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-2 shrink-0 text-gray-400 hover:text-white cursor-pointer select-none"
-                  role="tab"
-                  aria-controls="panel-todo"
-                  aria-selected="false"
-                >
-                  <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                  </svg>
-                  <span>TODO & 路线图</span>
-                  {todo?.stats && (
-                    <span class="px-2 py-0.5 rounded-full text-[11px] font-mono bg-amber-500/15 text-amber-400 border border-amber-500/25 shrink-0">
-                      {todo.stats.percentage}%
-                    </span>
-                  )}
-                </button>
-              )}
-
-              {hasReleases && (
-                <button
-                  type="button"
-                  id="tab-btn-releases"
-                  onclick="window.switchTab('releases')"
-                  class="tab-btn relative z-10 h-10 px-4 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-2 shrink-0 text-gray-400 hover:text-white cursor-pointer select-none"
-                  role="tab"
-                  aria-controls="panel-releases"
-                  aria-selected="false"
-                >
-                  <svg class="w-4 h-4 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                  <span>Releases</span>
-                  {latestRelease && (
-                    <span class="px-2 py-0.5 rounded-full text-[11px] font-mono bg-purple-500/15 text-purple-300 border border-purple-500/25 shrink-0">
-                      {latestRelease.tagName}
-                    </span>
-                  )}
-                </button>
-              )}
-            </div>
+            {hasReleases && (
+              <button
+                type="button"
+                id="tab-btn-releases"
+                onclick="window.switchTab('releases')"
+                class="tab-btn relative z-10 h-9 px-3.5 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-2 shrink-0 text-gray-400 hover:text-white cursor-pointer select-none"
+                role="tab"
+                aria-controls="panel-releases"
+                aria-selected="false"
+              >
+                <svg class="w-4 h-4 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <span>Releases</span>
+                {latestRelease && (
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-purple-500/15 text-purple-300 border border-purple-500/25 shrink-0">
+                    {latestRelease.tagName}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
-        )}
+        </div>
+      </nav>
+    )}
+
+    <!-- 2-Column Responsive Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-w-0 max-w-full">
+
+      <!-- LEFT COLUMN: Primary Content with Semantic Tabs (8 Cols on lg, 9 Cols on xl) -->
+      <main class="lg:col-span-8 xl:col-span-9 space-y-6 min-w-0 max-w-full">
 
         <!-- PANEL 1: README (Always available) -->
         <section
           id="panel-readme"
           role="tabpanel"
           aria-labelledby="tab-btn-readme"
-          class="tab-panel rounded-2xl md:rounded-3xl border border-white/5 bg-[#18181b] p-4 sm:p-8 md:p-10 shadow-sm min-w-0 max-w-full overflow-hidden"
+          class="tab-panel border border-white/10 rounded-xl bg-[#111113]/50 overflow-hidden shadow-sm min-w-0 max-w-full"
         >
-          <div class="mb-6 pb-4 border-b border-white/5 flex items-center justify-between text-xs font-mono text-gray-400">
+          <div class="px-4 py-2.5 border-b border-white/10 bg-white/[0.02] flex items-center justify-between text-xs font-mono text-gray-400">
             <div class="flex items-center gap-2 text-gray-300">
               <Icon name="file-text" className="w-4 h-4 text-blue-400" />
               <span class="font-bold">README.md</span>
@@ -337,8 +339,10 @@ function formatBytes(bytes: number) {
             </a>
           </div>
 
-          <div class="github-readme prose prose-invert prose-blue max-w-none break-words min-w-0 prose-pre:bg-[#111113] prose-pre:border prose-pre:border-white/5 prose-pre:rounded-xl prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 hover:prose-a:underline">
-            <Content />
+          <div class="p-4 sm:p-6 md:p-8 min-w-0">
+            <div class="github-readme prose prose-invert prose-blue max-w-none break-words min-w-0 prose-pre:bg-[#111113] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 hover:prose-a:underline">
+              <Content />
+            </div>
           </div>
         </section>
 
@@ -348,9 +352,9 @@ function formatBytes(bytes: number) {
             id="panel-todo"
             role="tabpanel"
             aria-labelledby="tab-btn-todo"
-            class="tab-panel hidden rounded-2xl md:rounded-3xl border border-white/5 bg-[#18181b] p-4 sm:p-8 md:p-10 shadow-sm min-w-0 max-w-full overflow-hidden"
+            class="tab-panel hidden border border-white/10 rounded-xl bg-[#111113]/50 overflow-hidden shadow-sm min-w-0 max-w-full"
           >
-            <div class="mb-6 pb-4 border-b border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+            <div class="px-4 py-2.5 border-b border-white/10 bg-white/[0.02] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
               <div class="flex items-center gap-2 text-gray-300">
                 <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -368,30 +372,32 @@ function formatBytes(bytes: number) {
               )}
             </div>
 
-            <!-- Visual Progress Bar Card -->
-            {todo.stats && todo.stats.total > 0 && (
-              <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-4 sm:p-5 mb-8">
-                <div class="flex items-center justify-between text-xs font-mono mb-2.5">
-                  <span class="text-gray-300 font-semibold">{p.name} 开发路线图完成度</span>
-                  <span class="text-blue-400 font-bold">{todo.stats.percentage}% Complete</span>
+            <div class="p-4 sm:p-6 md:p-8 min-w-0">
+              <!-- Visual Progress Bar Card -->
+              {todo.stats && todo.stats.total > 0 && (
+                <div class="bg-white/[0.02] border border-white/10 rounded-xl p-4 sm:p-5 mb-8">
+                  <div class="flex items-center justify-between text-xs font-mono mb-2.5">
+                    <span class="text-gray-300 font-semibold">{p.name} 开发路线图完成度</span>
+                    <span class="text-blue-400 font-bold">{todo.stats.percentage}% Complete</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden p-0.5">
+                    <div
+                      class="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-500"
+                      style={`width: ${Math.max(todo.stats.percentage, 4)}%`}
+                    ></div>
+                  </div>
+                  <p class="mt-2.5 text-xs text-gray-400">
+                    数据提取自最新 Git 主干仓库内 <code>{todo.filename}</code> 规范任务列表。
+                  </p>
                 </div>
-                <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden p-0.5">
-                  <div
-                    class="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-500"
-                    style={`width: ${Math.max(todo.stats.percentage, 4)}%`}
-                  ></div>
-                </div>
-                <p class="mt-2.5 text-xs text-gray-400">
-                  数据提取自最新 Git 主干仓库内 <code>{todo.filename}</code> 规范任务列表。
-                </p>
-              </div>
-            )}
+              )}
 
-            <!-- Rendered Markdown for TODO -->
-            <div
-              class="github-readme prose prose-invert prose-blue max-w-none break-words min-w-0 prose-pre:bg-[#111113] prose-pre:border prose-pre:border-white/5 prose-pre:rounded-xl prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 hover:prose-a:underline"
-              set:html={todoHtml}
-            />
+              <!-- Rendered Markdown for TODO -->
+              <div
+                class="github-readme prose prose-invert prose-blue max-w-none break-words min-w-0 prose-pre:bg-[#111113] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 hover:prose-a:underline"
+                set:html={todoHtml}
+              />
+            </div>
           </section>
         )}
 
@@ -401,9 +407,9 @@ function formatBytes(bytes: number) {
             id="panel-releases"
             role="tabpanel"
             aria-labelledby="tab-btn-releases"
-            class="tab-panel hidden rounded-2xl md:rounded-3xl border border-white/5 bg-[#18181b] p-4 sm:p-8 md:p-10 shadow-sm min-w-0 max-w-full overflow-hidden"
+            class="tab-panel hidden border border-white/10 rounded-xl bg-[#111113]/50 overflow-hidden shadow-sm min-w-0 max-w-full"
           >
-            <div class="mb-6 pb-4 border-b border-white/5 flex items-center justify-between text-xs font-mono text-gray-400">
+            <div class="px-4 py-2.5 border-b border-white/10 bg-white/[0.02] flex items-center justify-between text-xs font-mono text-gray-400">
               <div class="flex items-center gap-2 text-gray-300">
                 <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -412,6 +418,8 @@ function formatBytes(bytes: number) {
               </div>
               <span class="text-gray-500">GitHub Releases API</span>
             </div>
+
+            <div class="p-4 sm:p-6 md:p-8 min-w-0">
 
             <!-- Releases Timeline -->
             <div class="space-y-8 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-white/10">
@@ -466,7 +474,7 @@ function formatBytes(bytes: number) {
                     <!-- Changelog body -->
                     {release.bodyHtml && (
                       <div
-                        class="p-4 sm:p-5 rounded-2xl border border-white/5 bg-white/[0.015] github-readme prose prose-invert prose-blue max-w-none text-xs sm:text-sm text-gray-300 min-w-0"
+                        class="p-4 sm:p-5 rounded-lg border border-white/10 bg-white/[0.015] github-readme prose prose-invert prose-blue max-w-none text-xs sm:text-sm text-gray-300 min-w-0"
                         set:html={release.bodyHtml}
                       />
                     )}
@@ -483,7 +491,7 @@ function formatBytes(bytes: number) {
                               href={asset.downloadUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              class="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group min-w-0"
+                              class="flex items-center justify-between p-3 rounded-lg border border-white/10 bg-white/[0.02] hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group min-w-0"
                             >
                               <div class="flex items-center gap-2.5 truncate mr-2 min-w-0">
                                 <svg
@@ -513,16 +521,20 @@ function formatBytes(bytes: number) {
                 );
               })}
             </div>
+            </div>
           </section>
         )}
 
       </main>
 
-      <!-- RIGHT COLUMN: Sticky Intelligence Sidebar (4 Cols) -->
-      <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-20 min-w-0 max-w-full">
+      <!-- RIGHT COLUMN: Flat Cohesive Sidebar (4 Cols on lg, 3 Cols on xl) -->
+      <aside class:list={[
+        "lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky min-w-0 max-w-full",
+        hasMultipleTabs ? "lg:top-28" : "lg:top-20"
+      ]}>
 
-        <!-- Widget 1: Quick Access & Install Card -->
-        <div class="rounded-2xl border border-white/5 bg-[#18181b] p-5 sm:p-6 shadow-sm space-y-4 min-w-0">
+        <!-- Section 1: Quick Access & Install -->
+        <div class="space-y-3 min-w-0">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold flex items-center gap-2">
               <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -550,7 +562,7 @@ function formatBytes(bytes: number) {
                 <span id="copy-btn-text">Copy</span>
               </button>
             </div>
-            <div class="p-2.5 rounded-xl bg-[#111113] border border-white/5 font-mono text-xs text-gray-300 break-all select-all">
+            <div class="p-2.5 rounded-lg bg-[#161b22] border border-white/10 font-mono text-xs text-gray-300 break-all select-all">
               <code>git clone {p.repoUrl}.git</code>
             </div>
           </div>
@@ -560,7 +572,7 @@ function formatBytes(bytes: number) {
             <button
               type="button"
               onclick="window.switchTabAndScroll('releases')"
-              class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600/15 border border-blue-500/30 px-4 py-2.5 text-xs font-semibold text-blue-400 hover:bg-blue-600/25 transition-all cursor-pointer group"
+              class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600/15 border border-blue-500/30 px-3.5 py-2 text-xs font-semibold text-blue-400 hover:bg-blue-600/25 transition-all cursor-pointer group"
             >
               <svg class="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -572,7 +584,7 @@ function formatBytes(bytes: number) {
               href={p.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-xs font-semibold text-gray-300 hover:bg-white/[0.06] hover:text-white transition-all"
+              class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2 text-xs font-semibold text-gray-300 hover:bg-white/[0.06] hover:text-white transition-all"
             >
               <Icon name="github" className="w-4 h-4" />
               <span>Explore GitHub Repository</span>
@@ -580,9 +592,9 @@ function formatBytes(bytes: number) {
           )}
         </div>
 
-        <!-- Widget 2: Roadmap Pulse (Only rendered if TODO exists) -->
+        <!-- Section 2: Roadmap Pulse (Only rendered if TODO exists) -->
         {hasTodo && todo.stats && (
-          <div class="rounded-2xl border border-white/5 bg-[#18181b] p-5 sm:p-6 shadow-sm space-y-4 min-w-0">
+          <div class="border-t border-white/10 pt-5 space-y-3 min-w-0">
             <div class="flex items-center justify-between">
               <h2 class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold flex items-center gap-2">
                 <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -602,7 +614,7 @@ function formatBytes(bytes: number) {
               ></div>
             </div>
 
-            <div class="space-y-2 text-xs">
+            <div class="space-y-1.5 text-xs">
               <div class="flex items-center justify-between text-gray-400">
                 <span>任务执行状态:</span>
                 <span class="text-gray-200 font-mono">
@@ -620,16 +632,16 @@ function formatBytes(bytes: number) {
             <button
               type="button"
               onclick="window.switchTabAndScroll('todo')"
-              class="w-full text-center text-xs text-amber-400 hover:text-amber-300 font-medium py-2 rounded-xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors cursor-pointer"
+              class="w-full text-center text-xs text-amber-400 hover:text-amber-300 font-medium py-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors cursor-pointer"
             >
               查看完整路线图清单 →
             </button>
           </div>
         )}
 
-        <!-- Widget 3: 近似项目 (Related Projects via GitHub Topics) -->
+        <!-- Section 3: 近似项目 (Related Projects via GitHub Topics) -->
         {relatedProjects.length > 0 && (
-          <div class="rounded-2xl border border-white/5 bg-[#18181b] p-5 sm:p-6 shadow-sm space-y-3 min-w-0">
+          <div class="border-t border-white/10 pt-5 space-y-3 min-w-0">
             <h2 class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold flex items-center gap-2">
               <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -637,11 +649,11 @@ function formatBytes(bytes: number) {
               <span>近似项目 (Related Projects)</span>
             </h2>
 
-            <div class="space-y-2.5 pt-1">
+            <div class="space-y-2 pt-0.5">
               {relatedProjects.map((item: any) => (
                 <a
                   href={`/projects/${item.project.slug || item.project.name.toLowerCase()}`}
-                  class="block p-3 rounded-xl border border-white/5 bg-white/[0.015] hover:bg-white/[0.04] hover:border-white/10 transition-all group min-w-0"
+                  class="block p-2.5 rounded-lg border border-white/5 bg-white/[0.015] hover:bg-white/[0.04] hover:border-white/10 transition-all group min-w-0"
                 >
                   <div class="flex items-center justify-between">
                     <span class="text-xs font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors truncate">
@@ -674,28 +686,28 @@ function formatBytes(bytes: number) {
           </div>
         )}
 
-        <!-- Widget 4: Repository Details (Metadata) -->
-        <div class="rounded-2xl border border-white/5 bg-[#18181b] p-5 sm:p-6 shadow-sm space-y-3 text-xs font-mono text-gray-400 min-w-0">
+        <!-- Section 4: Repository Details (Metadata) -->
+        <div class="border-t border-white/10 pt-5 space-y-3 text-xs font-mono text-gray-400 min-w-0">
           <h2 class="uppercase tracking-wider font-bold text-gray-300">
             Repository Details
           </h2>
-          <div class="divide-y divide-white/5 space-y-2.5">
-            <div class="flex justify-between pt-2.5">
+          <div class="divide-y divide-white/5 space-y-2">
+            <div class="flex justify-between pt-2">
               <span>Default Branch</span>
               <span class="text-white font-medium">{p.defaultBranch}</span>
             </div>
-            <div class="flex justify-between pt-2.5">
+            <div class="flex justify-between pt-2">
               <span>Primary Language</span>
               <span class="text-white font-medium">{p.language || "Other"}</span>
             </div>
             {p.license && (
-              <div class="flex justify-between pt-2.5">
+              <div class="flex justify-between pt-2">
                 <span>License</span>
                 <span class="text-white font-medium">{p.license}</span>
               </div>
             )}
             {relativeUpdate && (
-              <div class="flex justify-between pt-2.5">
+              <div class="flex justify-between pt-2">
                 <span>Last Updated</span>
                 <span class="text-white font-medium">{relativeUpdate}</span>
               </div>
@@ -764,13 +776,13 @@ function formatBytes(bytes: number) {
       }
     };
 
-    // Switch tab and smooth scroll to target panel (with fixed header offset compensation)
+    // Switch tab and smooth scroll to target panel (with fixed header + subnav offset compensation)
     window.switchTabAndScroll = function (tabId) {
       window.switchTab(tabId);
       const panel = document.getElementById("panel-" + tabId);
       if (panel) {
-        // Offset for 64px fixed header + 26px breathing room
-        const headerOffset = 90;
+        // Offset for 64px fixed header + 52px sticky subnav + 14px breathing room
+        const headerOffset = 130;
         const elementPosition = panel.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({
