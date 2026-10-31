@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import { marked } from "marked";
 import Layout from "../../layouts/Layout.astro";
 import Icon from "@mozi/ui/Icon.astro";
+import PillIndicator from "@mozi/ui/PillIndicator.astro";
 import { MOZI_IDENTITY } from "@mozi/ui/siteConfig";
 import projectDetailsMap from "../../data/project-details.json";
 import allProjectsSummary from "../../data/projects.json";
@@ -311,10 +312,7 @@ function formatBytes(bytes: number) {
             class="flex items-center gap-1 sm:gap-2 py-2 relative max-w-full overflow-x-auto no-scrollbar"
           >
             <!-- Smooth Sliding Highlight Indicator -->
-            <div
-              id="tab-indicator"
-              class="absolute rounded-lg bg-blue-600 shadow-sm transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
-            ></div>
+            <PillIndicator id="tab-indicator" variant="solid-blue" />
 
             <button
               type="button"
@@ -787,32 +785,29 @@ function formatBytes(bytes: number) {
     </div>
   </div>
 
-  <script is:inline>
-    // Smooth sliding highlight indicator (matches ContributionCalendar and HeaderNav)
-    function updateTabIndicator(targetBtn, smooth = true) {
+  <script>
+    import { createPillIndicator, type PillIndicatorInstance } from "@mozi/ui/utils/pillIndicator";
+
+    let tabPill: PillIndicatorInstance | null = null;
+
+    function getOrCreatePill() {
+      const container = document.getElementById("project-tablist");
       const indicator = document.getElementById("tab-indicator");
-      if (!indicator || !targetBtn) return;
+      if (!container || !indicator) return null;
 
-      if (!smooth) {
-        indicator.style.transition = "none";
-      } else {
-        indicator.style.transition = "all 300ms cubic-bezier(0.16, 1, 0.3, 1)";
+      if (!tabPill) {
+        tabPill = createPillIndicator({
+          container,
+          indicator,
+          scrollIntoView: true,
+        });
       }
-
-      indicator.style.left = `${targetBtn.offsetLeft}px`;
-      indicator.style.top = `${targetBtn.offsetTop}px`;
-      indicator.style.width = `${targetBtn.offsetWidth}px`;
-      indicator.style.height = `${targetBtn.offsetHeight}px`;
-      indicator.style.opacity = "1";
-
-      if (!smooth) {
-        void indicator.offsetHeight;
-        indicator.style.transition = "";
-      }
+      return tabPill;
     }
 
     // Tab switching logic compliant with accessible ARIA standards & URL fragments
-    window.switchTab = function (tabId, updateUrl = true) {
+    (window as any).switchTab = function (tabId: string, updateUrl = true) {
+      const pill = getOrCreatePill();
       const tabs = ["readme", "todo", "releases"];
       tabs.forEach((t) => {
         const btn = document.getElementById(`tab-btn-${t}`);
@@ -824,7 +819,7 @@ function formatBytes(bytes: number) {
             btn.classList.add("text-white", "font-semibold");
             btn.classList.remove("text-gray-400", "font-medium");
             btn.setAttribute("aria-selected", "true");
-            updateTabIndicator(btn, true);
+            pill?.moveTo(btn, true);
           }
           panel.classList.remove("hidden");
         } else {
@@ -844,8 +839,8 @@ function formatBytes(bytes: number) {
     };
 
     // Switch tab and smooth scroll to target panel (with fixed header + subnav offset compensation)
-    window.switchTabAndScroll = function (tabId) {
-      window.switchTab(tabId, true);
+    (window as any).switchTabAndScroll = function (tabId: string) {
+      (window as any).switchTab(tabId, true);
       const panel = document.getElementById("panel-" + tabId);
       if (panel) {
         // Offset for 64px fixed header + 52px sticky subnav + 14px breathing room
@@ -866,19 +861,11 @@ function formatBytes(bytes: number) {
       const targetBtn = document.getElementById(`tab-btn-${activeTab}`) || document.getElementById("tab-btn-readme");
 
       // Don't inject #readme into URL if the user visited with a clean URL path
-      window.switchTab(activeTab, Boolean(hash));
+      (window as any).switchTab(activeTab, Boolean(hash));
 
       if (targetBtn) {
-        updateTabIndicator(targetBtn, false);
-        requestAnimationFrame(() => {
-          updateTabIndicator(targetBtn, false);
-        });
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(() => {
-            const curBtn = document.querySelector(".tab-btn[aria-selected='true']");
-            if (curBtn) updateTabIndicator(curBtn, false);
-          });
-        }
+        const pill = getOrCreatePill();
+        pill?.moveTo(targetBtn, false);
       }
     }
 
@@ -886,23 +873,21 @@ function formatBytes(bytes: number) {
     initTabs();
 
     // Astro View Transitions: fires every time a page is entered via client-side routing
-    document.addEventListener("astro:page-load", initTabs);
+    document.addEventListener("astro:page-load", () => {
+      tabPill?.destroy();
+      tabPill = null;
+      initTabs();
+    });
 
     // Browser back/forward navigation support
     window.addEventListener("hashchange", () => {
       const hash = window.location.hash.replace("#", "");
       const activeTab = ["readme", "todo", "releases"].includes(hash) ? hash : "readme";
-      window.switchTab(activeTab, false);
-    });
-
-    // Resize handler
-    window.addEventListener("resize", () => {
-      const curBtn = document.querySelector(".tab-btn[aria-selected='true']");
-      if (curBtn) updateTabIndicator(curBtn, false);
+      (window as any).switchTab(activeTab, false);
     });
 
     // Copy to clipboard helper
-    window.copyToClipboard = function (text) {
+    (window as any).copyToClipboard = function (text: string) {
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text);
         const label = document.getElementById("copy-btn-text");

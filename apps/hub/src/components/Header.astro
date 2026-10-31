@@ -1,5 +1,6 @@
 ---
 import Icon from "@mozi/ui/Icon.astro";
+import PillIndicator from "@mozi/ui/PillIndicator.astro";
 
 const currentPath = Astro.url.pathname;
 
@@ -50,11 +51,7 @@ const navLinks = [
       id="desktop-nav"
       class="hidden md:flex items-center gap-1 relative px-1 py-1 bg-white/[0.03] rounded-xl border border-white/5"
     >
-      <div
-        id="nav-indicator"
-        class="absolute bg-white/10 rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
-      >
-      </div>
+      <PillIndicator id="nav-indicator" variant="subtle" />
       {
         navLinks.map((link) => {
           const isExternal = link.external;
@@ -237,6 +234,7 @@ const navLinks = [
 <script>
   import { initProgressBar } from "@mozi/ui/scripts/progress-bar";
   import { scrollLock } from "@mozi/ui/utils/scrollLock";
+  import { createPillIndicator } from "@mozi/ui/utils/pillIndicator";
 
   function setupHeader() {
     const btn = document.getElementById("mobile-menu-btn");
@@ -298,19 +296,15 @@ const navLinks = [
         return href === "/"
           ? currentPath === "/" || currentPath.startsWith("/projects")
           : href && currentPath.startsWith(href);
-      });
+      }) as HTMLElement | undefined;
 
-      if (activeLink) {
-        const rect = activeLink.getBoundingClientRect();
-        const navRect = nav.getBoundingClientRect();
-        indicator.style.width = `${rect.width}px`;
-        indicator.style.height = `${rect.height}px`;
-        indicator.style.left = `${rect.left - navRect.left}px`;
-        indicator.style.top = `${rect.top - navRect.top}px`;
-        indicator.style.opacity = "1";
-      } else {
-        indicator.style.opacity = "0";
-      }
+      const isInitial = indicator.style.opacity === "0" || !indicator.style.left;
+      const navPill = createPillIndicator({
+        container: nav,
+        indicator,
+        initialActive: activeLink ?? null,
+      });
+      navPill.moveTo(activeLink ?? null, !isInitial);
     }
   }
 

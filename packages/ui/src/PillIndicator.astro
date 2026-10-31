@@ -1,0 +1,33 @@
+---
+interface Props {
+  id?: string;
+  class?: string;
+  variant?: "subtle" | "brand" | "blue" | "solid-blue";
+}
+
+const {
+  id = "pill-indicator",
+  class: className = "",
+  variant = "brand",
+} = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  // Subtle white highlight for navigation links
+  subtle: "bg-white/10",
+  // Brand glow border/background for segmented controls (Catalog status)
+  brand: "bg-blue-500/15 border border-blue-500/30 shadow-sm",
+  // Deeper blue border/background for contribution calendar years
+  blue: "bg-blue-500/20 border border-blue-500/40 shadow-sm",
+  // Solid blue pill for secondary subnav (Project details)
+  "solid-blue": "bg-blue-600 shadow-sm",
+};
+
+const baseClass = "absolute rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0";
+const selectedVariant = variantClasses[variant] || "";
+---
+
+<div
+  id={id}
+  class:list={[baseClass, selectedVariant, className]}
+  aria-hidden="true"
+></div>

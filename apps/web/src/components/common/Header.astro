@@ -1,5 +1,6 @@
 ---
 import Icon from "../ui/Icon.astro";
+import PillIndicator from "@mozi/ui/PillIndicator.astro";
 import { NAV_LINKS } from "../../menu";
 import { SITE } from "../../config";
 import Search from "../search/Search.astro";
@@ -47,11 +48,7 @@ const currentPath = normalizePath(pathname);
       id="desktop-nav"
       class="hidden md:flex items-center gap-1 relative px-1 py-1 bg-white/[0.03] rounded-xl border border-white/5"
     >
-      <div
-        id="nav-indicator"
-        class="absolute bg-white/10 rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
-      >
-      </div>
+      <PillIndicator id="nav-indicator" variant="subtle" />
       {
         NAV_LINKS.map((link) => {
           const isExternal = link.external || link.href.startsWith("http");
@@ -140,11 +137,7 @@ const currentPath = normalizePath(pathname);
         id="mobile-links-container"
         class="flex flex-col items-center space-y-4 w-full max-w-[280px] relative"
       >
-        <div
-          id="mobile-nav-indicator"
-          class="absolute bg-white/10 rounded-lg transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
-        >
-        </div>
+        <PillIndicator id="mobile-nav-indicator" variant="subtle" />
         {
           NAV_LINKS.map((link) => {
             const isExternal = link.external || link.href.startsWith("http");
@@ -261,6 +254,7 @@ const currentPath = normalizePath(pathname);
 <script>
   import { initProgressBar } from "../../scripts/progress-bar";
   import { scrollLock } from "../../utils/scroll-lock";
+  import { createPillIndicator } from "@mozi/ui/utils/pillIndicator";
 
   const setupMobileMenu = () => {
     const btn = document.getElementById("mobile-menu-btn");
@@ -274,21 +268,10 @@ const currentPath = normalizePath(pathname);
       let isOpen = false;
       let openTimeout: ReturnType<typeof setTimeout> | undefined;
 
-      const updateIndicator = (el: Element | null) => {
-        if (el) {
-          const target = el as HTMLElement;
-          const rect = target.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-
-          indicator.style.width = `${rect.width}px`;
-          indicator.style.height = `${rect.height}px`;
-          indicator.style.left = `${rect.left - containerRect.left}px`;
-          indicator.style.top = `${rect.top - containerRect.top}px`;
-          indicator.style.opacity = "1";
-        } else {
-          indicator.style.opacity = "0";
-        }
-      };
+      const mobilePill = createPillIndicator({
+        container,
+        indicator,
+      });
 
       const getActiveLink = () => {
         const pathname = window.location.pathname;
@@ -302,7 +285,7 @@ const currentPath = normalizePath(pathname);
             href === "/" ? currentPath === "/" : currentPath.startsWith(href!);
           if (isActive) activeLink = link;
         });
-        return activeLink;
+        return activeLink as HTMLElement | null;
       };
 
       const toggleMenu = (forceClose = false) => {
@@ -322,7 +305,7 @@ const currentPath = normalizePath(pathname);
             header.classList.add("is-menu-open");
             isOpen = true;
             // Update indicator when menu opens
-            setTimeout(() => updateIndicator(getActiveLink()), 100);
+            mobilePill.moveTo(getActiveLink(), false);
           }, 50);
         }
       };
@@ -339,8 +322,6 @@ const currentPath = normalizePath(pathname);
       const handleResize = () => {
         if (window.innerWidth >= 768 && isOpen) {
           toggleMenu(true);
-        } else if (isOpen) {
-          updateIndicator(getActiveLink());
         }
       };
       window.addEventListener("resize", handleResize);
@@ -354,21 +335,10 @@ const currentPath = normalizePath(pathname);
 
     if (!nav || !indicator) return;
 
-    const updateIndicator = (el: Element | null) => {
-      if (el) {
-        const target = el as HTMLElement;
-        const rect = target.getBoundingClientRect();
-        const navRect = nav.getBoundingClientRect();
-
-        indicator.style.width = `${rect.width}px`;
-        indicator.style.height = `${rect.height}px`;
-        indicator.style.left = `${rect.left - navRect.left}px`;
-        indicator.style.top = `${rect.top - navRect.top}px`;
-        indicator.style.opacity = "1";
-      } else {
-        indicator.style.opacity = "0";
-      }
-    };
+    const desktopPill = createPillIndicator({
+      container: nav,
+      indicator,
+    });
 
     const getActiveLink = () => {
       const pathname = window.location.pathname;
@@ -384,18 +354,11 @@ const currentPath = normalizePath(pathname);
           (href === "/" ? currentPath === "/" : currentPath.startsWith(href!));
         if (isActive) activeLink = link;
       });
-      return activeLink;
+      return activeLink as HTMLElement | null;
     };
 
-    // Initial position - only update to active link
-    setTimeout(() => {
-      updateIndicator(getActiveLink());
-    }, 100);
-
-    // Remove mouseenter/mouseleave movement listeners to prevent indicator from following hover
-    window.addEventListener("resize", () => {
-      updateIndicator(getActiveLink());
-    });
+    const isInitial = indicator.style.opacity === "0" || !indicator.style.left;
+    desktopPill.moveTo(getActiveLink(), !isInitial);
   };
 
   const updateActiveLinks = () => {

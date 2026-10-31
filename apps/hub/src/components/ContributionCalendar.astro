@@ -1,4 +1,5 @@
 ---
+import PillIndicator from "@mozi/ui/PillIndicator.astro";
 import contributionsData from "../data/contributions.json";
 
 interface Props {
@@ -45,10 +46,7 @@ function formatYearLabel(yearKey: string) {
         id="year-buttons"
       >
         <!-- Smooth Sliding Highlight Indicator (mirrors header nav) -->
-        <div
-          id="year-indicator"
-          class="absolute rounded-lg bg-blue-500/20 border border-blue-500/40 shadow-sm transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
-        ></div>
+        <PillIndicator id="year-indicator" variant="blue" />
 
         {availableYears.map((yearKey: string) => {
           const isInitial = yearKey === initialYear;
@@ -200,6 +198,8 @@ function formatYearLabel(yearKey: string) {
 </style>
 
 <script>
+  import { createPillIndicator } from "@mozi/ui/utils/pillIndicator";
+
   function setupContributionCalendar() {
     const rawDataElem = document.getElementById("contributions-raw-data");
     const totalCountElem = document.getElementById("cal-total-count");
@@ -221,52 +221,14 @@ function formatYearLabel(yearKey: string) {
       return;
     }
 
-    // 1. Sliding highlight indicator logic (mirrors main site nav)
-    function updateYearIndicator(targetBtn: HTMLElement | null, smooth = true) {
-      if (!targetBtn || !yearIndicator) return;
-      if (!smooth) {
-        yearIndicator.style.transition = "none";
-      } else {
-        yearIndicator.style.transition = "all 300ms cubic-bezier(0.16, 1, 0.3, 1)";
-      }
-
-      yearIndicator.style.left = `${targetBtn.offsetLeft}px`;
-      yearIndicator.style.top = `${targetBtn.offsetTop}px`;
-      yearIndicator.style.width = `${targetBtn.offsetWidth}px`;
-      yearIndicator.style.height = `${targetBtn.offsetHeight}px`;
-      yearIndicator.style.opacity = "1";
-
-      if (!smooth) {
-        void yearIndicator.offsetHeight;
-        yearIndicator.style.transition = "";
-      }
-    }
-
-    // Initialize indicator on the active button
+    // 1. Sliding highlight indicator logic
     const initialActiveBtn = (yearContainer?.querySelector(".year-btn.active") || yearButtons[0]) as HTMLElement;
-    if (initialActiveBtn) {
-      requestAnimationFrame(() => {
-        updateYearIndicator(initialActiveBtn, false);
-      });
-      document.fonts?.ready?.then(() => {
-        const cur = yearContainer?.querySelector(".year-btn.active") as HTMLElement;
-        if (cur) updateYearIndicator(cur, false);
-      });
-    }
-
-    const handleResize = () => {
-      const cur = yearContainer?.querySelector(".year-btn.active") as HTMLElement;
-      if (cur) updateYearIndicator(cur, false);
-    };
-    window.addEventListener("resize", handleResize);
-
-    document.addEventListener(
-      "astro:before-swap",
-      () => {
-        window.removeEventListener("resize", handleResize);
-      },
-      { once: true }
-    );
+    const yearPill = createPillIndicator({
+      container: yearContainer,
+      indicator: yearIndicator,
+      initialActive: initialActiveBtn,
+      scrollIntoView: true,
+    });
 
     // 2. Tooltip logic
     function bindCellTooltips() {
@@ -311,7 +273,7 @@ function formatYearLabel(yearKey: string) {
         btn.classList.remove("text-gray-400");
 
         // Smoothly slide the indicator to the clicked button
-        updateYearIndicator(btn as HTMLElement, true);
+        yearPill.moveTo(btn as HTMLElement, true);
 
         const data = allData.years[yearKey];
 
