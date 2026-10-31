@@ -2,9 +2,8 @@
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import Analytics from "@mozi/ui/Analytics.astro";
+import BaseHead from "@mozi/ui/BaseHead.astro";
 import StructuredData from "@mozi/ui/StructuredData.astro";
-import { ClientRouter } from "astro:transitions";
 import { MOZI_IDENTITY } from "@mozi/ui/siteConfig";
 
 interface Props {
@@ -41,59 +40,36 @@ const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
 <!doctype html>
 <html lang="en" class="scroll-smooth bg-[#111] text-gray-100 antialiased">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate icon" href="/favicon.ico" />
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="canonical" href={canonicalURL} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-
-    <title>{formattedTitle}</title>
-    <meta name="description" content={description} />
-    <meta name="keywords" content="mozi1924, Mozi Arasaka, Blender, Rust, Minecraft, DCC, AI, Open Source, GitHub" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content={type} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={formattedTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImageUrl} />
-
-    <!-- Twitter Card -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={formattedTitle} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={ogImageUrl} />
-
-    <!-- SSOT Analytics (GA4 + Clarity) -->
-    <Analytics />
-    <ClientRouter />
-
-    <!-- SSOT Schema.org JSON-LD -->
-    {schemaType ? (
-      <StructuredData
-        type={schemaType}
-        title={formattedTitle}
-        description={description}
-        canonicalURL={canonicalURL}
-        image={ogImageUrl}
-        software={software}
-        customSchema={schemaData}
-      />
-    ) : schemaData ? (
-      <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
-    ) : (
-      <StructuredData
-        type="website"
-        title={formattedTitle}
-        description={description}
-        canonicalURL={canonicalURL}
-        image={ogImageUrl}
-      />
-    )}
+    <BaseHead
+      title={formattedTitle}
+      description={description}
+      canonicalURL={canonicalURL}
+      image={ogImageUrl}
+      type={type}
+    >
+      <!-- SSOT Schema.org JSON-LD -->
+      {schemaType ? (
+        <StructuredData
+          type={schemaType}
+          title={formattedTitle}
+          description={description}
+          canonicalURL={canonicalURL}
+          image={ogImageUrl}
+          software={software}
+          customSchema={schemaData}
+        />
+      ) : schemaData ? (
+        <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+      ) : (
+        <StructuredData
+          type="website"
+          title={formattedTitle}
+          description={description}
+          canonicalURL={canonicalURL}
+          image={ogImageUrl}
+        />
+      )}
+    </BaseHead>
   </head>
   <body class="bg-[#111] min-h-[100dvh] flex flex-col selection:bg-blue-500/30 selection:text-white font-sans">
     <Header />

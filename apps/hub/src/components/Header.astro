@@ -236,6 +236,7 @@ const navLinks = [
 
 <script>
   import { initProgressBar } from "@mozi/ui/scripts/progress-bar";
+  import { scrollLock } from "@mozi/ui/utils/scrollLock";
 
   function setupHeader() {
     const btn = document.getElementById("mobile-menu-btn");
@@ -249,11 +250,11 @@ const navLinks = [
         if (isOpen) {
           menu.classList.add("is-open");
           header.classList.add("is-menu-open");
-          document.body.style.overflow = "hidden";
+          scrollLock.lock();
         } else {
           menu.classList.remove("is-open");
           header.classList.remove("is-menu-open");
-          document.body.style.overflow = "";
+          scrollLock.unlock();
         }
       };
 
@@ -262,7 +263,7 @@ const navLinks = [
           isOpen = false;
           menu.classList.remove("is-open");
           header.classList.remove("is-menu-open");
-          document.body.style.overflow = "";
+          scrollLock.unlock();
         };
       });
     }
@@ -319,5 +320,6 @@ const navLinks = [
   document.addEventListener("astro:page-load", () => {
     initProgressBar();
     setupHeader();
+    scrollLock.clear();
   });
 </script>

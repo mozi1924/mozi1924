@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./Icon.astro": "./src/Icon.astro",
+    "./BaseHead.astro": "./src/BaseHead.astro",
     "./Footer.astro": "./src/Footer.astro",
     "./ProjectCard.astro": "./src/ProjectCard.astro",
     "./Analytics.astro": "./src/Analytics.astro",
@@ -11,6 +12,8 @@
     "./siteConfig": "./src/siteConfig.ts",
     "./scripts/progress-bar": "./src/scripts/progress-bar.ts",
     "./scripts/*": "./src/scripts/*.ts",
+    "./utils/scrollLock": "./src/utils/scrollLock.ts",
+    "./utils/*": "./src/utils/*.ts",
     "./styles/*": "./src/styles/*",
     "./types": "./src/types.ts",
     "./pinnedProjects": "./src/data/pinnedProjects.ts",

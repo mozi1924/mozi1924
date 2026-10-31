@@ -59,3 +59,9 @@ mark {
   border-radius: 2px;
   padding: 0 2px;
 }
+
+/* Unified Selection Styling across Ecosystem */
+::selection {
+  background-color: rgba(63, 137, 252, 0.3);
+  color: #ffffff;
+}

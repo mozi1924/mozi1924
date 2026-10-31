@@ -162,6 +162,30 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@astrojs/check':
+      specifier: ^0.9.12
+      version: 0.9.12
+    '@astrojs/sitemap':
+      specifier: ^3.7.4
+      version: 3.7.4
+    '@tailwindcss/typography':
+      specifier: ^0.5.20
+      version: 0.5.20
+    '@tailwindcss/vite':
+      specifier: ^4.3.3
+      version: 4.3.3
+    astro:
+      specifier: ^7.4.4
+      version: 7.4.4
+    tailwindcss:
+      specifier: ^4.3.3
+      version: 4.3.3
+    typescript:
+      specifier: ^6.0.3
+      version: 6.0.3
+
 importers:
 
   .: {}
@@ -169,29 +193,29 @@ importers:
   apps/hub:
     dependencies:
       '@astrojs/sitemap':
-        specifier: ^3.7.4
+        specifier: 'catalog:'
         version: 3.7.4
       '@mozi/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tailwindcss/typography':
-        specifier: ^0.5.20
+        specifier: 'catalog:'
         version: 0.5.20(tailwindcss@4.3.3)
       '@tailwindcss/vite':
-        specifier: ^4.3.3
+        specifier: 'catalog:'
         version: 4.3.3(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       astro:
-        specifier: ^7.4.4
+        specifier: 'catalog:'
         version: 7.4.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       tailwindcss:
-        specifier: ^4.3.3
+        specifier: 'catalog:'
         version: 4.3.3
     devDependencies:
       '@astrojs/check':
-        specifier: ^0.9.12
+        specifier: 'catalog:'
         version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@6.0.3)
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
 
   apps/web:
@@ -209,7 +233,7 @@ importers:
         specifier: ^4.0.19
         version: 4.0.19
       '@astrojs/sitemap':
-        specifier: ^3.7.4
+        specifier: 'catalog:'
         version: 3.7.4
       '@marsidev/react-turnstile':
         specifier: ^1.6.3
@@ -221,7 +245,7 @@ importers:
         specifier: ^3.50.0
         version: 3.50.0(react@19.3.1)
       '@tailwindcss/vite':
-        specifier: ^4.3.3
+        specifier: 'catalog:'
         version: 4.3.3(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       '@types/react':
         specifier: ^19.3.0
@@ -230,7 +254,7 @@ importers:
         specifier: ^19.3.0
         version: 19.3.0(@types/react@19.3.0)
       astro:
-        specifier: ^7.4.4
+        specifier: 'catalog:'
         version: 7.4.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       date-fns:
         specifier: ^4.4.0
@@ -251,23 +275,23 @@ importers:
         specifier: ^19.3.1
         version: 19.3.1(react@19.3.1)
       tailwindcss:
-        specifier: ^4.3.3
+        specifier: 'catalog:'
         version: 4.3.3
       turndown:
         specifier: ^7.2.4
         version: 7.2.4
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
     devDependencies:
       '@astrojs/check':
-        specifier: ^0.9.12
+        specifier: 'catalog:'
         version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@6.0.3)
       '@cloudflare/workers-types':
         specifier: ^5.20261030.1
         version: 5.20261030.1
       '@tailwindcss/typography':
-        specifier: ^0.5.20
+        specifier: 'catalog:'
         version: 0.5.20(tailwindcss@4.3.3)
       esbuild:
         specifier: ^0.28.2
