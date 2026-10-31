@@ -10,6 +10,22 @@ on:
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
   workflow_dispatch:
+    inputs:
+      archive_mode:
+        description: "Wayback Machine archive mode"
+        required: false
+        default: "changed"
+        type: choice
+        options:
+          - "changed"
+          - "all"
+          - "custom"
+          - "skip"
+      custom_urls:
+        description: "Custom URLs or paths (comma-separated, used when mode=custom)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -27,6 +43,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -63,3 +81,21 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Wait for Cloudflare CDN propagation
+        if: success() && github.event.inputs.archive_mode != 'skip'
+        run: sleep 10
+
+      - name: Archive changed pages to Wayback Machine (Archive.org)
+        if: success() && github.event.inputs.archive_mode != 'skip'
+        continue-on-error: true
+        run: |
+          pnpm --filter @mozi/web run archive \
+            --mode="${{ github.event.inputs.archive_mode || 'changed' }}" \
+            --urls="${{ github.event.inputs.custom_urls || '' }}"
+        env:
+          CUSTOM_DOMAIN: "https://mozi1924.com"
+          ARCHIVE_ACCESS_KEY: ${{ secrets.ARCHIVE_ACCESS_KEY }}
+          ARCHIVE_SECRET_KEY: ${{ secrets.ARCHIVE_SECRET_KEY }}
+          GITHUB_BEFORE_SHA: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}

@@ -1,0 +1,71 @@
+name: Archive Pages to Wayback Machine (Archive.org)
+
+on:
+  workflow_dispatch:
+    inputs:
+      archive_mode:
+        description: "Archive mode (custom, all, or changed)"
+        required: true
+        default: "custom"
+        type: choice
+        options:
+          - "custom"
+          - "all"
+          - "changed"
+      custom_urls:
+        description: "Custom URLs or paths to archive (comma-separated, e.g. /about/,/blogs/my-post/)"
+        required: false
+        default: "/"
+        type: string
+      custom_domain:
+        description: "Custom domain (defaults to https://mozi1924.com)"
+        required: false
+        default: "https://mozi1924.com"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "wayback-archive-manual"
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    name: Archive to Wayback Machine
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 如果是全量模式，需要先 build 一次以生成最新 sitemap
+      - name: Build sitemap (if all mode)
+        if: github.event.inputs.archive_mode == 'all'
+        run: pnpm --filter @mozi/web build
+
+      - name: Run Archive.org submission
+        run: |
+          pnpm --filter @mozi/web run archive \
+            --mode="${{ github.event.inputs.archive_mode }}" \
+            --urls="${{ github.event.inputs.custom_urls }}" \
+            --domain="${{ github.event.inputs.custom_domain || 'https://mozi1924.com' }}"
+        env:
+          ARCHIVE_ACCESS_KEY: ${{ secrets.ARCHIVE_ACCESS_KEY }}
+          ARCHIVE_SECRET_KEY: ${{ secrets.ARCHIVE_SECRET_KEY }}

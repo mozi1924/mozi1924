@@ -16,6 +16,7 @@
     "check:web": "pnpm --filter @mozi/web check",
     "check:hub": "pnpm --filter @mozi/hub check",
     "check:all": "pnpm check:web && pnpm check:hub",
-    "sync:hub": "pnpm --filter @mozi/hub sync"
+    "sync:hub": "pnpm --filter @mozi/hub sync",
+    "archive:web": "pnpm --filter @mozi/web archive:changed"
   }
 }

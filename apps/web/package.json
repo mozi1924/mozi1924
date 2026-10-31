@@ -12,7 +12,10 @@
     "build": "astro build && pagefind --site dist/client && node scripts/prepare-pages-build.mjs",
     "preview": "node scripts/check-runtime.mjs && rm -rf .wrangler/deploy && wrangler pages dev dist",
     "astro": "astro",
-    "new": "node scripts/new-post.mjs"
+    "new": "node scripts/new-post.mjs",
+    "archive": "node scripts/archive-to-wayback.mjs",
+    "archive:changed": "node scripts/archive-to-wayback.mjs --mode=changed",
+    "archive:all": "node scripts/archive-to-wayback.mjs --mode=all"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.3",
