@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /mozi-rig/fadian/
 
 Sitemap: https://mozi1924.com/sitemap-index.xml
+Sitemap: https://hub.mozi1924.com/sitemap-index.xml
