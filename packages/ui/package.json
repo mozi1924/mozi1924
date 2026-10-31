@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./Icon.astro": "./src/Icon.astro",
+    "./NotFound.astro": "./src/NotFound.astro",
     "./BaseHead.astro": "./src/BaseHead.astro",
     "./Footer.astro": "./src/Footer.astro",
     "./ProjectCard.astro": "./src/ProjectCard.astro",

@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import NotFound from "@mozi/ui/NotFound.astro";
+
+const title = "404 - Page Not Found";
+const description = "The open-source project or page you are looking for does not exist on Mozi's Open Source Hub.";
+---
+
+<Layout title={title} description={description}>
+  <NotFound
+    title="404"
+    subtitle="Project Not Found"
+    message="The repository documentation or page you are looking for seems to have wandered off."
+    homeUrl="/"
+    homeText="Back to Projects"
+    secondaryUrl="https://mozi1924.com"
+    secondaryText="Visit Main Site"
+  />
+</Layout>
