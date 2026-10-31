@@ -1,14 +1,22 @@
 {
-  "updatedAt": "2026-10-30T15:25:12.804Z",
+  "updatedAt": "2026-10-31T07:28:14.214Z",
   "totalProjects": 27,
   "totalStars": 154,
   "totalForks": 27,
-  "pinnedProjects": [],
+  "totalCommits": 2680,
+  "totalPRs": 34,
+  "totalIssues": 13,
+  "pinnedProjects": [
+    "MoziToolKit",
+    "rig2_addons",
+    "Qwen3-TTS-EasyFinetuning",
+    "openblive"
+  ],
   "languages": {
+    "Astro": 1,
     "Python": 8,
     "Rust": 4,
     "Java": 1,
-    "Astro": 1,
     "TypeScript": 7,
     "JavaScript": 1,
     "HTML": 3

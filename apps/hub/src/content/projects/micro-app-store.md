@@ -17,13 +17,8 @@ pushedAt: "2023-04-18T14:16:40Z"
 defaultBranch: "main"
 archived: false
 ---
-# micro-app-store
+## micro-app-store
+
 MIUI Home第三方应用商店
 
-如何使用？
-
-```git clone https://github.com/mozi1924/micro-app-store.git```
-
-```pip install -r requirements.txt```
-
-```python app.py```
+[View original repository on GitHub](https://github.com/mozi1924/micro-app-store)

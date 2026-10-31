@@ -2,8 +2,8 @@
 title: "rig2_addons"
 name: "rig2_addons"
 slug: "rig2_addons"
-pinned: false
-pinnedOrder: -1
+pinned: true
+pinnedOrder: 1
 description: "The BEST Blender Minecraft Rig addons mozi ever made"
 repoUrl: "https://github.com/mozi1924/rig2_addons"
 homepage: "https://mozi1924.com/mozi-rig"

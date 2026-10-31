@@ -2,8 +2,8 @@
 title: "Qwen3-TTS-EasyFinetuning"
 name: "Qwen3-TTS-EasyFinetuning"
 slug: "qwen3-tts-easyfinetuning"
-pinned: false
-pinnedOrder: -1
+pinned: true
+pinnedOrder: 2
 description: "Easy fine-tuning for Qwen3-TTS: Fast voice cloning and high-quality multilingual speech synthesis."
 repoUrl: "https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning"
 homepage: ""

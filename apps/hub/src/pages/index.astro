@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import ContributionCalendar from "../components/ContributionCalendar.astro";
 import Icon from "@mozi/ui/Icon.astro";
 import projects from "../data/projects.json";
 import stats from "../data/stats.json";
@@ -30,14 +31,14 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
   schemaType="profile"
 >
   <!-- Hero Section Aligned with Web Design Language -->
-  <section class="relative overflow-hidden pt-12 pb-10 md:pt-16 md:pb-14 bg-[#111]">
+  <section class="relative overflow-hidden pt-8 pb-6 md:pt-12 md:pb-8 bg-[#111]">
     <!-- Subtle Ambient Glow -->
     <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-blue-500/5 blur-[100px] rounded-full"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
       <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
         <!-- Refined Pill Badge -->
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/20 bg-blue-500/10 text-xs font-mono text-blue-400 mb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/20 bg-blue-500/10 text-xs font-mono text-blue-400 mb-3">
           <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
           <span>Mozi's Code & Ecosystem</span>
         </div>
@@ -46,37 +47,109 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
           Open Source <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Hub</span>
         </h1>
 
-        <p class="mt-3 text-sm sm:text-base md:text-lg text-gray-400 leading-relaxed max-w-2xl">
+        <p class="mt-2.5 text-sm sm:text-base md:text-lg text-gray-400 leading-relaxed max-w-2xl">
           Curated open-source projects, high-performance Rust engines, Blender DCC pipeline tools, and AI utilities by Mozi Arasaka.
         </p>
 
-        <!-- Compact, Tasteful Stats Strip -->
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-8 rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-3 text-xs sm:text-sm font-mono text-gray-300">
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-white text-base">{stats.totalProjects}</span>
-            <span class="text-gray-400">Repositories</span>
+        <!-- Developer Activity & Impact Dashboard -->
+        <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 w-full max-w-4xl mx-auto font-mono text-left">
+          <!-- Commits -->
+          <div class="flex flex-col p-2.5 sm:p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <span>Commits</span>
+              <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <line x1="3" y1="12" x2="9" y2="12"></line>
+                <line x1="15" y1="12" x2="21" y2="12"></line>
+              </svg>
+            </div>
+            <span class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              {stats.totalCommits ? stats.totalCommits.toLocaleString() : "2,680+"}
+            </span>
+            <span class="text-[10px] text-gray-500 mt-0.5">Recorded commits</span>
           </div>
-          <span class="text-white/20 hidden sm:inline">|</span>
-          <div class="flex items-center gap-1.5">
-            <Icon name="star" className="w-3.5 h-3.5 text-yellow-400 fill-current" />
-            <span class="font-bold text-yellow-400 text-base">{stats.totalStars}</span>
-            <span class="text-gray-400">Stars</span>
+
+          <!-- Pull Requests -->
+          <div class="flex flex-col p-2.5 sm:p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <span>PRs</span>
+              <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="18" cy="18" r="3"></circle>
+                <circle cx="6" cy="6" r="3"></circle>
+                <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                <line x1="6" y1="9" x2="6" y2="21"></line>
+              </svg>
+            </div>
+            <span class="text-xl sm:text-2xl font-bold text-purple-300 tracking-tight">
+              {stats.totalPRs || 34}
+            </span>
+            <span class="text-[10px] text-gray-500 mt-0.5">Merged & created</span>
           </div>
-          <span class="text-white/20 hidden sm:inline">|</span>
-          <div class="flex items-center gap-1.5">
-            <Icon name="git-fork" className="w-3.5 h-3.5 text-cyan-400" strokeWidth={2} />
-            <span class="font-bold text-cyan-400 text-base">{stats.totalForks}</span>
-            <span class="text-gray-400">Forks</span>
+
+          <!-- Issues -->
+          <div class="flex flex-col p-2.5 sm:p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <span>Issues</span>
+              <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="1"></circle>
+              </svg>
+            </div>
+            <span class="text-xl sm:text-2xl font-bold text-rose-300 tracking-tight">
+              {stats.totalIssues || 13}
+            </span>
+            <span class="text-[10px] text-gray-500 mt-0.5">Reported & tracked</span>
+          </div>
+
+          <!-- Repositories -->
+          <div class="flex flex-col p-2.5 sm:p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <span>Repositories</span>
+              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>
+              </svg>
+            </div>
+            <span class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              {stats.totalProjects}
+            </span>
+            <span class="text-[10px] text-gray-500 mt-0.5">Showcase projects</span>
+          </div>
+
+          <!-- Stars -->
+          <div class="flex flex-col p-2.5 sm:p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <span>Stars</span>
+              <Icon name="star" className="w-3.5 h-3.5 text-yellow-400 fill-current" />
+            </div>
+            <span class="text-xl sm:text-2xl font-bold text-yellow-400 tracking-tight">
+              {stats.totalStars}
+            </span>
+            <span class="text-[10px] text-gray-500 mt-0.5">Earned from community</span>
+          </div>
+
+          <!-- Forks -->
+          <div class="flex flex-col p-2.5 sm:p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <span>Forks</span>
+              <Icon name="git-fork" className="w-3.5 h-3.5 text-cyan-400" strokeWidth={2} />
+            </div>
+            <span class="text-xl sm:text-2xl font-bold text-cyan-300 tracking-tight">
+              {stats.totalForks}
+            </span>
+            <span class="text-[10px] text-gray-500 mt-0.5">Community forks</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- GitHub Contribution Heatmap Section -->
+  <ContributionCalendar initialYear="lastYear" />
+
   <!-- Featured / Pinned Projects Showcase -->
   {pinnedProjects.length > 0 && (
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-6">
-      <div class="flex items-center justify-between mb-6">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-4 sm:pt-6 sm:pb-5">
+      <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2.5">
           <span class="w-2 h-2 rounded-full bg-blue-400"></span>
           <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
@@ -95,7 +168,7 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
         </a>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5">
         {pinnedProjects.map((project) => (
           <ProjectCard project={project} showPinnedBadge={false} />
         ))}
@@ -104,7 +177,7 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
   )}
 
   <!-- Filter & Search Controls for All Repositories -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-4">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-3 sm:pt-5 sm:pb-4">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
         <span>All Repositories</span>
@@ -174,7 +247,7 @@ const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
   </section>
 
   <!-- Projects Grid -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 md:pb-28">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-12 md:pb-16">
     <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {initialProjects.map((project) => (
         <ProjectCard project={project} />

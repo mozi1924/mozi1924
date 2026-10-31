@@ -1,0 +1,336 @@
+---
+import contributionsData from "../data/contributions.json";
+
+interface Props {
+  initialYear?: string;
+}
+
+const { initialYear = "lastYear" } = Astro.props;
+
+const availableYears = contributionsData.availableYears || ["lastYear", "2026", "2025", "2024", "2023", "2022"];
+const currentYearData = contributionsData.years[initialYear as keyof typeof contributionsData.years] ||
+  contributionsData.years["lastYear"] || {
+    totalContributions: 0,
+    months: [],
+    weeks: [],
+  };
+
+function formatYearLabel(yearKey: string) {
+  if (yearKey === "lastYear") return "Last Year";
+  return yearKey;
+}
+---
+
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3.5">
+  <!-- Outer Card with Flat Deep Blue Background (No Gradient) -->
+  <div
+    id="contribution-card"
+    class="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-[#0c1322] p-3.5 sm:p-5 shadow-xl transition-colors"
+  >
+    <!-- Header Section: Clean, compact, no theme switcher -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-white/5 pb-3">
+      <!-- Title & Live Counter -->
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono border border-blue-500/30 bg-blue-500/10 text-blue-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            <span>GitHub Activity</span>
+          </span>
+          <span class="text-xs text-gray-400 font-mono">@mozi1924</span>
+        </div>
+        <div class="flex items-baseline gap-2 mt-0.5">
+          <span id="cal-total-count" class="text-2xl sm:text-3xl font-bold font-mono text-white tracking-tight">
+            {currentYearData.totalContributions.toLocaleString()}
+          </span>
+          <span id="cal-total-suffix" class="text-xs sm:text-sm text-gray-400 font-mono">
+            contributions in the last year
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Status in Header -->
+      <div class="flex items-center gap-2 text-xs font-mono text-gray-400 self-start sm:self-center">
+        <span class="text-gray-500 hidden sm:inline">Sync Status:</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+          <span>Continuous Builder</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Main Content Area: Heatmap Grid on Left + Year Selector on Right -->
+    <div class="flex flex-col lg:flex-row gap-4 lg:gap-5 items-start">
+      <!-- Heatmap Scrollable Wrapper -->
+      <div class="flex-1 w-full overflow-x-auto custom-scrollbar pb-2">
+        <div class="min-w-[880px] select-none" id="heatmap-container">
+          <!-- Month Header Row -->
+          <div class="flex pl-8 mb-1.5 text-[11px] font-mono text-gray-400 h-4 relative" id="heatmap-months">
+            {currentYearData.months.map((m: { colspan: number; name: string }) => (
+              <div
+                class="truncate text-left pr-1"
+                style={`width: ${m.colspan * 16}px; flex-shrink: 0;`}
+              >
+                {m.name}
+              </div>
+            ))}
+          </div>
+
+          <!-- Calendar Matrix (7 rows: Sun - Sat) -->
+          <div class="flex gap-2">
+            <!-- Weekday Labels -->
+            <div class="flex flex-col gap-1 w-6 shrink-0 pt-0.5 text-[10px] font-mono text-gray-500 text-right pr-1 select-none">
+              <span class="h-[12px] leading-[12px] opacity-0">Sun</span>
+              <span class="h-[12px] leading-[12px]">Mon</span>
+              <span class="h-[12px] leading-[12px] opacity-0">Tue</span>
+              <span class="h-[12px] leading-[12px]">Wed</span>
+              <span class="h-[12px] leading-[12px] opacity-0">Thu</span>
+              <span class="h-[12px] leading-[12px]">Fri</span>
+              <span class="h-[12px] leading-[12px] opacity-0">Sat</span>
+            </div>
+
+            <!-- Heatmap Week Columns -->
+            <div class="flex gap-1" id="heatmap-grid">
+              {currentYearData.weeks.map((week: any[], weekIdx: number) => (
+                <div class="flex flex-col gap-1 shrink-0" data-week-idx={weekIdx}>
+                  {week.map((day: any) => {
+                    if (!day) {
+                      return <div class="w-[12px] h-[12px] opacity-0" />;
+                    }
+                    return (
+                      <div
+                        class={`cal-cell w-[12px] h-[12px] rounded-[2.5px] cursor-pointer transition-all duration-100 hover:scale-125 hover:z-20 border border-transparent contrib-level-${day.level}`}
+                        data-date={day.date}
+                        data-count={day.count}
+                        data-level={day.level}
+                        data-tooltip={day.tooltip}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Year Selector Tabs (Compact Sidebar on Desktop / Horizontal Scrollable Pills on Mobile) -->
+      <div class="w-full lg:w-28 shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 pt-2.5 lg:pt-0 lg:pl-3.5">
+        <span class="text-[10px] font-mono text-gray-500 uppercase tracking-wider block mb-1.5 font-semibold">
+          Years
+        </span>
+        <div class="flex lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0" id="year-buttons">
+          {availableYears.map((yearKey: string) => {
+            const isInitial = yearKey === initialYear;
+            const yearInfo = contributionsData.years[yearKey as keyof typeof contributionsData.years];
+            return (
+              <button
+                type="button"
+                data-year={yearKey}
+                class={`year-btn text-left px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center justify-between min-h-[30px] shrink-0 cursor-pointer ${
+                  isInitial
+                    ? "active bg-blue-500/20 text-blue-400 border border-blue-500/40 font-bold shadow-sm"
+                    : "text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                }`}
+              >
+                <span>{formatYearLabel(yearKey)}</span>
+                {yearInfo && (
+                  <span class="text-[10px] font-normal opacity-60 ml-2">
+                    {yearInfo.totalContributions}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Area: Status & Legend -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-2.5 mt-3 pt-3 border-t border-white/5 text-xs font-mono text-gray-400">
+      <div class="flex items-center gap-2 text-gray-400">
+        <span>⚡ Continuous Open-Source Building</span>
+        <span class="text-white/20">•</span>
+        <a
+          href="https://github.com/mozi1924"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-400 hover:underline flex items-center gap-1"
+        >
+          <span>View GitHub Profile</span>
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Contribution Legend -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-[11px] text-gray-500">Less</span>
+        <div class="cal-cell w-[11px] h-[11px] rounded-[2px] contrib-level-0"></div>
+        <div class="cal-cell w-[11px] h-[11px] rounded-[2px] contrib-level-1"></div>
+        <div class="cal-cell w-[11px] h-[11px] rounded-[2px] contrib-level-2"></div>
+        <div class="cal-cell w-[11px] h-[11px] rounded-[2px] contrib-level-3"></div>
+        <div class="cal-cell w-[11px] h-[11px] rounded-[2px] contrib-level-4"></div>
+        <span class="text-[11px] text-gray-500">More</span>
+      </div>
+    </div>
+
+    <!-- Floating Interactive Tooltip -->
+    <div
+      id="cal-tooltip"
+      class="pointer-events-none fixed z-50 rounded-lg border border-white/20 bg-[#0c1322]/95 px-3 py-1.5 text-xs font-mono text-white shadow-2xl backdrop-blur-md opacity-0 transition-opacity duration-150 transform -translate-x-1/2 -translate-y-full"
+    >
+      <span id="tooltip-text">Tooltip</span>
+    </div>
+  </div>
+</section>
+
+<!-- Static JSON Data for Instant Client Switching -->
+<script type="application/json" id="contributions-raw-data" set:html={JSON.stringify(contributionsData)} />
+
+<style is:global>
+  /* ⚡ Blue Theme (Default & Site Brand #3F89FC) */
+  #contribution-card .contrib-level-0 {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.03);
+  }
+  #contribution-card .contrib-level-1 {
+    background-color: #172554;
+    border-color: #1e3a8a;
+  }
+  #contribution-card .contrib-level-2 {
+    background-color: #1d4ed8;
+    border-color: #2563eb;
+  }
+  #contribution-card .contrib-level-3 {
+    background-color: #3F89FC;
+    border-color: #60a5fa;
+    box-shadow: 0 0 6px rgba(63, 137, 252, 0.45);
+  }
+  #contribution-card .contrib-level-4 {
+    background-color: #67e8f9;
+    border-color: #a5f3fc;
+    box-shadow: 0 0 10px rgba(103, 232, 249, 0.8);
+  }
+</style>
+
+<script>
+  function setupContributionCalendar() {
+    const rawDataElem = document.getElementById("contributions-raw-data");
+    const totalCountElem = document.getElementById("cal-total-count");
+    const totalSuffixElem = document.getElementById("cal-total-suffix");
+    const monthsContainer = document.getElementById("heatmap-months");
+    const gridContainer = document.getElementById("heatmap-grid");
+    const yearButtons = document.querySelectorAll(".year-btn");
+    const tooltip = document.getElementById("cal-tooltip");
+    const tooltipText = document.getElementById("tooltip-text");
+
+    if (!rawDataElem || !totalCountElem || !monthsContainer || !gridContainer) return;
+
+    let allData: any = {};
+    try {
+      allData = JSON.parse(rawDataElem.textContent || "{}");
+    } catch {
+      return;
+    }
+
+    // 1. Tooltip logic
+    function bindCellTooltips() {
+      if (!gridContainer) return;
+      const cells = gridContainer.querySelectorAll(".cal-cell");
+      cells.forEach((cell) => {
+        cell.addEventListener("mouseenter", (e) => {
+          const target = e.currentTarget as HTMLElement;
+          const text = target.dataset.tooltip;
+          if (!text || !tooltip || !tooltipText) return;
+
+          tooltipText.textContent = text;
+          tooltip.style.opacity = "1";
+
+          const rect = target.getBoundingClientRect();
+          tooltip.style.left = `${rect.left + rect.width / 2}px`;
+          tooltip.style.top = `${rect.top - 8}px`;
+        });
+
+        cell.addEventListener("mouseleave", () => {
+          if (tooltip) {
+            tooltip.style.opacity = "0";
+          }
+        });
+      });
+    }
+
+    bindCellTooltips();
+
+    // 2. Year Switching logic
+    yearButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const yearKey = btn.getAttribute("data-year");
+        if (!yearKey || !allData.years?.[yearKey]) return;
+
+        // Update active button state
+        yearButtons.forEach((b) => {
+          b.classList.remove(
+            "active",
+            "bg-blue-500/20",
+            "text-blue-400",
+            "border-blue-500/40",
+            "font-bold",
+            "shadow-sm"
+          );
+          b.classList.add("text-gray-400", "border-transparent");
+        });
+        btn.classList.add(
+          "active",
+          "bg-blue-500/20",
+          "text-blue-400",
+          "border-blue-500/40",
+          "font-bold",
+          "shadow-sm"
+        );
+        btn.classList.remove("text-gray-400", "border-transparent");
+
+        const data = allData.years[yearKey];
+
+        // Update header counts
+        totalCountElem.textContent = Number(data.totalContributions || 0).toLocaleString();
+        if (totalSuffixElem) {
+          totalSuffixElem.textContent =
+            yearKey === "lastYear"
+              ? "contributions in the last year"
+              : `contributions in ${yearKey}`;
+        }
+
+        // Re-render months with 16px unit
+        monthsContainer.innerHTML = (data.months || [])
+          .map(
+            (m: { colspan: number; name: string }) =>
+              `<div class="truncate text-left pr-1" style="width: ${m.colspan * 16}px; flex-shrink: 0;">${m.name}</div>`
+          )
+          .join("");
+
+        // Re-render grid
+        gridContainer.innerHTML = (data.weeks || [])
+          .map((week: any[], wIdx: number) => {
+            const daysHtml = week
+              .map((day: any) => {
+                if (!day) return `<div class="w-[12px] h-[12px] opacity-0"></div>`;
+                const escTooltip = (day.tooltip || "").replace(/"/g, "&quot;");
+                return `<div class="cal-cell w-[12px] h-[12px] rounded-[2.5px] cursor-pointer transition-all duration-100 hover:scale-125 hover:z-20 border border-transparent contrib-level-${day.level}" data-date="${day.date || ''}" data-count="${day.count || 0}" data-level="${day.level || 0}" data-tooltip="${escTooltip}"></div>`;
+              })
+              .join("");
+            return `<div class="flex flex-col gap-1 shrink-0" data-week-idx="${wIdx}">${daysHtml}</div>`;
+          })
+          .join("");
+
+        bindCellTooltips();
+      });
+    });
+  }
+
+  // Setup on page load & Astro client navigation
+  setupContributionCalendar();
+  document.addEventListener("astro:page-load", setupContributionCalendar);
+</script>

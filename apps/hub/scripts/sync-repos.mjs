@@ -165,15 +165,189 @@ async function fetchPinnedRepos() {
   }
 }
 
+// Fetch overall GitHub activity metrics: PRs, Issues, Commits
+async function fetchGitHubActivityStats(username, existingStats = {}) {
+  console.log(`[Sync] Fetching global activity stats (PRs, Issues, Commits) for ${username}...`);
+  let totalPRs = existingStats.totalPRs || 34;
+  let totalIssues = existingStats.totalIssues || 13;
+  let totalCommits = existingStats.totalCommits || 2680;
+
+  try {
+    const prRes = await fetch(
+      `https://api.github.com/search/issues?q=author:${username}+type:pr`,
+      { headers: HEADERS }
+    );
+    if (prRes.ok) {
+      const data = await prRes.json();
+      if (typeof data.total_count === 'number') {
+        totalPRs = Math.max(data.total_count, totalPRs);
+      }
+    }
+  } catch (e) {
+    console.warn('[Sync] Could not fetch PR count:', e.message);
+  }
+
+  try {
+    const issueRes = await fetch(
+      `https://api.github.com/search/issues?q=author:${username}+type:issue`,
+      { headers: HEADERS }
+    );
+    if (issueRes.ok) {
+      const data = await issueRes.json();
+      if (typeof data.total_count === 'number') {
+        totalIssues = Math.max(data.total_count, totalIssues);
+      }
+    }
+  } catch (e) {
+    console.warn('[Sync] Could not fetch Issues count:', e.message);
+  }
+
+  try {
+    const commitRes = await fetch(
+      `https://api.github.com/search/commits?q=author:${username}`,
+      {
+        headers: {
+          ...HEADERS,
+          Accept: 'application/vnd.github.cloak-preview',
+        },
+      }
+    );
+    if (commitRes.ok) {
+      const data = await commitRes.json();
+      if (typeof data.total_count === 'number') {
+        totalCommits = Math.max(data.total_count, totalCommits);
+      }
+    }
+  } catch (e) {
+    console.warn('[Sync] Could not fetch Commits count:', e.message);
+  }
+
+  console.log(`[Sync] Activity stats: ${totalCommits} Commits, ${totalPRs} PRs, ${totalIssues} Issues.`);
+  return { totalCommits, totalPRs, totalIssues };
+}
+
+function parseContributionHtml(html) {
+  const countMatch = html.match(/([\d,]+)\s+contributions/i);
+  const totalContributions = countMatch ? parseInt(countMatch[1].replace(/,/g, ''), 10) : 0;
+
+  const theadMatch = html.match(/<thead[^>]*>([\s\S]*?)<\/thead>/);
+  const months = [];
+  if (theadMatch) {
+    const monthMatches = [...theadMatch[1].matchAll(/<td[^>]*colspan="(\d+)"[^>]*>[\s\S]*?<span aria-hidden="true"[^>]*>([^<]+)<\/span>/g)];
+    for (const m of monthMatches) {
+      months.push({
+        colspan: parseInt(m[1], 10),
+        name: m[2].trim(),
+      });
+    }
+  }
+
+  const tooltips = {};
+  for (const m of html.matchAll(/<tool-tip[^>]*for="([^"]+)"[^>]*>([\s\S]*?)<\/tool-tip>/g)) {
+    tooltips[m[1]] = m[2].trim().replace(/\s+/g, ' ');
+  }
+
+  const tbodyMatch = html.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
+  if (!tbodyMatch) return { totalContributions, months, weeks: [] };
+
+  const rows = [...tbodyMatch[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)];
+  const matrix = [];
+  for (let r = 0; r < rows.length; r++) {
+    const rowHtml = rows[r][1];
+    const tds = [...rowHtml.matchAll(/<td([^>]*)>([\s\S]*?)<\/td>/g)];
+    const dataTds = tds.filter((td) => !td[1].includes("ContributionCalendar-label"));
+    matrix[r] = dataTds.map((td) => {
+      const attrs = td[1];
+      const dateM = attrs.match(/data-date="([^"]+)"/);
+      if (!dateM) return null;
+      const idM = attrs.match(/id="([^"]+)"/);
+      const levelM = attrs.match(/data-level="([^"]+)"/);
+      const date = dateM[1];
+      const id = idM ? idM[1] : "";
+      const level = levelM ? parseInt(levelM[1], 10) : 0;
+      const tooltip = tooltips[id] || `${level > 0 ? level + ' contributions' : 'No contributions'} on ${date}`;
+      let count = 0;
+      const countM = tooltip.match(/(\d+)\s+contribution/i);
+      if (countM) count = parseInt(countM[1], 10);
+      return { date, level, count, tooltip };
+    });
+  }
+
+  const maxWeeks = Math.max(...matrix.map((r) => r.length), 0);
+  const weeks = [];
+  for (let w = 0; w < maxWeeks; w++) {
+    const weekDays = [];
+    for (let d = 0; d < 7; d++) {
+      weekDays.push(matrix[d]?.[w] || null);
+    }
+    weeks.push(weekDays);
+  }
+
+  return {
+    totalContributions,
+    months,
+    weeks,
+  };
+}
+
+async function fetchContributionCalendar(username, existingContributions = null) {
+  console.log(`[Sync] Fetching contribution calendar for ${username}...`);
+  const yearsToFetch = ['lastYear', '2026', '2025', '2024', '2023', '2022'];
+  const calendarData = {
+    updatedAt: new Date().toISOString(),
+    availableYears: yearsToFetch,
+    years: existingContributions?.years || {},
+  };
+
+  for (const year of yearsToFetch) {
+    try {
+      let url = `https://github.com/users/${username}/contributions`;
+      if (year !== 'lastYear') {
+        url = `https://github.com/users/${username}/contributions?from=${year}-01-01&to=${year}-12-31`;
+      }
+      console.log(`[Sync] Fetching contribution graph for ${year}...`);
+      const res = await fetch(url, { headers: { 'User-Agent': 'mozi1924-hub-sync' } });
+      if (res.ok) {
+        const html = await res.text();
+        const parsed = parseContributionHtml(html);
+        if (parsed.weeks.length > 0) {
+          calendarData.years[year] = parsed;
+          console.log(`[Sync] Year ${year}: ${parsed.totalContributions} contributions, ${parsed.weeks.length} weeks.`);
+        }
+      } else {
+        console.warn(`[Sync] Failed to fetch ${year} contribution data: ${res.status}`);
+      }
+    } catch (e) {
+      console.warn(`[Sync] Error fetching ${year} calendar:`, e.message);
+    }
+  }
+
+  return calendarData;
+}
+
 async function main() {
   const projectsDir = path.join(rootDir, 'src', 'content', 'projects');
   const dataDir = path.join(rootDir, 'src', 'data');
   await fs.mkdir(projectsDir, { recursive: true });
   await fs.mkdir(dataDir, { recursive: true });
 
-  const [rawRepos, pinnedRepoNames] = await Promise.all([
+  // Read existing stats/contributions if available
+  let existingStats = {};
+  let existingContributions = null;
+  try {
+    const raw = await fs.readFile(path.join(dataDir, 'stats.json'), 'utf-8');
+    existingStats = JSON.parse(raw);
+  } catch {}
+  try {
+    const raw = await fs.readFile(path.join(dataDir, 'contributions.json'), 'utf-8');
+    existingContributions = JSON.parse(raw);
+  } catch {}
+
+  const [rawRepos, pinnedRepoNames, activityStats, contributionCalendar] = await Promise.all([
     fetchAllRepos(),
     fetchPinnedRepos(),
+    fetchGitHubActivityStats(USERNAME, existingStats),
+    fetchContributionCalendar(USERNAME, existingContributions),
   ]);
 
   const pinnedSet = new Set(pinnedRepoNames);
@@ -287,6 +461,9 @@ async function main() {
     totalProjects: projectSummaries.length,
     totalStars,
     totalForks,
+    totalCommits: activityStats.totalCommits,
+    totalPRs: activityStats.totalPRs,
+    totalIssues: activityStats.totalIssues,
     pinnedProjects: pinnedRepoNames,
     languages: languageStats,
   };
@@ -297,8 +474,16 @@ async function main() {
     'utf-8'
   );
 
+  // Write contribution calendar data
+  await fs.writeFile(
+    path.join(dataDir, 'contributions.json'),
+    JSON.stringify(contributionCalendar, null, 2),
+    'utf-8'
+  );
+
   console.log(`[Sync] Successfully processed ${projectSummaries.length} projects!`);
-  console.log(`[Sync] Stats: ${totalStars} Stars, ${totalForks} Forks.`);
+  console.log(`[Sync] Stats: ${totalStars} Stars, ${totalForks} Forks, ${activityStats.totalCommits} Commits, ${activityStats.totalPRs} PRs, ${activityStats.totalIssues} Issues.`);
+  console.log(`[Sync] Contributions calendar saved for ${Object.keys(contributionCalendar.years).join(', ')}.`);
 }
 
 main().catch((err) => {

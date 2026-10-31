@@ -2,8 +2,8 @@
 title: "MoziToolKit"
 name: "MoziToolKit"
 slug: "mozitoolkit"
-pinned: false
-pinnedOrder: -1
+pinned: true
+pinnedOrder: 0
 description: "面向 Blender 5.0+ (LTS) 的高性能 Minecraft 资产处理、规范 PBR 着色器管线与实时协同插件前端。由 libmozitoolkit (Rust) 驱动，配合 Yefira 模组实现双向 Live Sync。"
 repoUrl: "https://github.com/mozi1924/MoziToolKit"
 homepage: "https://github.com/mozi1924/MoziToolKit"

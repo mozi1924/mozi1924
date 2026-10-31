@@ -13,7 +13,7 @@ language: "Python"
 topics: ["antigravity","antigravity-ai","antigravity-cli","antigravity-ide"]
 license: ""
 createdAt: "2026-09-30T14:48:59Z"
-pushedAt: "2026-10-30T12:13:25Z"
+pushedAt: "2026-10-30T22:02:32Z"
 defaultBranch: "main"
 archived: false
 ---
