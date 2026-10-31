@@ -4,13 +4,13 @@ name: "Vercel-Email-routing"
 slug: "vercel-email-routing"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "基于 Vercel Serverless 的轻量邮件中继网关，支持 REST API、多发件人路由与安全鉴权"
 repoUrl: "https://github.com/mozi1924/Vercel-Email-routing"
 homepage: "https://vercel-email-routing.vercel.app"
 stars: 0
 forks: 0
 language: "JavaScript"
-topics: []
+topics: ["email-gateway","nodemailer","serverless","smtp-relay","vercel"]
 license: ""
 createdAt: "2026-01-25T14:41:48Z"
 pushedAt: "2026-01-25T14:41:52Z"

@@ -4,13 +4,13 @@ name: "infinite-inbox"
 slug: "infinite-inbox"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "基于 Cloudflare Workers + D1 + Durable Objects 的现代化实时临时邮箱服务"
 repoUrl: "https://github.com/mozi1924/infinite-inbox"
 homepage: ""
 stars: 0
 forks: 0
 language: "TypeScript"
-topics: []
+topics: ["cloudflare-workers","d1-database","disposable-email","durable-objects","temp-mail"]
 license: "MIT"
 createdAt: "2026-03-23T16:24:12Z"
 pushedAt: "2026-03-23T19:39:49Z"

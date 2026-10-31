@@ -4,13 +4,13 @@ name: "side-route-daemon"
 slug: "side-route-daemon"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "专为 OpenWrt (fw4/nftables) 设计的高可用双栈旁路由守护程序与现代原生 LuCI 控制台"
 repoUrl: "https://github.com/mozi1924/side-route-daemon"
 homepage: ""
 stars: 0
 forks: 0
 language: "Rust"
-topics: []
+topics: ["gateway","luci","networking","nftables","openwrt","rust","side-router"]
 license: "GPL-3.0"
 createdAt: "2026-09-06T17:35:52Z"
 pushedAt: "2026-10-01T06:53:44Z"

@@ -4,13 +4,13 @@ name: "mi2bl"
 slug: "mi2bl"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "高保真 Mine-Imator 资产与关键帧动画导入 Blender 插件"
 repoUrl: "https://github.com/mozi1924/mi2bl"
 homepage: ""
 stars: 0
 forks: 0
 language: "Python"
-topics: []
+topics: ["animation-importer","blender","blender-addon","mine-imator","minecraft"]
 license: "GPL-3.0"
 createdAt: "2026-03-06T09:22:31Z"
 pushedAt: "2026-03-20T17:58:15Z"

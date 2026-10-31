@@ -4,13 +4,13 @@ name: "worker-comment"
 slug: "worker-comment"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "基于 Cloudflare Workers + Hono + D1 + KV 构建的轻量 Serverless 网站评论系统后端"
 repoUrl: "https://github.com/mozi1924/worker-comment"
 homepage: ""
 stars: 0
 forks: 0
 language: "TypeScript"
-topics: []
+topics: ["cloudflare-workers","comment-system","d1-database","hono","serverless-comments"]
 license: ""
 createdAt: "2026-01-16T11:27:11Z"
 pushedAt: "2026-01-25T16:02:13Z"

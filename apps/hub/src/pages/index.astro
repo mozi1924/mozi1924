@@ -22,6 +22,10 @@ const initialProjects = [...projects].sort((a, b) => {
   return b.stars - a.stars;
 });
 
+// Active projects vs Archived projects for separate classification
+const activeProjects = initialProjects.filter((p) => !p.archived);
+const archivedProjects = initialProjects.filter((p) => p.archived);
+
 const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
 
 // Structured catalog items for Schema.org ItemList
@@ -190,13 +194,39 @@ const catalogItems = initialProjects.map((p) => {
     </section>
   )}
 
-  <!-- Filter & Search Controls for All Repositories -->
+  <!-- Filter & Search Controls for Repositories -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-3 sm:pt-5 sm:pb-4">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
-        <span>All Repositories</span>
-        <span class="text-xs font-mono text-gray-500 font-normal">({projects.length})</span>
-      </h2>
+    <!-- Repositories Header & Status Category Tabs -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+      <div>
+        <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          <span>Project Catalog</span>
+          <span class="text-xs font-mono text-gray-500 font-normal" id="catalog-count">({activeProjects.length})</span>
+        </h2>
+        <p class="text-xs text-gray-400 mt-0.5">Explore active production libraries, tools, and archived legacy projects.</p>
+      </div>
+
+      <!-- Status Tabs: Active vs Archived -->
+      <div class="flex items-center gap-1.5 p-1 bg-[#161619] border border-white/10 rounded-xl w-fit" id="status-tabs">
+        <button
+          type="button"
+          data-status="active"
+          class="status-btn px-3.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer flex items-center gap-2 active bg-blue-500/15 text-blue-400 border border-blue-500/30 font-bold shadow-sm"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>Active</span>
+          <span class="text-[11px] opacity-80 font-normal">({activeProjects.length})</span>
+        </button>
+        <button
+          type="button"
+          data-status="archived"
+          class="status-btn px-3.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer flex items-center gap-2 text-gray-400 hover:text-white border border-transparent"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span>Archived</span>
+          <span class="text-[11px] opacity-80 font-normal">({archivedProjects.length})</span>
+        </button>
+      </div>
     </div>
 
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
@@ -262,6 +292,20 @@ const catalogItems = initialProjects.map((p) => {
 
   <!-- Projects Grid -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-12 md:pb-16">
+    <!-- Archived Category Notice Banner (Shown only when Archived tab is selected) -->
+    <div
+      id="archived-banner"
+      class="hidden mb-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-300 text-xs flex items-start sm:items-center gap-3"
+    >
+      <span class="text-amber-400 font-bold shrink-0 text-base">📦</span>
+      <div class="leading-relaxed">
+        <strong class="text-amber-300">Archived Repositories:</strong>
+        <span class="text-amber-200/80 ml-1">
+          These projects are archived or in read-only maintenance mode on GitHub. Code, releases, and documentation remain accessible for historical reference.
+        </span>
+      </div>
+    </div>
+
     <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {initialProjects.map((project) => (
         <ProjectCard project={project} />
@@ -285,11 +329,15 @@ const catalogItems = initialProjects.map((p) => {
     const searchClear = document.getElementById("search-clear");
     const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
     const filterButtons = document.querySelectorAll(".filter-btn");
+    const statusButtons = document.querySelectorAll(".status-btn");
+    const catalogCount = document.getElementById("catalog-count");
+    const archivedBanner = document.getElementById("archived-banner");
     const grid = document.getElementById("projects-grid");
     const noResults = document.getElementById("no-results");
     if (!grid) return;
     const projectGrid = grid;
 
+    let selectedStatus = "active";
     let selectedLang = "all";
     let searchQuery = "";
     let sortMode = "pinned";
@@ -303,6 +351,11 @@ const catalogItems = initialProjects.map((p) => {
         const desc = card.dataset.description || "";
         const lang = card.dataset.language || "";
         const topics = card.dataset.topics || "";
+        const isArchived = card.dataset.archived === "true";
+
+        const matchesStatus =
+          (selectedStatus === "archived" && isArchived) ||
+          (selectedStatus === "active" && !isArchived);
 
         const matchesSearch =
           !searchQuery ||
@@ -313,13 +366,25 @@ const catalogItems = initialProjects.map((p) => {
         const matchesLang =
           selectedLang === "all" || lang === selectedLang;
 
-        if (matchesSearch && matchesLang) {
+        if (matchesStatus && matchesSearch && matchesLang) {
           card.classList.remove("hidden");
           visibleCount++;
         } else {
           card.classList.add("hidden");
         }
       });
+
+      if (catalogCount) {
+        catalogCount.textContent = `(${visibleCount})`;
+      }
+
+      if (archivedBanner) {
+        if (selectedStatus === "archived") {
+          archivedBanner.classList.remove("hidden");
+        } else {
+          archivedBanner.classList.add("hidden");
+        }
+      }
 
       // Sort visible cards
       cards.sort((a, b) => {
@@ -382,6 +447,19 @@ const catalogItems = initialProjects.map((p) => {
       update();
     });
 
+    statusButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        statusButtons.forEach((b) => {
+          b.classList.remove("active", "bg-blue-500/15", "text-blue-400", "border-blue-500/30", "font-bold", "shadow-sm");
+          b.classList.add("border-transparent", "text-gray-400");
+        });
+        btn.classList.add("active", "bg-blue-500/15", "text-blue-400", "border-blue-500/30", "font-bold", "shadow-sm");
+        btn.classList.remove("border-transparent", "text-gray-400");
+        selectedStatus = (btn as HTMLElement).dataset.status || "active";
+        update();
+      });
+    });
+
     filterButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         filterButtons.forEach((b) => {
@@ -394,6 +472,9 @@ const catalogItems = initialProjects.map((p) => {
         update();
       });
     });
+
+    // Initial update to enforce default active tab state
+    update();
   }
 
   // Run on mount

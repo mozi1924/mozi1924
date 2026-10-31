@@ -15,7 +15,7 @@ license: "GPL-3.0"
 createdAt: "2023-04-18T12:26:38Z"
 pushedAt: "2023-04-18T14:16:40Z"
 defaultBranch: "main"
-archived: false
+archived: true
 ---
 # micro-app-store
 MIUI Home第三方应用商店

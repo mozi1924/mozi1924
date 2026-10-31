@@ -4,13 +4,13 @@ name: "jaxlocke.uk"
 slug: "jaxlockeuk"
 pinned: false
 pinnedOrder: -1
-description: "Jax Locke's website"
+description: "Jax Locke's personal website"
 repoUrl: "https://github.com/mozi1924/jaxlocke.uk"
 homepage: ""
 stars: 0
 forks: 0
 language: "TypeScript"
-topics: []
+topics: ["astro","personal-website","portfolio"]
 license: ""
 createdAt: "2025-12-23T12:52:01Z"
 pushedAt: "2026-01-14T01:22:36Z"

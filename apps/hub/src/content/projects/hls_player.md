@@ -15,7 +15,7 @@ license: ""
 createdAt: "2024-03-30T12:27:49Z"
 pushedAt: "2024-03-30T12:28:51Z"
 defaultBranch: "main"
-archived: false
+archived: true
 ---
 # hls_player
 简单的hls播放器页面，支持深色和亮色模式跟随系统，响应式设计适配桌面端和移动端

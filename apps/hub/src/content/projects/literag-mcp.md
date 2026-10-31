@@ -4,13 +4,13 @@ name: "literag-mcp"
 slug: "literag-mcp"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "单知识库 Markdown MCP 服务器，支持本地向量（Vectra/ChromaDB）与 SQLite FTS5 混合检索排序"
 repoUrl: "https://github.com/mozi1924/literag-mcp"
 homepage: ""
 stars: 0
 forks: 0
 language: "TypeScript"
-topics: []
+topics: ["markdown","mcp","model-context-protocol","rag","sqlite-fts5","vector-search"]
 license: ""
 createdAt: "2026-05-12T08:27:25Z"
 pushedAt: "2026-05-12T13:20:08Z"

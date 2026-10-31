@@ -1,10 +1,4 @@
 {
-  "mozi1924": {
-    "name": "mozi1924",
-    "slug": "mozi1924",
-    "todo": null,
-    "releases": []
-  },
   "build-agy": {
     "name": "build-agy",
     "slug": "build-agy",
@@ -790,7 +784,7 @@
           {
             "name": "latest.json",
             "size": 8178,
-            "downloadCount": 2112,
+            "downloadCount": 2120,
             "downloadUrl": "https://github.com/mozi1924/openblive/releases/download/v0.2.1-dev.22/latest.json"
           },
           {
@@ -1255,12 +1249,6 @@
       }
     ]
   },
-  "debian-cloud-images": {
-    "name": "debian-cloud-images",
-    "slug": "debian-cloud-images",
-    "todo": null,
-    "releases": []
-  },
   "rig2_addons": {
     "name": "rig2_addons",
     "slug": "rig2_addons",
@@ -1410,12 +1398,6 @@
     "todo": null,
     "releases": []
   },
-  "natmap-git": {
-    "name": "natmap-git",
-    "slug": "natmap-git",
-    "todo": null,
-    "releases": []
-  },
   "mozi-rig-doc": {
     "name": "mozi-rig-doc",
     "slug": "mozi-rig-doc",
@@ -1547,12 +1529,6 @@
   "mctlilngxyz": {
     "name": "mc.tlilng.xyz",
     "slug": "mctlilngxyz",
-    "todo": null,
-    "releases": []
-  },
-  "wwwarasakaltd": {
-    "name": "www.arasaka.ltd",
-    "slug": "wwwarasakaltd",
     "todo": null,
     "releases": []
   },

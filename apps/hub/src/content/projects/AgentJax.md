@@ -4,13 +4,13 @@ name: "AgentJax"
 slug: "agentjax"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "基于 Tauri + React 构建的现代化桌面 AI 助手，支持多模型配置与本地 MCP 协议工具联动"
 repoUrl: "https://github.com/mozi1924/AgentJax"
 homepage: ""
 stars: 0
 forks: 0
 language: "Rust"
-topics: []
+topics: ["ai-assistant","desktop-app","mcp","model-context-protocol","react","tauri"]
 license: "GPL-3.0"
 createdAt: "2026-05-23T16:02:35Z"
 pushedAt: "2026-06-08T08:03:47Z"

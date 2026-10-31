@@ -4,13 +4,13 @@ name: "bldoc4agent"
 slug: "bldoc4agent"
 pinned: false
 pinnedOrder: -1
-description: ""
+description: "将 Blender 官方 HTML 文档转为 SQLite FTS5 与向量数据库的 AI Agent 专用检索工具链"
 repoUrl: "https://github.com/mozi1924/bldoc4agent"
 homepage: ""
 stars: 0
 forks: 0
 language: "Python"
-topics: []
+topics: ["agent-tools","blender","documentation","rag","sqlite-fts5"]
 license: "GPL-3.0"
 createdAt: "2026-03-21T13:51:23Z"
 pushedAt: "2026-03-21T14:29:01Z"

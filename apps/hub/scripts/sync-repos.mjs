@@ -16,6 +16,7 @@ const HEADERS = {
 
 // Blacklist repos that shouldn't appear as standalone showcase projects
 const BLACKLIST = new Set([
+  'mozi1924',           // Website & profile README repository
   'mozi1924.github.io', // Avoid self-referencing
   'mtk-ci-assets',      // Temporary CI assets
 ]);
@@ -441,6 +442,20 @@ async function main() {
   });
 
   console.log(`[Sync] Processing ${repos.length} non-fork public repositories...`);
+
+  // Clean up obsolete markdown files from blacklisted, private, or deleted repos
+  try {
+    const existingFiles = await fs.readdir(projectsDir);
+    const validFileNames = new Set(repos.map((r) => `${r.name}.md`));
+    for (const file of existingFiles) {
+      if (file.endsWith('.md') && !validFileNames.has(file)) {
+        console.log(`[Sync] Removing obsolete project markdown: ${file}`);
+        await fs.unlink(path.join(projectsDir, file));
+      }
+    }
+  } catch (err) {
+    console.warn('[Sync] Warning: Failed to clean obsolete markdown files:', err.message);
+  }
 
   const projectSummaries = [];
   const projectDetails = {};

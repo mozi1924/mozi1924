@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-31T08:36:24.023Z",
-  "totalProjects": 27,
+  "updatedAt": "2026-10-31T10:11:49.382Z",
+  "totalProjects": 23,
   "totalStars": 154,
   "totalForks": 27,
-  "totalCommits": 2680,
+  "totalCommits": 2777,
   "totalPRs": 34,
   "totalIssues": 13,
   "pinnedProjects": [
@@ -13,8 +13,7 @@
     "openblive"
   ],
   "languages": {
-    "Astro": 1,
-    "Python": 8,
+    "Python": 7,
     "Rust": 4,
     "Java": 1,
     "TypeScript": 7,

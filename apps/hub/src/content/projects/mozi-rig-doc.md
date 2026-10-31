@@ -15,7 +15,7 @@ license: ""
 createdAt: "2025-07-20T07:27:23Z"
 pushedAt: "2025-07-20T08:04:07Z"
 defaultBranch: "main"
-archived: false
+archived: true
 ---
 ## mozi-rig-doc
 

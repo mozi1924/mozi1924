@@ -85,6 +85,7 @@ const ctaText =
   data-updated={project.pushedAt || ""}
   data-pinned={project.pinned ? "true" : "false"}
   data-pinned-order={project.pinnedOrder ?? 999}
+  data-archived={project.archived ? "true" : "false"}
 >
   <!-- Top & Body Content: flex-1 ensures bottom action row is always pushed to the card bottom -->
   <div class="flex-1 flex flex-col min-w-0">
