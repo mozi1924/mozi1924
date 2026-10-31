@@ -18,6 +18,7 @@ const projects = defineCollection({
     language: z.string().optional().default('Other'),
     topics: z.array(z.string()).default([]),
     license: z.string().optional().nullable().default(''),
+    image: z.string().optional().default(''),
     createdAt: z.string(),
     pushedAt: z.string(),
     defaultBranch: z.string().default('main'),

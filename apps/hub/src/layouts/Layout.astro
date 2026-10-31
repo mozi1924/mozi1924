@@ -18,7 +18,17 @@ interface Props {
     codeRepository?: string;
     programmingLanguage?: string;
     license?: string;
+    version?: string;
+    softwareVersion?: string;
+    dateCreated?: string | Date;
+    dateModified?: string | Date;
+    keywords?: string[] | string;
+    image?: string;
+    runtimePlatform?: string;
+    applicationCategory?: string;
   };
+  breadcrumbs?: { name: string; item: string }[];
+  items?: { name: string; url: string; image?: string; description?: string }[];
   schemaData?: Record<string, any>;
 }
 
@@ -29,12 +39,16 @@ const {
   type = "website",
   schemaType,
   software,
+  breadcrumbs,
+  items,
   schemaData,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || MOZI_IDENTITY.hubUrl);
 const formattedTitle = title.includes("Mozi") ? title : `${title} | Mozi's Open Source Hub`;
-const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
+const ogImageUrl = image.startsWith("http")
+  ? image
+  : new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
 ---
 
 <!doctype html>
@@ -56,6 +70,8 @@ const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
           canonicalURL={canonicalURL}
           image={ogImageUrl}
           software={software}
+          breadcrumbs={breadcrumbs}
+          items={items}
           customSchema={schemaData}
         />
       ) : schemaData ? (
@@ -67,6 +83,8 @@ const ogImageUrl = new URL(image, Astro.site || MOZI_IDENTITY.hubUrl).href;
           description={description}
           canonicalURL={canonicalURL}
           image={ogImageUrl}
+          breadcrumbs={breadcrumbs}
+          items={items}
         />
       )}
     </BaseHead>

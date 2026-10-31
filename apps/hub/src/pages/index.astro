@@ -23,12 +23,26 @@ const initialProjects = [...projects].sort((a, b) => {
 });
 
 const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
+
+// Structured catalog items for Schema.org ItemList
+const catalogItems = initialProjects.map((p) => {
+  const projectSlug = p.slug || p.name.toLowerCase();
+  const projectUrl = new URL(`/projects/${projectSlug}/`, Astro.site || "https://hub.mozi1924.com").href;
+  const projectImg = p.image || `https://opengraph.githubassets.com/1/mozi1924/${p.name}`;
+  return {
+    name: p.name,
+    url: projectUrl,
+    image: projectImg,
+    description: p.description || `${p.name} open-source repository by Mozi Arasaka`,
+  };
+});
 ---
 
 <Layout
   title="Mozi's Open Source Hub | GitHub Projects & Repositories"
   description="Explore public GitHub repositories and open-source projects by Mozi Arasaka: Blender tools, Rust engines, AI models, and web applications."
   schemaType="profile"
+  items={catalogItems}
 >
   <!-- Hero Section Aligned with Web Design Language -->
   <section class="relative overflow-hidden pt-8 pb-6 md:pt-12 md:pb-8 bg-[#111]">

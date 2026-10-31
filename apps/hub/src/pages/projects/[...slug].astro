@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import { marked } from "marked";
 import Layout from "../../layouts/Layout.astro";
 import Icon from "@mozi/ui/Icon.astro";
+import { MOZI_IDENTITY } from "@mozi/ui/siteConfig";
 import projectDetailsMap from "../../data/project-details.json";
 import allProjectsSummary from "../../data/projects.json";
 
@@ -73,15 +74,79 @@ const relatedProjects = currentTopics.size > 0
 // Latest release information
 const latestRelease = releases[0];
 
-// Software schema.org structured data
+// Markdown snippet extraction for dynamic descriptions
+function extractSnippetFromMarkdown(rawBody?: string): string {
+  if (!rawBody) return "";
+  const lines = rawBody.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (
+      !trimmed ||
+      trimmed.startsWith("#") ||
+      trimmed.startsWith("```") ||
+      trimmed.startsWith("![") ||
+      trimmed.startsWith("<img") ||
+      trimmed.startsWith("[![") ||
+      trimmed.startsWith("<div") ||
+      trimmed.startsWith("|")
+    ) {
+      continue;
+    }
+    const clean = trimmed
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/[*_`~]/g, "")
+      .replace(/<[^>]+>/g, "")
+      .trim();
+    if (clean.length > 20 && !clean.toLowerCase().includes("no readme provided")) {
+      return clean.length > 180 ? `${clean.slice(0, 177).trim()}...` : clean;
+    }
+  }
+  return "";
+}
+
+const snippet = extractSnippetFromMarkdown(project.body);
+const fallbackDescription = `${p.name} is an open-source ${p.language && p.language !== "Other" ? `${p.language} ` : ""}project by Mozi Arasaka${p.topics && p.topics.length ? ` exploring ${p.topics.slice(0, 3).join(", ")}` : ""}.`;
+const effectiveDescription = (p.description && p.description.trim().length > 0)
+  ? p.description.trim()
+  : (snippet || fallbackDescription);
+
+const summary = (allProjectsSummary as any[]).find(
+  (s) => s.slug === slug || s.name.toLowerCase() === slug.toLowerCase() || s.name === p.name
+);
+
+// High-fidelity social preview: Curated project banner -> GitHub OpenGraph Card -> Default Avatar
+const projectOgImage =
+  summary?.image ||
+  p.image ||
+  `https://opengraph.githubassets.com/1/mozi1924/${p.name}`;
+
+const canonicalHref = new URL(Astro.url.pathname, Astro.site || MOZI_IDENTITY.hubUrl).href;
+
+const breadcrumbs = [
+  {
+    name: "Hub",
+    item: new URL("/", Astro.site || MOZI_IDENTITY.hubUrl).href,
+  },
+  {
+    name: p.name,
+    item: canonicalHref,
+  },
+];
+
+// Enhanced software schema.org structured data
 const software = {
   name: p.name,
-  description: p.description || `${p.name} open-source project by Mozi Arasaka`,
+  description: effectiveDescription,
   codeRepository: p.repoUrl,
   programmingLanguage: p.language || "Other",
   license: p.license || undefined,
+  version: latestRelease ? latestRelease.tagName : undefined,
   softwareVersion: latestRelease ? latestRelease.tagName : undefined,
+  dateCreated: p.createdAt || undefined,
   dateModified: p.pushedAt || undefined,
+  keywords: p.topics && p.topics.length > 0 ? p.topics : undefined,
+  image: projectOgImage,
+  applicationCategory: "DeveloperApplication",
 };
 
 // Helper for formatting file size
@@ -96,10 +161,12 @@ function formatBytes(bytes: number) {
 
 <Layout
   title={`${p.name} - Open Source Project by Mozi Arasaka`}
-  description={p.description || `Documentation and README for ${p.name} by Mozi Arasaka.`}
+  description={effectiveDescription}
+  image={projectOgImage}
   type="article"
   schemaType="software"
   software={software}
+  breadcrumbs={breadcrumbs}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-20 md:pb-28 space-y-6 min-w-0 w-full overflow-x-clip [overflow-anchor:none]">
     <!-- Breadcrumb -->

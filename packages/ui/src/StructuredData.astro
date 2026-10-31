@@ -19,6 +19,14 @@ interface SoftwareProps {
   codeRepository?: string;
   programmingLanguage?: string;
   license?: string;
+  version?: string;
+  softwareVersion?: string;
+  dateCreated?: string | Date;
+  dateModified?: string | Date;
+  keywords?: string[] | string;
+  image?: string;
+  runtimePlatform?: string;
+  applicationCategory?: string;
 }
 
 interface Props {
@@ -154,6 +162,34 @@ if (type === "profile") {
     breadcrumb: { "@id": `${canonicalHref}#breadcrumb` },
   });
 } else if (type === "software" && software) {
+  const licenseUrl = software.license
+    ? software.license.startsWith("http")
+      ? software.license
+      : `https://spdx.org/licenses/${software.license}`
+    : undefined;
+
+  const version = software.softwareVersion || software.version;
+  const createdDate = software.dateCreated
+    ? new Date(software.dateCreated).toISOString()
+    : pubDate
+    ? new Date(pubDate).toISOString()
+    : undefined;
+  const modifiedDate = software.dateModified
+    ? new Date(software.dateModified).toISOString()
+    : modDate || pubDate
+    ? new Date((modDate || pubDate)!).toISOString()
+    : undefined;
+
+  const resolvedSoftwareImage = software.image
+    ? software.image.startsWith("http")
+      ? software.image
+      : new URL(software.image, Astro.site || MOZI_IDENTITY.primaryUrl).href
+    : resolvedImage;
+
+  const keywordsString = Array.isArray(software.keywords)
+    ? software.keywords.join(", ")
+    : software.keywords || keywords;
+
   graph.push({
     "@type": "SoftwareSourceCode",
     "@id": `${canonicalHref}#software`,
@@ -162,8 +198,17 @@ if (type === "profile") {
     description: software.description || description,
     codeRepository: software.codeRepository,
     programmingLanguage: software.programmingLanguage || "Other",
-    license: software.license ? `https://spdx.org/licenses/${software.license}` : undefined,
+    license: licenseUrl,
+    version: version,
+    softwareVersion: version,
+    dateCreated: createdDate,
+    dateModified: modifiedDate,
+    keywords: keywordsString,
+    image: resolvedSoftwareImage,
+    runtimePlatform: software.runtimePlatform,
+    applicationCategory: software.applicationCategory || "DeveloperApplication",
     author: personEntity,
+    maintainer: personEntity,
     isPartOf: { "@id": `${Astro.site ? new URL("/", Astro.site).href : MOZI_IDENTITY.primaryUrl}#website` },
     breadcrumb: { "@id": `${canonicalHref}#breadcrumb` },
   });
