@@ -26,7 +26,24 @@ const initialProjects = [...projects].sort((a, b) => {
 const activeProjects = initialProjects.filter((p) => !p.archived);
 const archivedProjects = initialProjects.filter((p) => p.archived);
 
-const uniqueLanguages = ["All", ...Object.keys(stats.languages).sort()];
+// Precompute language stats for active and archived
+const activeLanguageStats: Record<string, number> = {};
+for (const p of activeProjects) {
+  const lang = p.language || "Other";
+  activeLanguageStats[lang] = (activeLanguageStats[lang] || 0) + 1;
+}
+
+const archivedLanguageStats: Record<string, number> = {};
+for (const p of archivedProjects) {
+  const lang = p.language || "Other";
+  archivedLanguageStats[lang] = (archivedLanguageStats[lang] || 0) + 1;
+}
+
+const allLanguagesSet = new Set<string>();
+for (const p of initialProjects) {
+  if (p.language) allLanguagesSet.add(p.language);
+}
+const allLanguages = ["All", ...Array.from(allLanguagesSet).sort()];
 
 // Structured catalog items for Schema.org ItemList
 const catalogItems = initialProjects.map((p) => {
@@ -274,19 +291,28 @@ const catalogItems = initialProjects.map((p) => {
       class="mt-4 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap"
       id="language-filters"
     >
-      {uniqueLanguages.map((lang, index) => (
-        <button
-          type="button"
-          data-lang={lang.toLowerCase()}
-          class={`filter-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer min-h-[36px] flex items-center ${
-            index === 0
-              ? "active bg-blue-500/15 text-blue-400 border border-blue-500/30 font-bold shadow-sm"
-              : "border border-white/10 bg-white/[0.02] text-gray-400 hover:text-white hover:bg-white/[0.05]"
-          }`}
-        >
-          {lang} {lang !== "All" && `(${stats.languages[lang as keyof typeof stats.languages] || 0})`}
-        </button>
-      ))}
+      {allLanguages.map((lang, index) => {
+        const isAll = lang === "All";
+        const count = isAll ? activeProjects.length : (activeLanguageStats[lang] || 0);
+        const isInitiallyHidden = !isAll && count === 0;
+
+        return (
+          <button
+            type="button"
+            data-lang={lang.toLowerCase()}
+            class={`filter-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 ${
+              isInitiallyHidden ? "hidden" : ""
+            } ${
+              index === 0
+                ? "active bg-blue-500/15 text-blue-400 border border-blue-500/30 font-bold shadow-sm"
+                : "border border-white/10 bg-white/[0.02] text-gray-400 hover:text-white hover:bg-white/[0.05]"
+            }`}
+          >
+            <span class="lang-name">{lang}</span>
+            <span class="lang-count text-[11px] opacity-75 font-normal">({count})</span>
+          </button>
+        );
+      })}
     </div>
   </section>
 
@@ -341,6 +367,57 @@ const catalogItems = initialProjects.map((p) => {
     let selectedLang = "all";
     let searchQuery = "";
     let sortMode = "pinned";
+
+    function updateLanguageFilters() {
+      const cards = Array.from(projectGrid.querySelectorAll("[data-name]")) as HTMLElement[];
+      const langCounts: Record<string, number> = {};
+      let totalForStatus = 0;
+
+      cards.forEach((card) => {
+        const isArchived = card.dataset.archived === "true";
+        const matchesStatus =
+          (selectedStatus === "archived" && isArchived) ||
+          (selectedStatus === "active" && !isArchived);
+
+        if (matchesStatus) {
+          totalForStatus++;
+          const lang = card.dataset.language || "other";
+          langCounts[lang] = (langCounts[lang] || 0) + 1;
+        }
+      });
+
+      // If the currently selected language has 0 projects in this status, reset to 'all'
+      if (selectedLang !== "all" && (!langCounts[selectedLang] || langCounts[selectedLang] === 0)) {
+        selectedLang = "all";
+      }
+
+      filterButtons.forEach((btn) => {
+        const lang = (btn as HTMLElement).dataset.lang || "all";
+        const countEl = btn.querySelector(".lang-count");
+
+        if (lang === "all") {
+          if (countEl) countEl.textContent = `(${totalForStatus})`;
+          btn.classList.remove("hidden");
+        } else {
+          const count = langCounts[lang] || 0;
+          if (countEl) countEl.textContent = `(${count})`;
+          if (count === 0) {
+            btn.classList.add("hidden");
+          } else {
+            btn.classList.remove("hidden");
+          }
+        }
+
+        // Active pill visual state
+        if (lang === selectedLang) {
+          btn.classList.add("active", "bg-blue-500/15", "text-blue-400", "border-blue-500/30", "font-bold", "shadow-sm");
+          btn.classList.remove("border-white/10", "bg-white/[0.02]", "text-gray-400");
+        } else {
+          btn.classList.remove("active", "bg-blue-500/15", "text-blue-400", "border-blue-500/30", "font-bold", "shadow-sm");
+          btn.classList.add("border-white/10", "bg-white/[0.02]", "text-gray-400");
+        }
+      });
+    }
 
     function update() {
       const cards = Array.from(projectGrid.querySelectorAll("[data-name]")) as HTMLElement[];
@@ -456,6 +533,8 @@ const catalogItems = initialProjects.map((p) => {
         btn.classList.add("active", "bg-blue-500/15", "text-blue-400", "border-blue-500/30", "font-bold", "shadow-sm");
         btn.classList.remove("border-transparent", "text-gray-400");
         selectedStatus = (btn as HTMLElement).dataset.status || "active";
+        // Dynamically recalculate language counts and visibility according to new status
+        updateLanguageFilters();
         update();
       });
     });
@@ -473,7 +552,8 @@ const catalogItems = initialProjects.map((p) => {
       });
     });
 
-    // Initial update to enforce default active tab state
+    // Initial update to enforce default active tab state and accurate language counts
+    updateLanguageFilters();
     update();
   }
 
