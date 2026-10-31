@@ -242,66 +242,74 @@ function formatBytes(bytes: number) {
 
         <!-- Modern Accessible Tab Control (Only rendered if >1 tab exists) -->
         {hasMultipleTabs && (
-          <div
-            role="tablist"
-            class="bg-[#18181b] border border-white/10 rounded-2xl p-1.5 shadow-sm sticky top-[4.5rem] sm:top-20 z-20 backdrop-blur-md bg-[#18181b]/95 min-w-0 max-w-full transition-all"
-          >
-            <div class="flex items-center justify-between gap-1 min-w-0 max-w-full">
-              <!-- Scrollable Tab Buttons on Mobile -->
-              <div class="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 min-w-0 max-w-full">
+          <div class="sticky top-[4.5rem] sm:top-20 z-20 pointer-events-none py-1">
+            <div
+              role="tablist"
+              id="project-tablist"
+              class="pointer-events-auto inline-flex items-center gap-1.5 bg-[#18181b]/95 backdrop-blur-md border border-white/10 p-1.5 rounded-2xl shadow-xl relative max-w-full overflow-x-auto no-scrollbar"
+            >
+              <!-- Smooth Sliding Highlight Indicator (mirrors contribution calendar & header) -->
+              <div
+                id="tab-indicator"
+                class="absolute rounded-xl bg-blue-600 shadow-md shadow-blue-600/30 transition-all duration-300 ease-out z-0 pointer-events-none opacity-0"
+              ></div>
+
+              <button
+                type="button"
+                id="tab-btn-readme"
+                onclick="window.switchTab('readme')"
+                class="tab-btn active relative z-10 h-10 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 flex items-center gap-2 shrink-0 text-white cursor-pointer select-none"
+                role="tab"
+                aria-controls="panel-readme"
+                aria-selected="true"
+              >
+                <Icon name="file-text" className="w-4 h-4 text-blue-200 shrink-0" />
+                <span>README</span>
+              </button>
+
+              {hasTodo && (
                 <button
-                  id="tab-btn-readme"
-                  onclick="window.switchTab('readme')"
-                  class="tab-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2 bg-blue-600 text-white shadow-sm cursor-pointer"
+                  type="button"
+                  id="tab-btn-todo"
+                  onclick="window.switchTab('todo')"
+                  class="tab-btn relative z-10 h-10 px-4 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-2 shrink-0 text-gray-400 hover:text-white cursor-pointer select-none"
                   role="tab"
-                  aria-controls="panel-readme"
-                  aria-selected="true"
+                  aria-controls="panel-todo"
+                  aria-selected="false"
                 >
-                  <Icon name="file-text" className="w-4 h-4 text-blue-300" />
-                  <span>README</span>
+                  <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                  <span>TODO & 路线图</span>
+                  {todo?.stats && (
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-mono bg-amber-500/15 text-amber-400 border border-amber-500/25 shrink-0">
+                      {todo.stats.percentage}%
+                    </span>
+                  )}
                 </button>
+              )}
 
-                {hasTodo && (
-                  <button
-                    id="tab-btn-todo"
-                    onclick="window.switchTab('todo')"
-                    class="tab-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2 text-gray-400 hover:text-white hover:bg-white/[0.04] cursor-pointer"
-                    role="tab"
-                    aria-controls="panel-todo"
-                    aria-selected="false"
-                  >
-                    <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                    <span>TODO</span>
-                    {todo?.stats && (
-                      <span class="px-2 py-0.5 rounded-full text-[11px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
-                        {todo.stats.percentage}%
-                      </span>
-                    )}
-                  </button>
-                )}
-
-                {hasReleases && (
-                  <button
-                    id="tab-btn-releases"
-                    onclick="window.switchTab('releases')"
-                    class="tab-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2 text-gray-400 hover:text-white hover:bg-white/[0.04] cursor-pointer"
-                    role="tab"
-                    aria-controls="panel-releases"
-                    aria-selected="false"
-                  >
-                    <svg class="w-4 h-4 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    <span>Releases</span>
-                  </button>
-                )}
-              </div>
-
-              <div class="hidden md:flex items-center gap-2 pr-2 text-xs text-gray-500 font-mono shrink-0">
-                <span>Branch: {p.defaultBranch}</span>
-              </div>
+              {hasReleases && (
+                <button
+                  type="button"
+                  id="tab-btn-releases"
+                  onclick="window.switchTab('releases')"
+                  class="tab-btn relative z-10 h-10 px-4 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 flex items-center gap-2 shrink-0 text-gray-400 hover:text-white cursor-pointer select-none"
+                  role="tab"
+                  aria-controls="panel-releases"
+                  aria-selected="false"
+                >
+                  <svg class="w-4 h-4 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  <span>Releases</span>
+                  {latestRelease && (
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-mono bg-purple-500/15 text-purple-300 border border-purple-500/25 shrink-0">
+                      {latestRelease.tagName}
+                    </span>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -701,6 +709,29 @@ function formatBytes(bytes: number) {
   </div>
 
   <script is:inline>
+    // Smooth sliding highlight indicator (matches ContributionCalendar and HeaderNav)
+    function updateTabIndicator(targetBtn, smooth = true) {
+      const indicator = document.getElementById("tab-indicator");
+      if (!indicator || !targetBtn) return;
+
+      if (!smooth) {
+        indicator.style.transition = "none";
+      } else {
+        indicator.style.transition = "all 300ms cubic-bezier(0.16, 1, 0.3, 1)";
+      }
+
+      indicator.style.left = `${targetBtn.offsetLeft}px`;
+      indicator.style.top = `${targetBtn.offsetTop}px`;
+      indicator.style.width = `${targetBtn.offsetWidth}px`;
+      indicator.style.height = `${targetBtn.offsetHeight}px`;
+      indicator.style.opacity = "1";
+
+      if (!smooth) {
+        void indicator.offsetHeight;
+        indicator.style.transition = "";
+      }
+    }
+
     // Tab switching logic compliant with accessible ARIA standards & URL fragments
     window.switchTab = function (tabId) {
       const tabs = ["readme", "todo", "releases"];
@@ -711,15 +742,16 @@ function formatBytes(bytes: number) {
 
         if (t === tabId) {
           if (btn) {
-            btn.classList.add("bg-blue-600", "text-white", "shadow-sm");
-            btn.classList.remove("text-gray-400", "hover:bg-white/[0.04]");
+            btn.classList.add("text-white", "font-semibold");
+            btn.classList.remove("text-gray-400", "font-medium");
             btn.setAttribute("aria-selected", "true");
+            updateTabIndicator(btn, true);
           }
           panel.classList.remove("hidden");
         } else {
           if (btn) {
-            btn.classList.remove("bg-blue-600", "text-white", "shadow-sm");
-            btn.classList.add("text-gray-400", "hover:bg-white/[0.04]");
+            btn.classList.remove("text-white", "font-semibold");
+            btn.classList.add("text-gray-400", "font-medium");
             btn.setAttribute("aria-selected", "false");
           }
           panel.classList.add("hidden");
@@ -748,15 +780,31 @@ function formatBytes(bytes: number) {
       }
     };
 
-    // Deep-linking support on page mount
-    window.addEventListener("DOMContentLoaded", () => {
+    // Deep-linking support and indicator initialization on mount
+    function initTabs() {
       const hash = window.location.hash.replace("#", "");
-      if (["readme", "todo", "releases"].includes(hash)) {
-        const targetPanel = document.getElementById(`panel-${hash}`);
-        if (targetPanel) {
-          window.switchTab(hash);
+      const activeTab = ["readme", "todo", "releases"].includes(hash) ? hash : "readme";
+      const targetBtn = document.getElementById(`tab-btn-${activeTab}`) || document.getElementById("tab-btn-readme");
+
+      window.switchTab(activeTab);
+
+      if (targetBtn) {
+        requestAnimationFrame(() => {
+          updateTabIndicator(targetBtn, false);
+        });
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            const curBtn = document.querySelector(".tab-btn[aria-selected='true']");
+            if (curBtn) updateTabIndicator(curBtn, false);
+          });
         }
       }
+    }
+
+    window.addEventListener("DOMContentLoaded", initTabs);
+    window.addEventListener("resize", () => {
+      const curBtn = document.querySelector(".tab-btn[aria-selected='true']");
+      if (curBtn) updateTabIndicator(curBtn, false);
     });
 
     // Copy to clipboard helper
