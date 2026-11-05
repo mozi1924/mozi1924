@@ -2,6 +2,7 @@
 title: "bldoc4agent"
 name: "bldoc4agent"
 slug: "bldoc4agent"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "将 Blender 官方 HTML 文档转为 SQLite FTS5 与向量数据库的 AI Agent 专用检索工具链"

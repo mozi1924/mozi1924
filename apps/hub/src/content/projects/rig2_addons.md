@@ -2,6 +2,7 @@
 title: "rig2_addons"
 name: "rig2_addons"
 slug: "rig2_addons"
+owner: "mozi1924"
 pinned: true
 pinnedOrder: 1
 description: "The BEST Blender Minecraft Rig addons mozi ever made"

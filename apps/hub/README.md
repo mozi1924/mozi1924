@@ -4,7 +4,7 @@ Automated GitHub repository showcase and developer portal for **Mozi Arasaka** (
 
 ## 🚀 Features
 
-- **Automated Sync**: Scans all public repositories via GitHub REST API, extracts READMEs, and fixes relative links & media URLs.
+- **Automated Sync**: Scans all public repositories across user (@mozi1924) and organizations (e.g. MoziToolKit) via GitHub REST API, extracts READMEs, and fixes relative links & media URLs.
 - **Modern Dark UI**: Aesthetic aligned with [mozi1924.com](https://mozi1924.com) using shared `@mozi/ui` components, Tailwind CSS v4, and modern dark tokens.
 - **Search & Filtering**: Real-time client-side search by repo name, description, topic tags, and programming language.
 - **SEO & Google Indexing**: Auto-generates standard `sitemap.xml`, `robots.txt`, and Schema.org `SoftwareSourceCode` JSON-LD rich snippets.

@@ -2,6 +2,7 @@
 title: "hls_player"
 name: "hls_player"
 slug: "hls_player"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "简单的hls播放器页面，支持深色和亮色模式跟随系统，响应式设计适配桌面端和移动端"

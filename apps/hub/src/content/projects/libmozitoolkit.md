@@ -2,25 +2,26 @@
 title: "libmozitoolkit"
 name: "libmozitoolkit"
 slug: "libmozitoolkit"
+owner: "MoziToolKit"
 pinned: false
 pinnedOrder: -1
 description: "高性能宿主无关的 Minecraft 3D 体素几何与资产处理 Rust 核心引擎，MoziToolKit (Blender) 扩展与 Yefira 实时协同底座。"
-repoUrl: "https://github.com/mozi1924/libmozitoolkit"
-homepage: "https://github.com/mozi1924/libmozitoolkit"
+repoUrl: "https://github.com/MoziToolKit/libmozitoolkit"
+homepage: "https://github.com/MoziToolKit/libmozitoolkit"
 stars: 0
 forks: 0
 language: "Rust"
 topics: ["blender","cross-platform","face-culling","geometry","live-sync","mesh-generation","minecraft","mozitoolkit","pbr","rust","voxel","yefira"]
 license: "GPL-3.0"
 createdAt: "2026-09-07T12:09:26Z"
-pushedAt: "2026-10-30T14:27:57Z"
+pushedAt: "2026-11-05T14:11:13Z"
 defaultBranch: "main"
 archived: false
 ---
 # libmozitoolkit (`libmtk`)
 
 [![Rust](https://img.shields.io/badge/Rust-1.88%2B-orange.svg)](https://www.rust-lang.org)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/mozi1924/libmozitoolkit/blob/main/LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/LICENSE)
 [![DCC Frontend: MoziToolKit](https://img.shields.io/badge/DCC%20Frontend-MoziToolKit-orange.svg)](https://github.com/mozi1924/MoziToolKit)
 [![Live Sync: Yefira](https://img.shields.io/badge/Live%20Sync-Yefira%20Mod-brightgreen.svg)](https://github.com/mozi1924/yefira)
 
@@ -48,35 +49,36 @@ archived: false
 
 | Crate / Binding | 优先级 | 职责与功能 | 专属技术文档与 API |
 | :--- | :---: | :--- | :--- |
-| **[`mtk-core`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-core)** | 核心 | 基础几何基元、紧凑网格缓冲容器 (`MeshData`)、Minecraft 标准 6 向拓扑、自适应像素网格切分 (`subdivide`) 与智能挤出/UV 修复 (`extrude`) | [📖 `crates/mtk-core/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-core/README.md) |
-| **[`mtk-cull`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-cull)** | 核心 | 6 向邻域遮挡状态机、原版剔除规则、2D 矩形差集切分与外部网格叠面剔除 (`cull_mesh_faces`) | [📖 `crates/mtk-cull/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-cull/README.md) |
-| **[`mtk-model`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-model)** | 核心 | 无头 BlockState 状态机解析与对齐 1.21+ 规范的 Model JSON 模型烘焙、OBJ 导出/加载 | [📖 `crates/mtk-model/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-model/README.md) |
-| **[`mtk-voxel`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-voxel)** | 核心 | 纯体素核心：16x16x16 Chunk Section 体素存储、流体曲面计算、平滑环境光遮蔽 (AO)、网格化器 (Mesher)、差量网格构建与统一体素源抽象接口 (`VoxelSource`) | [📖 `crates/mtk-voxel/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-voxel/README.md) |
-| **[`mtk-sync`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-sync)** | 核心 | 实时网络协同：原生 WebSocket 客户端、小端序二进制协议编解码、对接模组 [`Yefira`](https://github.com/mozi1924/yefira) 与 Live Sync 会话管理（遵循 [RFC v3.1 协议规范](https://github.com/mozi1924/MoziToolKit/blob/main/docs/live_sync/live_sync_protocol.md)） | [📖 `crates/mtk-sync/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-sync/README.md) |
-| **[`mtk-resource`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-resource)** | 核心 | 无头资源包虚拟文件系统 (VFS)、.mcmeta 动图元数据、原版 atlases/*.json 规范解析与 CTM 47/17 连接纹理求解 | [📖 `crates/mtk-resource/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-resource/README.md) |
-| **[`mtk-texture`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-texture)** | 核心 | 矩形空间装箱 Stitcher、多类别 PBR 图集与 Companion Overlay 贴图烘焙、透明度采样与边缘外推填充 | [📖 `crates/mtk-texture/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-texture/README.md) |
-| **[`mtk-material`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-material)** | 核心 | 66 种原版生物群系调色板与线性色彩数学引擎 (SSOT)、`BiomeResolver` 模型扫描与预编译映射、多线程并行 UV 重映射与外部别名解算 | [📖 `crates/mtk-material/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-material/README.md) |
-| **[`mtk-save`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-save)** | 核心 | 现代 Minecraft 存档加载核心：基于内置零拷贝 NBT 解码、Anvil `.mca` 区域文件直接寻址、384 高度世界 3D 生物群系与方块状态解包、按需空间切片流式数据源 (`VoxelSource`) | [📖 `crates/mtk-save/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-save/README.md) |
-| **[`mtk-package`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-package)** | 核心 | 统一二进制资产缓存容器编解码器：64 字节头部校验、分块 TOC 索引、`memmap2` 零拷贝解析与分块 Zstd 压缩 | [📖 `crates/mtk-package/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-package/README.md) |
-| **[`libmtk`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/libmtk)** | 应用层 | 应用编排 Crate：端到端资产预编译管线 (`prebake`)。**不再重导出领域类型**，下游按需直连 `mtk-*` | [📖 `crates/libmtk/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/libmtk/README.md) |
-| **[`mtk-py`](https://github.com/mozi1924/libmozitoolkit/blob/main/bindings/mtk-py)** | **P0 (当前重点)** | 基于 PyO3 的统一 Python 扩展模块 (`libmtk_py`)，提供通用 Buffer Protocol 内存视图，直供 [`MoziToolKit`](https://github.com/mozi1924/MoziToolKit) 消费 | [📖 `bindings/mtk-py/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/bindings/mtk-py/README.md) |
-| **[`mtk-cli`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-cli)** | **P1 (工具链)** | 独立命令行工具 (`mtk`)，支持图集烘焙 (`atlas`)、模型烘焙/导出 (`model` / `export`)、CTM 测试 (`ctm`)、规则校验 (`verify`) 与性能基准 (`bench`) | [📖 `crates/mtk-cli/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-cli/README.md) |
-| **[`mtk-bench`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-bench)** | **P1 (基准压测)** | 4000 区块与网格面剔除基准性能压测套件 | [📖 `crates/mtk-bench/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-bench/README.md) |
-| **[`mtk-testkit`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-testkit)** | **Dev (测试基建)** | 仅用于测试的资产解析器与内置 JSON fixtures（`publish = false`），统一真包位置发现与缺省跳过策略 | [📖 `crates/mtk-testkit/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-testkit/README.md) |
-| **[`mtk-wasm`](https://github.com/mozi1924/libmozitoolkit/blob/main/bindings/mtk-wasm)** | **P2 (远期预备)** | 基于 wasm-bindgen 的 WebAssembly 绑定，支持浏览器/Node.js/WebGPU 零拷贝 TypedArray 视图 | [📖 `bindings/mtk-wasm/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/bindings/mtk-wasm/README.md) |
-| **[`mtk-host-memory`](https://github.com/mozi1924/libmozitoolkit/blob/main/adapters/mtk-host-memory)** | **P0 (宿主内存)** | 宿主无关 raw slice → pointer 复制原语，无线程/核心/宿主 SDK 依赖 | [📖 `adapters/mtk-host-memory/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/adapters/mtk-host-memory/README.md) |
-| **[`mtk-blender-dna`](https://github.com/mozi1924/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna)** | **P0 (DNA 适配)** | Blender 语义 raw slice → pointer 包装；不依赖核心 crate | [📖 `adapters/blender/mtk-blender-dna/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna/README.md) |
-| **[`libmtk_blender_dna`](https://github.com/mozi1924/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna-py)** | **P0 (独立适配 wheel)** | 独立 ABI3 wheel，通过 Python Buffer Protocol 接收核心 `memoryview` 并直写 Blender DNA 指针 | [📖 `adapters/blender/mtk-blender-dna-py/README.md`](https://github.com/mozi1924/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna-py/README.md) |
+| **[`mtk-core`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-core)** | 核心 | 基础几何基元、紧凑网格缓冲容器 (`MeshData`)、Minecraft 标准 6 向拓扑、自适应像素网格切分 (`subdivide`) 与智能挤出/UV 修复 (`extrude`) | [📖 `crates/mtk-core/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-core/README.md) |
+| **[`mtk-cull`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-cull)** | 核心 | 6 向邻域遮挡状态机、原版剔除规则、2D 矩形差集切分与外部网格叠面剔除 (`cull_mesh_faces`) | [📖 `crates/mtk-cull/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-cull/README.md) |
+| **[`mtk-model`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-model)** | 核心 | 无头 BlockState 状态机解析与对齐 1.21+ 规范的 Model JSON 模型烘焙、OBJ 导出/加载 | [📖 `crates/mtk-model/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-model/README.md) |
+| **[`mtk-voxel`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-voxel)** | 核心 | 纯体素核心：16x16x16 Chunk Section 体素存储、流体曲面计算、平滑环境光遮蔽 (AO)、网格化器 (Mesher)、差量网格构建与统一体素源抽象接口 (`VoxelSource`) | [📖 `crates/mtk-voxel/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-voxel/README.md) |
+| **[`mtk-sync`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-sync)** | 核心 | 实时网络协同：原生 WebSocket 客户端、小端序二进制协议编解码、对接模组 [`Yefira`](https://github.com/mozi1924/yefira) 与 Live Sync 会话管理（遵循 [RFC v3.1 协议规范](https://github.com/mozi1924/MoziToolKit/blob/main/docs/live_sync/live_sync_protocol.md)） | [📖 `crates/mtk-sync/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-sync/README.md) |
+| **[`mtk-resource`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-resource)** | 核心 | 无头资源包虚拟文件系统 (VFS)、.mcmeta 动图元数据、原版 atlases/*.json 规范解析与 CTM 47/17 连接纹理求解 | [📖 `crates/mtk-resource/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-resource/README.md) |
+| **[`mtk-texture`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-texture)** | 核心 | 矩形空间装箱 Stitcher、多类别 PBR 图集与 Companion Overlay 贴图烘焙、透明度采样与边缘外推填充 | [📖 `crates/mtk-texture/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-texture/README.md) |
+| **[`mtk-material`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-material)** | 核心 | 66 种原版生物群系调色板与线性色彩数学引擎 (SSOT)、`BiomeResolver` 模型扫描与预编译映射、多线程并行 UV 重映射与外部别名解算 | [📖 `crates/mtk-material/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-material/README.md) |
+| **[`mtk-save`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-save)** | 核心 | 现代 Minecraft 存档加载核心：基于内置零拷贝 NBT 解码、Anvil `.mca` 区域文件直接寻址、384 高度世界 3D 生物群系与方块状态解包、按需空间切片流式数据源 (`VoxelSource`) | [📖 `crates/mtk-save/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-save/README.md) |
+| **[`mtk-package`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-package)** | 核心 | 统一二进制资产缓存容器编解码器：64 字节头部校验、分块 TOC 索引、`memmap2` 零拷贝解析与分块 Zstd 压缩 | [📖 `crates/mtk-package/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-package/README.md) |
+| **[`libmtk`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/libmtk)** | 应用层 | 应用编排 Crate：端到端资产预编译管线 (`prebake`)。**不再重导出领域类型**，下游按需直连 `mtk-*` | [📖 `crates/libmtk/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/libmtk/README.md) |
+| **[`mtk-py`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/bindings/mtk-py)** | **P0 (当前重点)** | 基于 PyO3 的统一 Python 扩展模块 (`libmtk_py`)，提供通用 Buffer Protocol 内存视图，直供 [`MoziToolKit`](https://github.com/mozi1924/MoziToolKit) 消费 | [📖 `bindings/mtk-py/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/bindings/mtk-py/README.md) |
+| **[`mtk-cli`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-cli)** | **P1 (工具链)** | 独立命令行工具 (`mtk`)，支持图集烘焙 (`atlas`)、模型烘焙/导出 (`model` / `export`)、CTM 测试 (`ctm`)、规则校验 (`verify`) 与性能基准 (`bench`) | [📖 `crates/mtk-cli/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-cli/README.md) |
+| **[`mtk-bench`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-bench)** | **P1 (基准压测)** | 4000 区块与网格面剔除基准性能压测套件 | [📖 `crates/mtk-bench/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-bench/README.md) |
+| **[`mtk-testkit`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-testkit)** | **Dev (测试基建)** | 仅用于测试的资产解析器与内置 JSON fixtures（`publish = false`），统一真包位置发现与缺省跳过策略 | [📖 `crates/mtk-testkit/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-testkit/README.md) |
+| **[`mtk-wasm`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/bindings/mtk-wasm)** | **P2 (远期预备)** | 基于 wasm-bindgen 的 WebAssembly 绑定，支持浏览器/Node.js/WebGPU 零拷贝 TypedArray 视图 | [📖 `bindings/mtk-wasm/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/bindings/mtk-wasm/README.md) |
+| **[`mtk-host-memory`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/adapters/mtk-host-memory)** | **P0 (宿主内存)** | 宿主无关 raw slice → pointer 复制原语，无线程/核心/宿主 SDK 依赖 | [📖 `adapters/mtk-host-memory/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/adapters/mtk-host-memory/README.md) |
+| **[`mtk-blender-dna`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna)** | **P0 (DNA 适配)** | Blender 语义 raw slice → pointer 包装；不依赖核心 crate | [📖 `adapters/blender/mtk-blender-dna/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna/README.md) |
+| **[`libmtk_blender_dna`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna-py)** | **P0 (独立适配 wheel)** | 独立 ABI3 wheel，通过 Python Buffer Protocol 接收核心 `memoryview` 直写 Blender DNA 指针，并支持零拷贝直读与 memoryview 映射 | [📖 `adapters/blender/mtk-blender-dna-py/README.md`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/adapters/blender/mtk-blender-dna-py/README.md) |
 
 ---
 
 ## 项目文档与设计规范
 
-- 🤖 **[Agent 协作与开发规范 (`GEMINI.md`)](https://github.com/mozi1924/libmozitoolkit/blob/main/GEMINI.md)**：工作区协同、开发铁律、多工作区交互、Crate 新增/变更规约。
-- 📋 **[开发路线与 TODO 清单 (`TODO.md`)](https://github.com/mozi1924/libmozitoolkit/blob/main/TODO.md)**：阶段演进规划、核心算法与数据管道里程碑。
-- 🏛️ **[系统架构设计 (`docs/ARCHITECTURE.md`)](https://github.com/mozi1924/libmozitoolkit/blob/main/docs/ARCHITECTURE.md)**：分层拓扑、模块职责、数据流向。
-- 📖 **[API 抽象与全局契约手册 (`docs/API_REFERENCE.md`)](https://github.com/mozi1924/libmozitoolkit/blob/main/docs/API_REFERENCE.md)**：全局通用契约、坐标系规范、连续内存协议、错误体系。
-- 🔌 **[跨语言绑定与胶水层设计 (`docs/BINDINGS_DESIGN.md`)](https://github.com/mozi1924/libmozitoolkit/blob/main/docs/BINDINGS_DESIGN.md)**：Python Wheel、C-ABI FFI、WASM 规范与 Blender 对接范式。
+- 🤖 **[Agent 协作与开发规范 (`GEMINI.md`)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/GEMINI.md)**：工作区协同、开发铁律、多工作区交互、Crate 新增/变更规约。
+- 📋 **[开发路线与 TODO 清单 (`TODO.md`)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/TODO.md)**：阶段演进规划、核心算法与数据管道里程碑。
+- 🏛️ **[系统架构设计 (`docs/ARCHITECTURE.md`)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/docs/ARCHITECTURE.md)**：分层拓扑、模块职责、数据流向。
+- 📖 **[API 抽象与全局契约手册 (`docs/API_REFERENCE.md`)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/docs/API_REFERENCE.md)**：全局通用契约、坐标系规范、连续内存协议、错误体系。
+- 🔌 **[跨语言绑定与胶水层设计 (`docs/BINDINGS_DESIGN.md`)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/docs/BINDINGS_DESIGN.md)**：Python Wheel、C-ABI FFI、WASM 规范与 Blender 对接范式。
+- 🧹 **[API 暴露面审计 (`docs/API_SURFACE_AUDIT.md`)](https://github.com/MoziToolKit/libmozitoolkit/blob/main/docs/API_SURFACE_AUDIT.md)**：零消费者 Python/Rust API 清单、过度复杂接口诊断与下一轮清理批次。
 
 ---
 
@@ -89,7 +91,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 ```
 
-> 需要真实 Minecraft 资产的集成测试通过 [`crates/mtk-testkit`](https://github.com/mozi1924/libmozitoolkit/blob/main/crates/mtk-testkit) 自动定位资源，优先级为：环境变量 → 工作区相邻目录（`../mc`、`../26.2-Fabric.jar`、`~/Downloads/SPBR-21.zip`）→ 内置 fixtures。
+> 需要真实 Minecraft 资产的集成测试通过 [`crates/mtk-testkit`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/crates/mtk-testkit) 自动定位资源，优先级为：环境变量 → 工作区相邻目录（`../mc`、`../26.2-Fabric.jar`、`~/Downloads/SPBR-21.zip`）→ 内置 fixtures。
 > 可用环境变量：`MTK_TEST_ASSETS` / `MTK_TEST_JAR` / `MTK_TEST_RESOURCE_PACK` / `MTK_TEST_SAVE` / `MTK_TEST_MODELS_CACHE`。资产缺失时相关测试会优雅跳过，不会 panic。
 
 ### 1. 本地原生编译与测试
@@ -125,7 +127,7 @@ cargo check -p mtk-wasm --target wasm32-unknown-unknown
   ```
 
 ### 5. 持续集成 (GitHub Actions)
-[`.github/workflows/ci.yml`](https://github.com/mozi1924/libmozitoolkit/blob/main/.github/workflows/ci.yml) 在 push/PR 时执行：`fmt --check`、`clippy -D warnings`、`cargo test --workspace`（从临时 Release 注入真包）、`wasm32-unknown-unknown` 兼容性检查与 abi3 Python wheel 构建。
+[`.github/workflows/ci.yml`](https://github.com/MoziToolKit/libmozitoolkit/blob/main/.github/workflows/ci.yml) 在 push/PR 时执行：`fmt --check`、`clippy -D warnings`、`cargo test --workspace`（从临时 Release 注入真包）、`wasm32-unknown-unknown` 兼容性检查与 abi3 Python wheel 构建。
 
 ---
 

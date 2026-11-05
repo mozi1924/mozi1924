@@ -2,6 +2,7 @@
 title: "literag-mcp"
 name: "literag-mcp"
 slug: "literag-mcp"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "单知识库 Markdown MCP 服务器，支持本地向量（Vectra/ChromaDB）与 SQLite FTS5 混合检索排序"

@@ -2,6 +2,7 @@
 title: "mozi-rig-doc"
 name: "mozi-rig-doc"
 slug: "mozi-rig-doc"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: ""

@@ -8,6 +8,7 @@ const projects = defineCollection({
     title: z.string(),
     name: z.string(),
     slug: z.string().optional(),
+    owner: z.string().optional().default('mozi1924'),
     pinned: z.boolean().default(false),
     pinnedOrder: z.number().default(-1),
     description: z.string().optional().default(''),

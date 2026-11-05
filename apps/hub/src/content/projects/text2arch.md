@@ -2,6 +2,7 @@
 title: "text2arch"
 name: "text2arch"
 slug: "text2arch"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "Text to Arch(Base4) Encryption/Decryption"

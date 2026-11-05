@@ -116,10 +116,14 @@ const summary = (allProjectsSummary as any[]).find(
 );
 
 // High-fidelity social preview: Curated project banner -> GitHub OpenGraph Card -> Default Avatar
+const repoOwner =
+  (p as any).owner ||
+  summary?.owner ||
+  (p.repoUrl ? new URL(p.repoUrl).pathname.split("/").filter(Boolean)[0] : "mozi1924");
 const projectOgImage =
   summary?.image ||
   p.image ||
-  `https://opengraph.githubassets.com/1/mozi1924/${p.name}`;
+  `https://opengraph.githubassets.com/1/${repoOwner}/${p.name}`;
 
 const canonicalHref = new URL(Astro.url.pathname, Astro.site || MOZI_IDENTITY.hubUrl).href;
 

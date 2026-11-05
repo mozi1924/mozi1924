@@ -4,10 +4,11 @@ export const pinnedProjects: Project[] = [
   {
     name: "MoziToolKit",
     slug: "mozitoolkit",
+    owner: "MoziToolKit",
     pinned: true,
     pinnedOrder: 1,
     description: "面向 Blender 5.0+ (LTS) 的高性能 Minecraft 资产处理、规范 PBR 着色器管线与实时协同插件前端。由 libmozitoolkit (Rust) 驱动，配合 Yefira 模组实现双向 Live Sync。",
-    repoUrl: "https://github.com/mozi1924/MoziToolKit",
+    repoUrl: "https://github.com/MoziToolKit/MoziToolKit",
     homepage: "https://mozi1924.com/blogs/from-mozitoolkit-to-libmozitoolkit",
     image: "/images/projects/mozitoolkit.webp",
     stars: 2,

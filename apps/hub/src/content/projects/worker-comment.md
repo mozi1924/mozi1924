@@ -2,6 +2,7 @@
 title: "worker-comment"
 name: "worker-comment"
 slug: "worker-comment"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "基于 Cloudflare Workers + Hono + D1 + KV 构建的轻量 Serverless 网站评论系统后端"

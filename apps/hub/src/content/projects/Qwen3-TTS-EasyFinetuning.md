@@ -2,12 +2,13 @@
 title: "Qwen3-TTS-EasyFinetuning"
 name: "Qwen3-TTS-EasyFinetuning"
 slug: "qwen3-tts-easyfinetuning"
+owner: "mozi1924"
 pinned: true
 pinnedOrder: 2
 description: "Easy fine-tuning for Qwen3-TTS: Fast voice cloning and high-quality multilingual speech synthesis."
 repoUrl: "https://github.com/mozi1924/Qwen3-TTS-EasyFinetuning"
 homepage: ""
-stars: 129
+stars: 130
 forks: 25
 language: "Python"
 topics: ["ai","audio-generation","deep-learning","easy-finetuning","fine-tuning","generative-ai","large-language-models","llm","multilingual","pytorch","qwen3-tts","qwen3-tts-ui","speech-synthesis","text-to-speech","tts","voice-cloning"]

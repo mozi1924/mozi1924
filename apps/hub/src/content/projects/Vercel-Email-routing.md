@@ -2,6 +2,7 @@
 title: "Vercel-Email-routing"
 name: "Vercel-Email-routing"
 slug: "vercel-email-routing"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "基于 Vercel Serverless 的轻量邮件中继网关，支持 REST API、多发件人路由与安全鉴权"

@@ -2,26 +2,27 @@
 title: "MoziToolKit"
 name: "MoziToolKit"
 slug: "mozitoolkit"
+owner: "MoziToolKit"
 pinned: true
 pinnedOrder: 0
 description: "面向 Blender 5.0+ (LTS) 的高性能 Minecraft 资产处理、规范 PBR 着色器管线与实时协同插件前端。由 libmozitoolkit (Rust) 驱动，配合 Yefira 模组实现双向 Live Sync。"
-repoUrl: "https://github.com/mozi1924/MoziToolKit"
-homepage: "https://github.com/mozi1924/MoziToolKit"
+repoUrl: "https://github.com/MoziToolKit/MoziToolKit"
+homepage: "https://github.com/MoziToolKit/MoziToolKit"
 stars: 2
 forks: 0
 language: "Python"
 topics: ["blender","blender-addon","blender-extension","cross-platform","libmozitoolkit","live-sync","minecraft","minecraft-blender","pbr","rust","voxel","yefira"]
 license: "GPL-3.0"
 createdAt: "2026-07-31T14:49:09Z"
-pushedAt: "2026-10-30T14:28:00Z"
+pushedAt: "2026-11-05T14:47:17Z"
 defaultBranch: "main"
 archived: false
 ---
 # MoziToolKit
 
 [![Blender](https://img.shields.io/badge/Blender-5.0%2B%20LTS-orange.svg)](https://www.blender.org/)
-[![Platform](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/mozi1924/MoziToolKit/blob/main/blender_manifest.toml)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/mozi1924/MoziToolKit/blob/main/LICENSE)
+[![Platform](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/MoziToolKit/MoziToolKit/blob/main/blender_manifest.toml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/MoziToolKit/MoziToolKit/blob/main/LICENSE)
 [![Core: libmtk](https://img.shields.io/badge/Core-libmozitoolkit%20(Rust)-red.svg)](https://github.com/mozi1924/libmozitoolkit)
 [![Companion: Yefira](https://img.shields.io/badge/Companion-Yefira%20(Mod)-brightgreen.svg)](https://github.com/mozi1924/yefira)
 
@@ -47,9 +48,9 @@ MoziToolKit 并非单一孤立插件，而是由三大核心工程紧密协作�
 
 ### 1. 实时双向网络协同 (Minecraft Live Sync)
 - **传输协议**：基于全双工 WebSocket 二进制异步流，直连 Minecraft 模组 [**`Yefira`**](https://github.com/mozi1924/yefira)（支持客户端与独立服务端）。
-- **权威协议规范**：遵循 [RFC v3.1: MTK 2.0 Live Sync 协议与架构设计规范](https://github.com/mozi1924/MoziToolKit/blob/main/docs/live_sync/live_sync_protocol.md)。
+- **权威协议规范**：遵循 [RFC v3.1: MTK 2.0 Live Sync 协议与架构设计规范](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/live_sync/live_sync_protocol.md)。
 - **增量网格重构 (Delta Meshing)**：以 16×16×16 Section 为空间单元，仅计算 6 向暴露外表面，提供平滑 4 角环境光遮蔽 (Smooth AO) 与拓扑微距焊接。
-- **状态校验与接缝自愈**：基于 CRC32 校验码实现零重复流量瞬时重连；选区变动或流传输完成时自动触发跨 Section 边界接缝面剔除自愈（Seam Healing）。
+- **状态校验与接缝自愈**：基于 xxHash64 全局状态指纹实现零重复流量瞬时重连；选区变动或流传输完成时自动触发跨 Section 边界接缝面剔除自愈（Seam Healing）。
 - **复合方块解析**：支持定向方块、红石线动力学、流体表面张力四角高度插值及 CTM (Connected Textures Mod) 47-tile 状态解算。
 
 ### 2. 存档直读与体素存储 (Anvil Save Pipeline & Voxel Storage)
@@ -66,7 +67,7 @@ MoziToolKit 并非单一孤立插件，而是由三大核心工程紧密协作�
 
 ### 4. 材质、图集与着色器管线 (Material & Shader Pipeline)
 - **双材质构建体系**：
-  - **图集分块模式 (Atlas Chunk)**：采用二维装箱算法动态拼合，应用安全 Padding 与 UV Clamp 防溢色算法，通过面级属性（`mtk_atlas_chunk_id` / `mtk_source_texture_key`）驱动共享材质槽位。
+  - **图集分块模式 (Atlas Chunk)**：采用二维装箱算法动态拼合，应用安全 Padding 与 UV Clamp 防溢色算法，通过面级属性（`mtk_atlas_chunk_id` + `mtk_source_textures`/`mtk_source_texture_idx` 调色板来源）驱动共享材质槽位。
   - **独立材质模式 (Standalone PBR)**：预编译通道全栈融合，支持独立纹理展开。
 - **PBR 与实时渲染引擎适配**：
   - 预编译期将 LabPBR `_n`/`_s` 解码为标准通道（`_n` 法线+高度、`_orm`、`_aux`）；Blender 材质只使用标准 Principled，不再运行时解码。
@@ -172,17 +173,17 @@ blender --background --python tests/run_tests.py -- -q
 
 ## 技术文档与规范索引 (Documentation)
 
-- [MoziToolKit 技术文档与设计规范导航](https://github.com/mozi1924/MoziToolKit/blob/main/docs/README.md)
-  - [分层架构设计与核心原则](https://github.com/mozi1924/MoziToolKit/blob/main/docs/architecture/overview.md)
-  - [核心设计决策与防回归对照表](https://github.com/mozi1924/MoziToolKit/blob/main/docs/architecture/faq_anti_regression.md)
-  - [材质解析与模型烘焙管线规范](https://github.com/mozi1924/MoziToolKit/blob/main/docs/materials/material_pipeline.md)
-  - [RFC v3.1 实时同步协议与架构规范](https://github.com/mozi1924/MoziToolKit/blob/main/docs/live_sync/live_sync_protocol.md)
-  - [面剔除与微观遮挡算法](https://github.com/mozi1924/MoziToolKit/blob/main/docs/mesh/face_culling.md)
-  - [自适应像素切分与智能挤出规范](https://github.com/mozi1924/MoziToolKit/blob/main/docs/mesh/pixel_split.md)
-  - [体素点云持久化与存储契约](https://github.com/mozi1924/MoziToolKit/blob/main/docs/mesh/voxel_point_cloud.md)
+- [MoziToolKit 技术文档与设计规范导航](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/README.md)
+  - [分层架构设计与核心原则](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/architecture/overview.md)
+  - [核心设计决策与防回归对照表](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/architecture/faq_anti_regression.md)
+  - [材质解析与模型烘焙管线规范](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/materials/material_pipeline.md)
+  - [RFC v3.1 实时同步协议与架构规范](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/live_sync/live_sync_protocol.md)
+  - [面剔除与微观遮挡算法](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/mesh/face_culling.md)
+  - [自适应像素切分与智能挤出规范](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/mesh/pixel_split.md)
+  - [体素点云持久化与存储契约](https://github.com/MoziToolKit/MoziToolKit/blob/main/docs/mesh/voxel_point_cloud.md)
 - [Rust 底层核心引擎 (`libmozitoolkit`)](https://github.com/mozi1924/libmozitoolkit)
 - [Minecraft 实时协同模组 (`Yefira`)](https://github.com/mozi1924/yefira)
-- [版本变更日志 (CHANGELOG.md)](https://github.com/mozi1924/MoziToolKit/blob/main/CHANGELOG.md)
+- [版本变更日志 (CHANGELOG.md)](https://github.com/MoziToolKit/MoziToolKit/blob/main/CHANGELOG.md)
 
 ---
 

@@ -50,7 +50,10 @@ const allLanguages = ["All", ...Array.from(allLanguagesSet).sort()];
 const catalogItems = initialProjects.map((p) => {
   const projectSlug = p.slug || p.name.toLowerCase();
   const projectUrl = new URL(`/projects/${projectSlug}/`, Astro.site || "https://hub.mozi1924.com").href;
-  const projectImg = p.image || `https://opengraph.githubassets.com/1/mozi1924/${p.name}`;
+  const repoOwner =
+    (p as any).owner ||
+    (p.repoUrl ? new URL(p.repoUrl).pathname.split("/").filter(Boolean)[0] : "mozi1924");
+  const projectImg = p.image || `https://opengraph.githubassets.com/1/${repoOwner}/${p.name}`;
   return {
     name: p.name,
     url: projectUrl,

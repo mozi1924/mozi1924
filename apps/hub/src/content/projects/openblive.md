@@ -2,6 +2,7 @@
 title: "openblive"
 name: "openblive"
 slug: "openblive"
+owner: "mozi1924"
 pinned: true
 pinnedOrder: 3
 description: "B站 / 哔哩哔哩直播开播助手，支持 OBS 开播联动、直播姬工作流补充、多账号管理、弹幕互动、房间管理与 Overlay 接入"

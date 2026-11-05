@@ -2,6 +2,7 @@
 title: "build-agy"
 name: "build-agy"
 slug: "build-agy"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "Automated packaging pipeline and community repository (APT & RPM) for Google Antigravity components on Linux: Antigravity IDE, Antigravity 2.0 (Hub), and Antigravity CLI."
@@ -13,7 +14,7 @@ language: "Python"
 topics: ["antigravity","antigravity-ai","antigravity-cli","antigravity-ide"]
 license: ""
 createdAt: "2026-09-30T14:48:59Z"
-pushedAt: "2026-10-30T22:02:32Z"
+pushedAt: "2026-11-05T14:21:37Z"
 defaultBranch: "main"
 archived: false
 ---

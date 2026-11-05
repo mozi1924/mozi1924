@@ -2,6 +2,7 @@
 title: "side-route-daemon"
 name: "side-route-daemon"
 slug: "side-route-daemon"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "专为 OpenWrt (fw4/nftables) 设计的高可用双栈旁路由守护程序与现代原生 LuCI 控制台"

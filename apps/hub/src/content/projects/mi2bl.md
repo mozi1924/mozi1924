@@ -2,6 +2,7 @@
 title: "mi2bl"
 name: "mi2bl"
 slug: "mi2bl"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "高保真 Mine-Imator 资产与关键帧动画导入 Blender 插件"

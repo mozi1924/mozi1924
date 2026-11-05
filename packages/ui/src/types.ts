@@ -1,6 +1,7 @@
 export interface Project {
   name: string;
   slug?: string;
+  owner?: string;
   pinned?: boolean;
   pinnedOrder?: number;
   description?: string;

@@ -2,6 +2,7 @@
 title: "infinite-inbox"
 name: "infinite-inbox"
 slug: "infinite-inbox"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "基于 Cloudflare Workers + D1 + Durable Objects 的现代化实时临时邮箱服务"

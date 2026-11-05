@@ -2,6 +2,7 @@
 title: "AgentJax"
 name: "AgentJax"
 slug: "agentjax"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "基于 Tauri + React 构建的现代化桌面 AI 助手，支持多模型配置与本地 MCP 协议工具联动"

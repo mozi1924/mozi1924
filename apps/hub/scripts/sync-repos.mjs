@@ -1,13 +1,26 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
 const USERNAME = 'mozi1924';
-const TOKEN = process.env.GITHUB_TOKEN || '';
+const DEFAULT_ORGS = ['MoziToolKit'];
+const ORGANIZATIONS = process.env.GITHUB_ORGS
+  ? [...new Set([...process.env.GITHUB_ORGS.split(',').map((s) => s.trim()).filter(Boolean), ...DEFAULT_ORGS])]
+  : DEFAULT_ORGS;
+
+let token = process.env.GITHUB_TOKEN || '';
+if (!token) {
+  try {
+    token = execSync('gh auth token', { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {}
+}
+const TOKEN = token;
+
 const HEADERS = {
   'User-Agent': 'mozi1924-hub-sync',
   'Accept': 'application/vnd.github.v3+json',
@@ -19,6 +32,7 @@ const BLACKLIST = new Set([
   'mozi1924',           // Website & profile README repository
   'mozi1924.github.io', // Avoid self-referencing
   'mtk-ci-assets',      // Temporary CI assets
+  '.github',            // Common org profile repo (.github) if any
 ]);
 
 // Curated project images
@@ -79,25 +93,48 @@ function fixRelativeLinks(content, owner, repo, defaultBranch) {
   return fixed;
 }
 
-async function fetchAllRepos() {
-  console.log(`[Sync] Fetching public repositories for user: ${USERNAME}...`);
+async function fetchReposForTarget(target, isOrg = false) {
+  const typeLabel = isOrg ? 'organization' : 'user';
+  console.log(`[Sync] Fetching public repositories for ${typeLabel}: ${target}...`);
   let page = 1;
-  const allRepos = [];
+  const repos = [];
 
   while (true) {
-    const url = `https://api.github.com/users/${USERNAME}/repos?per_page=100&page=${page}&type=public&sort=pushed`;
+    const endpoint = isOrg ? `orgs/${target}/repos` : `users/${target}/repos`;
+    const url = `https://api.github.com/${endpoint}?per_page=100&page=${page}&type=public&sort=pushed`;
     const res = await fetch(url, { headers: HEADERS });
     if (!res.ok) {
-      throw new Error(`Failed to fetch repos: ${res.status} ${res.statusText}`);
+      console.warn(`[Sync] Warning: Failed to fetch repos for ${typeLabel} ${target}: ${res.status} ${res.statusText}`);
+      break;
     }
-    const repos = await res.json();
-    if (!Array.isArray(repos) || repos.length === 0) break;
-    allRepos.push(...repos);
-    if (repos.length < 100) break;
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) break;
+    repos.push(...data);
+    if (data.length < 100) break;
     page++;
   }
 
-  console.log(`[Sync] Found total ${allRepos.length} public repos.`);
+  console.log(`[Sync] Found ${repos.length} public repos for ${typeLabel} ${target}.`);
+  return repos;
+}
+
+async function fetchAllRepos() {
+  const userRepos = await fetchReposForTarget(USERNAME, false);
+  const orgReposList = await Promise.all(
+    ORGANIZATIONS.map((org) => fetchReposForTarget(org, true))
+  );
+
+  const seenIds = new Set();
+  const allRepos = [];
+
+  for (const repo of [...userRepos, ...orgReposList.flat()]) {
+    if (!seenIds.has(repo.id)) {
+      seenIds.add(repo.id);
+      allRepos.push(repo);
+    }
+  }
+
+  console.log(`[Sync] Found total ${allRepos.length} public repos across user ${USERNAME} and orgs (${ORGANIZATIONS.join(', ')}).`);
   return allRepos;
 }
 
@@ -505,6 +542,7 @@ async function main() {
     projectDetails[slug] = {
       name: repo.name,
       slug,
+      owner: repo.owner.login,
       todo: todoData || null,
       releases: releasesData || [],
     };
@@ -514,6 +552,7 @@ async function main() {
       `title: ${yamlEscape(repo.name)}`,
       `name: ${yamlEscape(repo.name)}`,
       `slug: ${yamlEscape(slug)}`,
+      `owner: ${yamlEscape(repo.owner.login)}`,
       `pinned: ${isPinned ? 'true' : 'false'}`,
       `pinnedOrder: ${pinnedOrder}`,
       `description: ${yamlEscape(repo.description || '')}`,
@@ -538,6 +577,7 @@ async function main() {
     projectSummaries.push({
       name: repo.name,
       slug,
+      owner: repo.owner.login,
       pinned: isPinned,
       pinnedOrder,
       description: repo.description || '',

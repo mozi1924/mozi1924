@@ -2,6 +2,7 @@
 title: "jaxlocke.uk"
 name: "jaxlocke.uk"
 slug: "jaxlockeuk"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "Jax Locke's personal website"

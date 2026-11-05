@@ -2,6 +2,7 @@
 title: "mediapipe-facecap-for-blender"
 name: "mediapipe-facecap-for-blender"
 slug: "mediapipe-facecap-for-blender"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "This is a mediapipe based face capture for Blender and more platforms in the future"

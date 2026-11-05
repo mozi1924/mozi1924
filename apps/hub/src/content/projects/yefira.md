@@ -2,18 +2,19 @@
 title: "yefira"
 name: "yefira"
 slug: "yefira"
+owner: "MoziToolKit"
 pinned: false
 pinnedOrder: -1
 description: "高性能、低延迟 Minecraft 实时协同伴生模组，直连 Blender (MoziToolKit)。支持 Fabric / Forge / NeoForge 跨 1.20 ~ 26.2+ 多版本。"
-repoUrl: "https://github.com/mozi1924/yefira"
-homepage: "https://github.com/mozi1924/yefira"
+repoUrl: "https://github.com/MoziToolKit/yefira"
+homepage: "https://github.com/MoziToolKit/yefira"
 stars: 2
 forks: 0
 language: "Java"
 topics: ["blender","fabric","forge","libmozitoolkit","live-sync","minecraft","minecraft-mod","mozitoolkit","neoforge","voxel","websocket"]
 license: "GPL-3.0"
 createdAt: "2026-08-11T14:38:46Z"
-pushedAt: "2026-10-30T14:23:19Z"
+pushedAt: "2026-11-05T10:30:24Z"
 defaultBranch: "main"
 archived: false
 ---
@@ -23,7 +24,7 @@ archived: false
 [![Forge](https://img.shields.io/badge/Forge-1.20.1-orange.svg)](https://files.minecraftforge.net/)
 [![NeoForge](https://img.shields.io/badge/NeoForge-1.20.4%20%7C%201.21.1%20%7C%201.21.4%20%7C%2026.2-orange.svg)](https://neoforged.net/)
 [![Build CI](https://github.com/mozi1924/yefira/actions/workflows/build.yml/badge.svg)](https://github.com/mozi1924/yefira/actions/workflows/build.yml)
-[![License](https://img.shields.io/badge/License-GPL_3.0-blue.svg)](https://github.com/mozi1924/yefira/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-GPL_3.0-blue.svg)](https://github.com/MoziToolKit/yefira/blob/main/LICENSE)
 [![DCC Frontend: MoziToolKit](https://img.shields.io/badge/DCC%20Frontend-MoziToolKit-orange.svg)](https://github.com/mozi1924/MoziToolKit)
 [![Core: libmtk](https://img.shields.io/badge/Core-libmozitoolkit%20(Rust)-red.svg)](https://github.com/mozi1924/libmozitoolkit)
 
@@ -340,4 +341,4 @@ mc-sync-blender/
 
 ## 📄 开源许可 (License)
 
-本项目采用 [GNU General Public License v3.0 (GPL-3.0)](https://github.com/mozi1924/yefira/blob/main/LICENSE) 许可开源。
+本项目采用 [GNU General Public License v3.0 (GPL-3.0)](https://github.com/MoziToolKit/yefira/blob/main/LICENSE) 许可开源。

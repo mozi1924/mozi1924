@@ -2,6 +2,7 @@
 title: "micro-app-store"
 name: "micro-app-store"
 slug: "micro-app-store"
+owner: "mozi1924"
 pinned: false
 pinnedOrder: -1
 description: "MIUI Home第三方应用商店"
