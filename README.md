@@ -37,6 +37,8 @@ I enjoy turning complex technical ideas into practical, maintainable software.
 <img src="https://github-readme-activity-graph-plum.vercel.app/graph?username=mozi1924&bg_color=2c283a&color=fcfcfa&line=3e89fc&point=bb7907&area=true&hide_border=true" alt="Mozi's github activity graph" /></a> </p>
 <hr/>
 
+***Hardware-tested with 220V AC since childhood.***
+
 <!---
 mozi1924/mozi1924 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 You can click the Preview link to take a look at your changes.
